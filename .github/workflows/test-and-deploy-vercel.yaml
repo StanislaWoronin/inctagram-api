@@ -5,9 +5,6 @@ env:
 on:
   push:
     branches-ignore:
-      - main
-      - staging
-      - dev
 jobs:
 
   Tests:
