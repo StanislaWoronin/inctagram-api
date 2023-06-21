@@ -1,14 +1,21 @@
-import {applyDecorators} from '@nestjs/common';
+import { applyDecorators } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiBearerAuth,
   ApiBody,
+  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {RegistrationDto} from "../../apps/api-getaway/dto/registration.dto";
+import { RegistrationDto } from '../../apps/api-getaway/dto/registration.dto';
+import { LoginDto } from '../../apps/api-getaway/dto/login.dto';
+import { ResendingEmailConfirmationDto } from '../../apps/api-getaway/dto/resending-email-confirmation.dto';
+import { RegistrationConfirmationDto } from '../../apps/api-getaway/dto/registration-confirmation.dto';
+import { PasswordRecoveryDto } from '../../apps/api-getaway/dto/password-recovery.dto';
+import { NewPasswordDto } from '../../apps/api-getaway/dto/new-password.dto';
 
 export function ApiRegistration() {
   return applyDecorators(
@@ -26,13 +33,16 @@ export function ApiRegistration() {
         'If the inputModel has incorrect values (in particular if the user with the given email or password already exists)',
       //type: [BadRequestResponse],
     }),
+    ApiTooManyRequestsResponse({
+      description: 'More than 5 attempts from one IP-address during 10 seconds',
+    }),
   );
 }
 
 export function ApiLogin() {
   return applyDecorators(
     ApiOperation({ summary: 'New user login after registration' }),
-      //ApiBody({ type: AuthDto }),
+    ApiBody({ type: LoginDto }),
     ApiOkResponse({
       description:
         'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds)',
@@ -40,7 +50,7 @@ export function ApiLogin() {
     }),
     // ApiBadRequestResponse({
     //     description: 'If the inputModel has incorrect values',
-    //     type: [BadRequestResponse],
+    //     //type: [BadRequestResponse],
     // }),
     ApiUnauthorizedResponse({
       description: 'If the password or login is wrong',
@@ -55,7 +65,7 @@ export function ApiRegistrationEmailResending() {
   return applyDecorators(
     ApiOperation({ summary: 'Re-sends registration confirmation code' }),
     ApiBody({
-      //type: ResendingDto,
+      type: ResendingEmailConfirmationDto,
       required: true,
     }),
     ApiNoContentResponse({
@@ -78,7 +88,7 @@ export function ApiRegistrationConfirmation() {
       summary: 'Confirmation of registration via confirmation code',
     }),
     ApiBody({
-      //type: RegistrationConfirmationDto,
+      type: RegistrationConfirmationDto,
       required: true,
     }),
     ApiNoContentResponse({
@@ -99,7 +109,7 @@ export function ApiPasswordRecovery() {
   return applyDecorators(
     ApiOperation({ summary: 'Password recovery request' }),
     ApiBody({
-      //type: PasswordRecoveryDto,
+      type: PasswordRecoveryDto,
       required: true,
     }),
     ApiNoContentResponse({
@@ -121,7 +131,7 @@ export function ApiNewPassword() {
   return applyDecorators(
     ApiOperation({ summary: 'Sending a new password' }),
     ApiBody({
-      //type: NewPasswordDto,
+      type: NewPasswordDto,
       required: true,
     }),
     ApiNoContentResponse({
@@ -156,6 +166,7 @@ export function ApiRefreshToken() {
 export function ApiLogout() {
   return applyDecorators(
     ApiOperation({ summary: 'User logout' }),
+    ApiBearerAuth(),
     ApiNoContentResponse({
       description: 'No Content',
     }),
@@ -165,4 +176,3 @@ export function ApiLogout() {
     }),
   );
 }
-

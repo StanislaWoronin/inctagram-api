@@ -1,9 +1,9 @@
-import {UserService} from '../domain/user.service';
-import {IUser} from './user.interface';
-import {randomUUID} from 'crypto';
-import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import {HydratedDocument} from 'mongoose';
-import {EmailConfirmation} from "./email-confirmation.schema";
+import { UserService } from '../domain/user.service';
+import { IUser } from './user.interface';
+import { randomUUID } from 'crypto';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
+import { EmailConfirmation } from './email-confirmation.schema';
 
 @Schema()
 export class UserAggregate extends UserService implements IUser {

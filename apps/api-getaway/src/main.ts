@@ -13,10 +13,10 @@ async function bootstrap() {
   const app = createApp(rawApp);
 
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('API_GATEWAY_PORT');
+  const port = configService.get<number>('API_GATEWAY');
   const serverUrl = configService.get<string>('BASE_URL');
   const userConfig = new DocumentBuilder()
-    .setTitle('Users API')
+    .setTitle('Inctagram-api')
     .setDescription('The Users API description')
     .setVersion('1.0')
     .addBearerAuth()
@@ -67,8 +67,8 @@ async function bootstrap() {
       'Api-getaway.Main',
     );
     Logger.log(
-        `Swagger documentation on http://localhost:${port}/swagger.`,
-        'Api-getaway.Main',
+      `Swagger documentation on http://localhost:${port}/swagger.`,
+      'Api-getaway.Main',
     );
   });
 }

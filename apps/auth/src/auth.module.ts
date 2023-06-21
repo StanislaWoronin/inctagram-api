@@ -26,9 +26,7 @@ import { UserAggregate, UserSchema } from '../../../libs/users/schema';
     ]), // TODO providermodule
     CqrsModule,
     SharedModule,
-    ClientsModule.register([
-        getProviderOptions(Microservices.Auth)
-    ]),
+    ClientsModule.register([getProviderOptions(Microservices.Auth)]),
   ],
   controllers: [AuthController],
   providers: [

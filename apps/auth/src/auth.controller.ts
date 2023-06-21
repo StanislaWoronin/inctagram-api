@@ -7,12 +7,11 @@ import { RegistrationResponse } from '../../../libs/users/response';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly userFacade: UserFacade) {
-  }
+  constructor(private readonly userFacade: UserFacade) {}
 
   @MessagePattern({ cmd: Commands.Registration })
   async registration(data: RegistrationDto): Promise<RegistrationResponse> {
-    console.log('auth')
+    console.log('auth');
     return await this.userFacade.commands.registrationUser(data);
   }
 }
