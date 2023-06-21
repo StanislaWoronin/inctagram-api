@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateUserCommand } from './create-user.command';
-import { UserAggregate } from '../../../user.aggregate';
+import { UserAggregate } from '../../../schema/user.aggregate';
 import { UserRepository } from '../../../providers/user.repository';
 
 @CommandHandler(CreateUserCommand)
@@ -9,9 +9,9 @@ export class CreateUserCommandHandler
 {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async execute(command: CreateUserCommand): Promise<UserAggregate> {
-    const user = UserAggregate.create();
-    await this.userRepository.createUser();
-    return;
+  async execute(data: CreateUserCommand): Promise<UserAggregate> {
+    const user = UserAggregate.create(data.user);
+    await this.userRepository.createUser(user);
+    return user;
   }
 }
