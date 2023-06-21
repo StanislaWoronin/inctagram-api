@@ -1,6 +1,9 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { CommandBus, CqrsModule, EventBus, QueryBus } from '@nestjs/cqrs';
 import { UserFacade } from './application-services';
+import {USER_QUERIES_HANDLERS} from "./application-services/queries";
+import {USER_COMMANDS_HANDLERS} from "./application-services/command";
+import {userFacadeFactory} from "./application-services/user-facade.factory";
 
 @Module({
   imports: [CqrsModule],
