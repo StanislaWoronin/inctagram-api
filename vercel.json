@@ -5,6 +5,10 @@
     {
       "src": "apps/api-getaway/src/main.ts",
       "use": "@vercel/node"
+    },
+    {
+      "src": "apps/auth/src/main.ts",
+      "use": "@vercel/node"
     }
   ]
 }
