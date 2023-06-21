@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
 import { RegistrationDto } from '../dto';
+import { CreateUserCommand, CreateUserCommandHandler } from './command';
+import { LoginDto } from '../../../apps/auth/dto/login.dto';
 import {
-  CreateUserCommand,
-  CreateUserCommandHandler,
-} from './command/create-user';
+  LoginUserCommand,
+  LoginUserCommandHandler,
+} from './command/login-user';
 
 @Injectable()
 export class UserFacade {
@@ -15,6 +17,7 @@ export class UserFacade {
 
   commands = {
     registrationUser: (data: RegistrationDto) => this.registrationUser(data),
+    loginUser: (data: LoginDto) => this.loginUser(data),
   };
   queries = {};
 
@@ -23,5 +26,12 @@ export class UserFacade {
       CreateUserCommand,
       CreateUserCommandHandler['execute']
     >(new CreateUserCommand(data));
+  }
+
+  private loginUser(data: LoginDto) {
+    return this.commandBus.execute<
+      LoginUserCommand,
+      LoginUserCommandHandler['execute']
+    >(new LoginUserCommand(data));
   }
 }
