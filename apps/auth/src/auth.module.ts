@@ -1,5 +1,5 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { AuthController } from './auth.controller';
+import { AuthController } from './auth.controller.reciever';
 import { SharedModule } from '../../../libs';
 import { ClientsModule } from '@nestjs/microservices';
 import { getProviderOptions } from '../../../libs/providers/rabbit-mq/providers.option';
@@ -10,7 +10,6 @@ import { userFacadeFactory } from '../../../libs/users/application-services/user
 import { USER_COMMANDS_HANDLERS } from '../../../libs/users/application-services/command';
 import { USER_QUERIES_HANDLERS } from '../../../libs/users/application-services/queries';
 import { UserRepository } from '../../../libs/users/providers/user.repository';
-import { ProvidersModule } from '../../../libs/providers/providers.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfig } from '../../../libs/providers/mongo-db';
 import { UserAggregate, UserSchema } from '../../../libs/users/schema';

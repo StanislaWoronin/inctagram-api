@@ -1,15 +1,14 @@
 import { NestFactory } from '@nestjs/core';
-import { AppGetawayModule } from './app-getaway.module';
+import { AppGatewayModule } from './app-gateway.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { createApp } from '../create-app';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AuthModule } from '../../auth/src/auth.module';
 import { createWriteStream } from 'fs';
 import { get } from 'http';
 
 async function bootstrap() {
-  const rawApp = await NestFactory.create(AppGetawayModule);
+  const rawApp = await NestFactory.create(AppGatewayModule);
   const app = createApp(rawApp);
 
   const configService = app.get(ConfigService);
@@ -35,7 +34,7 @@ async function bootstrap() {
   };
   const usersDocument = SwaggerModule.createDocument(app, userConfig, {
     operationIdFactory: (controllerKey: string, methodKey: string) => methodKey,
-    include: [AuthModule],
+    include: [AppGatewayModule],
   });
   SwaggerModule.setup('swagger', app, usersDocument, options1);
   if (process.env.NODE_ENV === 'development') {

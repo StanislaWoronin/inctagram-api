@@ -3,19 +3,18 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
-  ApiForbiddenResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { RegistrationDto } from '../../apps/api-getaway/dto/registration.dto';
-import { LoginDto } from '../../apps/api-getaway/dto/login.dto';
-import { ResendingEmailConfirmationDto } from '../../apps/api-getaway/dto/resending-email-confirmation.dto';
-import { RegistrationConfirmationDto } from '../../apps/api-getaway/dto/registration-confirmation.dto';
-import { PasswordRecoveryDto } from '../../apps/api-getaway/dto/password-recovery.dto';
-import { NewPasswordDto } from '../../apps/api-getaway/dto/new-password.dto';
+import { RegistrationDto } from '../../apps/auth/dto/registration.dto';
+import { LoginDto } from '../../apps/auth/dto/login.dto';
+import { ResendingEmailConfirmationDto } from '../../apps/auth/dto/resending-email-confirmation.dto';
+import { RegistrationConfirmationDto } from '../../apps/auth/dto/registration-confirmation.dto';
+import { PasswordRecoveryDto } from '../../apps/auth/dto/password-recovery.dto';
+import { NewPasswordDto } from '../../apps/auth/dto/new-password.dto';
 
 export function ApiRegistration() {
   return applyDecorators(
