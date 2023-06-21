@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "Blogs-API-Nest.js\n",
+  "name": "inctagram-api\n",
   "builds": [
     {
       "src": "apps/api-getaway/src/main.ts",
