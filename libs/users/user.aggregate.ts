@@ -49,9 +49,7 @@ export class UserAggregate extends UserService implements IUser {
     super();
   }
 
-  static create(user: Partial<IUser>) {
-    const _post = new UserAggregate();
-    Object.assign(_post, post);
-    return _user;
+  static create(user: string) {
+    return user;
   }
 }
