@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppGatewayModule } from '../src/app-gateway.module';
+import { AppGatewayModule } from '../src/app.gateway.module';
 import { createApp } from '../create-app';
 import { Requests } from './requests/requests';
 import { preparedRegistrationData } from './prepared-data/prepared-registration.data';

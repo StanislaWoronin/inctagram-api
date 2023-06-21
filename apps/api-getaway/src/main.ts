@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { AppGatewayModule } from './app-gateway.module';
+import { AppGatewayModule } from './app.gateway.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger } from '@nestjs/common';
 import { createApp } from '../create-app';
