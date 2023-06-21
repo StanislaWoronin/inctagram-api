@@ -11,13 +11,15 @@ export class UserAggregate extends UserService implements IUser {
   id: string = randomUUID();
 
   @Prop({ required: true, type: String })
-  name: string;
+  login: string;
 
   @Prop({ required: true, unique: true, type: String })
   email: string;
 
   @Prop({ required: true, type: String })
   password: string;
+
+  passwordHash: string;
 
   passwordConfirmation: string;
 
