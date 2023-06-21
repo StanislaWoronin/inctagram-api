@@ -1,24 +1,36 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import {HttpStatus, INestApplication} from '@nestjs/common';
 import * as request from 'supertest';
 import { AppGetawayModule } from '../src/app-getaway.module';
+import {createApp} from "../create-app";
+import {Requests} from "./requests/requests";
+import {preparedRegistrationData} from "./prepared-data/prepared-registration.data";
 
-describe('AppGetawayController (e2e)', () => {
+describe('Test auth controller.', () => {
+  const second = 1000;
+  jest.setTimeout(5 * second);
+
   let app: INestApplication;
+  let server;
+  let requests: Requests;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppGetawayModule],
     }).compile();
 
-    app = moduleFixture.createNestApplication();
+    const rawApp = await moduleFixture.createNestApplication();
+    app = createApp(rawApp);
     await app.init();
+
+    server = await app.getHttpServer();
+    requests = new Requests(server);
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
-  });
+  describe('Create new user', () => {
+    it(`Should create new user. Status ${HttpStatus.CREATED}.`, async () => {
+      const response = await requests.auth().registrationUser(preparedRegistrationData.valid)
+      console.log(response)
+    })
+  })
 });

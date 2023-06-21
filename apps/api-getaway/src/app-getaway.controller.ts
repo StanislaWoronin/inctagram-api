@@ -11,7 +11,7 @@ export class AppGetawayController {
     @Inject(Microservices.Auth) private userProxyClient: ClientProxy,
   ) {}
 
-  @Post('registration')
+  @Post('auth/registration')
   async registration(@Body() dto: RegistrationDto) {
     const pattern = { cmd: Commands.Registration };
     return this.userProxyClient.send<RegistrationResponse>(pattern, dto);
