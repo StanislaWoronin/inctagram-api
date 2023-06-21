@@ -21,16 +21,16 @@ import {
   ApiRegistrationConfirmation,
   ApiRegistrationEmailResending,
 } from '../../../libs/documentation/auth.documentation';
-import { RegistrationDto } from '../dto/registration.dto';
-import { LoginDto } from '../dto/login.dto';
-import { ResendingEmailConfirmationDto } from '../dto/resending-email-confirmation.dto';
-import { RegistrationConfirmationDto } from '../dto/registration-confirmation.dto';
-import { PasswordRecoveryDto } from '../dto/password-recovery.dto';
-import { NewPasswordDto } from '../dto/new-password.dto';
+import { RegistrationDto } from '../../auth/dto/registration.dto';
+import { LoginDto } from '../../auth/dto/login.dto';
+import { ResendingEmailConfirmationDto } from '../../auth/dto/resending-email-confirmation.dto';
+import { RegistrationConfirmationDto } from '../../auth/dto/registration-confirmation.dto';
+import { PasswordRecoveryDto } from '../../auth/dto/password-recovery.dto';
+import { NewPasswordDto } from '../../auth/dto/new-password.dto';
 
 @Controller('auth')
 @ApiTags('Auth')
-export class AuthController {
+export class AppGatewayController {
   constructor(
     @Inject(Microservices.Auth) private userProxyClient: ClientProxy,
   ) {}
@@ -39,7 +39,6 @@ export class AuthController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistration()
   async registration(@Body() dto: RegistrationDto) {
-    console.log('getaway');
     const pattern = { cmd: Commands.Registration };
     return this.userProxyClient.send(pattern, dto);
   }

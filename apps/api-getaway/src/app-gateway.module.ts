@@ -5,7 +5,7 @@ import { ClientsModule } from '@nestjs/microservices';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { getProviderOptions } from '../../../libs/providers/rabbit-mq/providers.option';
-import { AuthController } from './auth.controller';
+import { AppGatewayController } from './app.gateway.controller';
 
 @Module({
   imports: [
@@ -15,9 +15,8 @@ import { AuthController } from './auth.controller';
       rootPath: join(__dirname, '..', 'swagger-static'),
       serveRoot: process.env.NODE_ENV === 'development' ? '/' : '/swagger',
     }),
-    ClientsModule.register([getProviderOptions(Microservices.Auth)]),
   ],
-  controllers: [AuthController],
+  controllers: [AppGatewayController],
   providers: [],
 })
-export class AppGetawayModule {}
+export class AppGatewayModule {}
