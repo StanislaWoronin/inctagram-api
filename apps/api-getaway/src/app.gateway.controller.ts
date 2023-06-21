@@ -28,7 +28,7 @@ import { RegistrationConfirmationDto } from '../../auth/dto/registration-confirm
 import { PasswordRecoveryDto } from '../../auth/dto/password-recovery.dto';
 import { NewPasswordDto } from '../../auth/dto/new-password.dto';
 
-@Controller('auth')
+@Controller()
 @ApiTags('Auth')
 export class AppGatewayController {
   constructor(
@@ -36,7 +36,6 @@ export class AppGatewayController {
   ) {}
 
   @Get()
-  @ApiRegistration()
   async main() {
     return 'Hello World';
   }

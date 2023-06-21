@@ -11,30 +11,13 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
-      "/auth": {
+      "/": {
         "get": {
           "operationId": "main",
-          "summary": "A new user is registered in the system",
           "parameters": [],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RegistrationDto"
-                }
-              }
-            }
-          },
           "responses": {
-            "204": {
-              "description": "Input data is accepted. Email with confirmation code will be send to passed email address"
-            },
-            "400": {
-              "description": "If the inputModel has incorrect values (in particular if the user with the given email or password already exists)"
-            },
-            "429": {
-              "description": "More than 5 attempts from one IP-address during 10 seconds"
+            "200": {
+              "description": ""
             }
           },
           "tags": [
@@ -42,7 +25,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/registration": {
+      "/registration": {
         "post": {
           "operationId": "registration",
           "summary": "A new user is registered in the system",
@@ -73,7 +56,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/login": {
+      "/login": {
         "post": {
           "operationId": "login",
           "summary": "New user login after registration",
@@ -104,7 +87,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/registration-email-resending": {
+      "/registration-email-resending": {
         "post": {
           "operationId": "registrationEmailResending",
           "summary": "Re-sends registration confirmation code",
@@ -135,7 +118,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/registration-confirmation": {
+      "/registration-confirmation": {
         "post": {
           "operationId": "registrationConfirmation",
           "summary": "Confirmation of registration via confirmation code",
@@ -166,7 +149,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/password-recovery": {
+      "/password-recovery": {
         "post": {
           "operationId": "passwordRecovery",
           "summary": "Password recovery request",
@@ -197,7 +180,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/new-password": {
+      "/new-password": {
         "post": {
           "operationId": "createNewPassword",
           "summary": "Sending a new password",
@@ -228,7 +211,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/refresh-token": {
+      "/refresh-token": {
         "post": {
           "operationId": "createRefreshToken",
           "summary": "Update authorization tokens",
@@ -246,7 +229,7 @@ window.onload = function() {
           ]
         }
       },
-      "/auth/logout": {
+      "/logout": {
         "post": {
           "operationId": "logout",
           "summary": "User logout",
