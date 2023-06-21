@@ -3,14 +3,8 @@
   "name": "Blogs-API-Nest.js\n",
   "builds": [
     {
-      "src": "apps/auth/src/main.ts",
+      "src": "apps/api-getaway/src/main.ts",
       "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "apps/api-getaway/src/main.ts"
     }
   ]
 }
