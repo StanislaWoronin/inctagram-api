@@ -11,6 +11,37 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
+      "/auth": {
+        "get": {
+          "operationId": "main",
+          "summary": "A new user is registered in the system",
+          "parameters": [],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "Input data is accepted. Email with confirmation code will be send to passed email address"
+            },
+            "400": {
+              "description": "If the inputModel has incorrect values (in particular if the user with the given email or password already exists)"
+            },
+            "429": {
+              "description": "More than 5 attempts from one IP-address during 10 seconds"
+            }
+          },
+          "tags": [
+            "Auth"
+          ]
+        }
+      },
       "/auth/registration": {
         "post": {
           "operationId": "registration",

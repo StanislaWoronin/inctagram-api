@@ -35,6 +35,12 @@ export class AppGatewayController {
     @Inject(Microservices.Auth) private userProxyClient: ClientProxy,
   ) {}
 
+  @Get()
+  @ApiRegistration()
+  async main() {
+    return 'Hello World';
+  }
+
   @Post('registration')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistration()
