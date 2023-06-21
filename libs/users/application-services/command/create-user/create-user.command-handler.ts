@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateUserCommand } from './create-user.command';
-import { UserAggregate } from '../../../user.aggregate';
 import { UserRepository } from '../../../providers/user.repository';
+import {UserAggregate} from "../../../schema";
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserCommandHandler
