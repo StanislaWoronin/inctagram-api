@@ -66,6 +66,10 @@ async function bootstrap() {
       `Application started on http://localhost:${port}.`,
       'Api-getaway.Main',
     );
+    Logger.log(
+        `Swagger documentation on http://localhost:${port}/swagger.`,
+        'Api-getaway.Main',
+    );
   });
 }
 

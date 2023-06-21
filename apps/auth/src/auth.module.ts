@@ -2,7 +2,7 @@ import { Module, OnModuleInit } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { SharedModule } from '../../../libs';
 import { ClientsModule } from '@nestjs/microservices';
-import { getProviderOptions } from '../../../libs/providers/providers.option';
+import { getProviderOptions } from '../../../libs/providers/rabbit-mq/providers.option';
 import { Microservices } from '../../../libs/shared';
 import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
 import { UserFacade } from '../../../libs/users/application-services';
@@ -26,7 +26,9 @@ import { UserAggregate, UserSchema } from '../../../libs/users/schema';
     ]), // TODO providermodule
     CqrsModule,
     SharedModule,
-    ClientsModule.register([getProviderOptions(Microservices.Auth)]),
+    ClientsModule.register([
+        getProviderOptions(Microservices.Auth)
+    ]),
   ],
   controllers: [AuthController],
   providers: [
