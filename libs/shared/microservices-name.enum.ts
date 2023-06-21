@@ -1,4 +1,4 @@
 export enum Microservices {
-  ApiGetaway = 'API_GATEWAY_SERVICE',
+  ApiGetaway = 'API_GATEWAY',
   Auth = 'AUTH_MS',
 }

@@ -1,14 +1,16 @@
-import { NestFactory } from '@nestjs/core';
-import { ConfigService } from '@nestjs/config';
-import { Logger } from '@nestjs/common';
-import { AuthModule } from './auth.module';
+import {NestFactory} from '@nestjs/core';
+import {AuthModule} from './auth.module';
+import {MicroserviceOptions} from "@nestjs/microservices";
+import {Microservices} from "../../../libs/shared";
+import {getTransportOptions} from "../../../libs/providers/rabbit-mq/transport.options";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AuthModule);
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('AUTH_MS_PORT');
-  await app.listen(port, () => {
-    Logger.log(`Application started on http://localhost:${port}.`, 'Auth.Main');
-  });
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+      AuthModule,
+      getTransportOptions(Microservices.Auth),
+  );
+
+
+  await app.listen();
 }
 bootstrap();

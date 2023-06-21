@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AppGetawayController } from './app-getaway.controller';
+import { AuthController } from './auth.controller';
 import { SharedModule } from '../../../libs';
 import { Microservices } from '../../../libs/shared';
 import { ClientsModule } from '@nestjs/microservices';
-import { getProviderOptions } from '../../../libs/providers/providers.option';
-import { ProvidersModule } from '../../../libs/providers/providers.module';
+import { getProviderOptions } from '../../../libs/providers/rabbit-mq/providers.option';
 
 @Module({
   imports: [
     SharedModule,
-    ClientsModule.register([getProviderOptions(Microservices.Auth)]),
+    ClientsModule.register([
+        getProviderOptions(Microservices.Auth)
+    ]),
   ],
-  controllers: [AppGetawayController],
-  providers: [],
+  controllers: [AuthController],
 })
 export class AppGetawayModule {}
