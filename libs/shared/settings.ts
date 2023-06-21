@@ -12,4 +12,9 @@ export const settings = {
     API_GATEWAY_SERVICE: Number(process.env.API_GATEWAY_PORT),
     AUTH_MS: Number(process.env.AUTH_MS_PORT),
   },
+  timeLife: {
+    CONFIRMATION_CODE: '24', // hour
+    ACCESS_TOKEN: '10000', // msec
+    REFRESH_TOKEN: '20000', // msec
+  },
 };

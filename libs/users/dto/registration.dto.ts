@@ -1,4 +1,4 @@
-import { IUser } from '../user.interface';
+import { IUser } from '../schema/user.interface';
 
 export type RegistrationDto = Pick<
   IUser,

@@ -4,6 +4,7 @@ import { SharedModule } from '../../../libs';
 import { Microservices } from '../../../libs/shared';
 import { ClientsModule } from '@nestjs/microservices';
 import { getProviderOptions } from '../../../libs/providers/providers.option';
+import { ProvidersModule } from '../../../libs/providers/providers.module';
 
 @Module({
   imports: [

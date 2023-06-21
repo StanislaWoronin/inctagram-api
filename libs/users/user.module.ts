@@ -5,11 +5,13 @@ import { UserFacade } from './application-services';
 @Module({
   imports: [CqrsModule],
   providers: [
-    // {
-    //   provide: UserFacade,
-    //   inject: [CommandBus, QueryBus, EventBus],
-    //   useFactory: userFacadeFactory,
-    // },
+    ...USER_COMMANDS_HANDLERS,
+    ...USER_QUERIES_HANDLERS,
+    {
+      provide: UserFacade,
+      inject: [CommandBus, QueryBus],
+      useFactory: userFacadeFactory,
+    },
   ],
   exports: [UserFacade],
 })
