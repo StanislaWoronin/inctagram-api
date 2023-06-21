@@ -1,6 +1,6 @@
-import { IUser } from '../schema/user.interface';
+import { IUser } from '../schema';
 
 export type RegistrationDto = Pick<
   IUser,
-  'name' | 'email' | 'password' | 'passwordConfirmation'
+  'name' | 'email' | 'passwordHash' | 'passwordConfirmation'
 >;

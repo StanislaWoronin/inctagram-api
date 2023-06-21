@@ -13,6 +13,8 @@ import { UserRepository } from '../../../libs/users/providers/user.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfig } from '../../../libs/providers/mongo-db';
 import { UserAggregate, UserSchema } from '../../../libs/users/schema';
+import { UserQueryRepository } from '../../../libs/users/providers/user.query.repository';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { UserAggregate, UserSchema } from '../../../libs/users/schema';
     CqrsModule,
     SharedModule,
     ClientsModule.register([getProviderOptions(Microservices.Auth)]),
+    JwtModule.register({}),
   ],
   controllers: [AuthController],
   providers: [
@@ -37,6 +40,7 @@ import { UserAggregate, UserSchema } from '../../../libs/users/schema';
       useFactory: userFacadeFactory,
     },
     UserRepository,
+    UserQueryRepository,
   ],
   exports: [UserFacade],
 })

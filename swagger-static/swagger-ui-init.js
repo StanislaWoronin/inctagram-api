@@ -11,21 +11,7 @@ window.onload = function() {
   "swaggerDoc": {
     "openapi": "3.0.0",
     "paths": {
-      "/": {
-        "get": {
-          "operationId": "main",
-          "parameters": [],
-          "responses": {
-            "200": {
-              "description": ""
-            }
-          },
-          "tags": [
-            "Auth"
-          ]
-        }
-      },
-      "/registration": {
+      "/auth/registration": {
         "post": {
           "operationId": "registration",
           "summary": "A new user is registered in the system",
@@ -56,7 +42,7 @@ window.onload = function() {
           ]
         }
       },
-      "/login": {
+      "/auth/login": {
         "post": {
           "operationId": "login",
           "summary": "New user login after registration",
@@ -87,7 +73,7 @@ window.onload = function() {
           ]
         }
       },
-      "/registration-email-resending": {
+      "/auth/registration-email-resending": {
         "post": {
           "operationId": "registrationEmailResending",
           "summary": "Re-sends registration confirmation code",
@@ -118,7 +104,7 @@ window.onload = function() {
           ]
         }
       },
-      "/registration-confirmation": {
+      "/auth/registration-confirmation": {
         "post": {
           "operationId": "registrationConfirmation",
           "summary": "Confirmation of registration via confirmation code",
@@ -149,7 +135,7 @@ window.onload = function() {
           ]
         }
       },
-      "/password-recovery": {
+      "/auth/password-recovery": {
         "post": {
           "operationId": "passwordRecovery",
           "summary": "Password recovery request",
@@ -180,7 +166,7 @@ window.onload = function() {
           ]
         }
       },
-      "/new-password": {
+      "/auth/new-password": {
         "post": {
           "operationId": "createNewPassword",
           "summary": "Sending a new password",
@@ -211,7 +197,7 @@ window.onload = function() {
           ]
         }
       },
-      "/refresh-token": {
+      "/auth/refresh-token": {
         "post": {
           "operationId": "createRefreshToken",
           "summary": "Update authorization tokens",
@@ -229,7 +215,7 @@ window.onload = function() {
           ]
         }
       },
-      "/logout": {
+      "/auth/logout": {
         "post": {
           "operationId": "logout",
           "summary": "User logout",
