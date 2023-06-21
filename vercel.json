@@ -10,7 +10,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "apps/auth/src/main.ts"
+      "dest": "apps/api-getaway/src/main.ts"
     }
   ]
 }
