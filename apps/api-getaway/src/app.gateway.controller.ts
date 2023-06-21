@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   Inject,
@@ -28,14 +27,14 @@ import { RegistrationConfirmationDto } from '../../auth/dto/registration-confirm
 import { PasswordRecoveryDto } from '../../auth/dto/password-recovery.dto';
 import { NewPasswordDto } from '../../auth/dto/new-password.dto';
 
-@Controller('auth')
+@Controller()
 @ApiTags('Auth')
 export class AppGatewayController {
   constructor(
     @Inject(Microservices.Auth) private userProxyClient: ClientProxy,
   ) {}
 
-  @Post('registration')
+  @Post('auth/registration')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistration()
   async registration(@Body() dto: RegistrationDto) {
@@ -43,41 +42,50 @@ export class AppGatewayController {
     return this.userProxyClient.send(pattern, dto);
   }
 
-  @Post('login')
+  @Post('auth/login')
   @HttpCode(HttpStatus.OK)
   @ApiLogin()
   @UseGuards()
-  async login(@Body() dto: LoginDto) {}
+  async login(@Body() dto: LoginDto) {
+    const pattern = { cmd: Commands.Login };
+    return this.userProxyClient.send(pattern, dto);
+  }
 
-  @Post('registration-email-resending')
+  @Post('auth/registration-email-resending')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistrationEmailResending()
   async registrationEmailResending(
     @Body() email: ResendingEmailConfirmationDto,
-  ) {}
+  ) {
+    const pattern = { cmd: Commands.EmailResending };
+    return this.userProxyClient.send(pattern, email);
+  }
 
-  @Post('registration-confirmation')
+  @Post('auth/registration-confirmation')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistrationConfirmation()
-  async registrationConfirmation(@Body() dto: RegistrationConfirmationDto) {}
+  async registrationConfirmation(@Body() dto: RegistrationConfirmationDto) {
+    const pattern = { cmd: Commands.RegistrationConfirmation };
+    return this.userProxyClient.send(pattern, dto);
+  }
 
-  @Post('password-recovery')
+  @Post('auth/password-recovery')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiPasswordRecovery()
   async passwordRecovery(@Body() dto: PasswordRecoveryDto) {}
 
-  @Post('new-password')
+  @Post('auth/new-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNewPassword()
   async createNewPassword(@Body() dto: NewPasswordDto) {}
 
-  @Post('refresh-token')
+  @Post('auth/refresh-token')
   @HttpCode(HttpStatus.OK)
   @UseGuards()
   @ApiRefreshToken()
   async createRefreshToken() {}
 
-  @Post('logout')
+  @Post('auth/logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards()
   @ApiLogout()
