@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import {HttpStatus, INestApplication} from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppGetawayModule } from '../src/app-getaway.module';
-import {createApp} from "../create-app";
-import {Requests} from "./requests/requests";
-import {preparedRegistrationData} from "./prepared-data/prepared-registration.data";
+import { createApp } from '../create-app';
+import { Requests } from './requests/requests';
+import { preparedRegistrationData } from './prepared-data/prepared-registration.data';
 
 describe('Test auth controller.', () => {
   const second = 1000;
@@ -29,8 +29,10 @@ describe('Test auth controller.', () => {
 
   describe('Create new user', () => {
     it(`Should create new user. Status ${HttpStatus.CREATED}.`, async () => {
-      const response = await requests.auth().registrationUser(preparedRegistrationData.valid)
-      console.log(response)
-    })
-  })
+      const response = await requests
+        .auth()
+        .registrationUser(preparedRegistrationData.valid);
+      console.log(response);
+    });
+  });
 });
