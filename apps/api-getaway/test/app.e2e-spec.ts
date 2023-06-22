@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
 import { AppGatewayModule } from '../src/app.gateway.module';
 import { createApp } from '../create-app';
 import { Requests } from './requests/requests';
 import { preparedRegistrationData } from './prepared-data/prepared-registration.data';
+import { preparedLoginData } from './prepared-data/prepared-login-data';
 
 describe('Test auth controller.', () => {
   const second = 1000;
@@ -32,6 +32,15 @@ describe('Test auth controller.', () => {
       const response = await requests
         .auth()
         .registrationUser(preparedRegistrationData.valid);
+      console.log(response);
+    });
+  });
+
+  describe('Log user', () => {
+    it(`Should return access and refresh JWT tokens. Status ${HttpStatus.OK}.`, async () => {
+      const response = await requests
+        .auth()
+        .loginUser(preparedLoginData.valid1);
       console.log(response);
     });
   });

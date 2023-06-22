@@ -264,7 +264,7 @@ window.onload = function() {
               "example": "somemail@mail.com",
               "description": "User`s email"
             },
-            "name": {
+            "login": {
               "type": "string",
               "example": "UserLogin",
               "description": "User`s login",
@@ -284,7 +284,7 @@ window.onload = function() {
           },
           "required": [
             "email",
-            "name",
+            "login",
             "password",
             "passwordConfirmation"
           ]
