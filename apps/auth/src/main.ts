@@ -9,7 +9,7 @@ async function bootstrap() {
     AuthModule,
     getTransportOptions(Microservices.Auth),
   );
-
+  console.log('Auth Microservice is listening');
   await app.listen();
 }
 bootstrap();
