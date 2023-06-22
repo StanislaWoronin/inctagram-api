@@ -13,7 +13,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('API_GATEWAY');
-  const serverUrl = `http://localhost:${port}`;
+  const serverUrl = configService.get<string>('BASE_URL');
   const userConfig = new DocumentBuilder()
     .setTitle('Inctagram-api')
     .setDescription('The Users API description')
@@ -37,33 +37,13 @@ async function bootstrap() {
     include: [AppGatewayModule],
   });
   SwaggerModule.setup('swagger', app, usersDocument, options1);
-  if (process.env.NODE_ENV === 'development') {
-    // write swagger ui files
-    get(`${serverUrl}/swagger/swagger-ui-bundle.js`, function (response) {
-      response.pipe(createWriteStream('swagger-static/swagger-ui-bundle.js'));
-    });
-
-    get(`${serverUrl}/swagger/swagger-ui-init.js`, function (response) {
-      response.pipe(createWriteStream('swagger-static/swagger-ui-init.js'));
-    });
-
-    get(
-      `${serverUrl}/swagger/swagger-ui-standalone-preset.js`,
-      function (response) {
-        response.pipe(
-          createWriteStream('swagger-static/swagger-ui-standalone-preset.js'),
-        );
-      },
-    );
-
-    get(`${serverUrl}/swagger/swagger-ui.css`, function (response) {
-      response.pipe(createWriteStream('swagger-static/swagger-ui.css'));
-    });
-  }
   await app.listen(port, () => {
-    Logger.log(`Application started on ${serverUrl}.`, 'Api-getaway.Main');
     Logger.log(
-      `Swagger documentation on ${serverUrl}/swagger.`,
+      `Application started on http://localhost:${port}.`,
+      'Api-getaway.Main',
+    );
+    Logger.log(
+      `Swagger documentation on http://localhost:${port}/swagger.`,
       'Api-getaway.Main',
     );
   });

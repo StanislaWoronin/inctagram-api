@@ -3,10 +3,10 @@ import { MessagePattern } from '@nestjs/microservices';
 import { RegistrationDto, SessionIdDto } from '../../../libs/users/dto';
 import { Commands } from '../../../libs/shared';
 import { UserFacade } from '../../../libs/users/application-services';
-import { RegistrationResponse } from '../../../libs/users/response';
 import { LoginDto } from '../dto/login.dto';
-import { LoginResponse } from '../../../libs/users/response/login.response';
 import { PairTokenResponse } from '../../../libs/users/response/pair-token.response';
+import { UpdatePairTokenCommand } from '../../../libs/users/application-services/command/update-pair-token';
+import { LoginUserCommand } from '../../../libs/users/application-services/command';
 
 @Controller()
 export class AuthController {
@@ -21,13 +21,16 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: Commands.Login })
-  async login(data: LoginDto): Promise<LoginResponse> {
+  async login(
+    data: LoginDto,
+  ): Promise<({ data }: LoginUserCommand) => Promise<PairTokenResponse>> {
     return await this.userFacade.commands.loginUser(data);
   }
 
   @MessagePattern({ cmd: Commands.UpdatePairToken })
-  async updatePairToken(data: SessionIdDto): Promise<PairTokenResponse> {
-    // @ts-ignore // TODO
+  async updatePairToken(
+    data: SessionIdDto,
+  ): Promise<({ data }: UpdatePairTokenCommand) => Promise<PairTokenResponse>> {
     return await this.userFacade.commands.updatePairToken(data);
   }
 

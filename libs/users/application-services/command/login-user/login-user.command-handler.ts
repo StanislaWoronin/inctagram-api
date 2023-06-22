@@ -5,18 +5,23 @@ import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcrypt';
+import { settings } from '../../../../shared/settings';
+import { PairTokenResponse } from '../../../response/pair-token.response';
+import { randomUUID } from 'crypto';
+import { UserRepository } from '../../../providers/user.repository';
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserCommandHandler
-  implements ICommandHandler<LoginUserCommand, string[]>
+  implements ICommandHandler<LoginUserCommand, PairTokenResponse>
 {
   constructor(
     private userQueryRepository: UserQueryRepository,
+    private userRepository: UserRepository,
     private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
 
-  async execute({ data }: LoginUserCommand): Promise<string[]> {
+  async execute({ data }: LoginUserCommand): Promise<PairTokenResponse> {
     const user = await this.userQueryRepository.getUserByLoginOrEmail(
       data.loginOrEmail,
     );
@@ -31,28 +36,35 @@ export class LoginUserCommandHandler
     if (!passwordEqual) {
       throw new UnauthorizedException();
     }
+    const deviceId = randomUUID();
+
+    user.deviceId = deviceId;
+
+    await this.userRepository.createUserDeviceId(user);
 
     const [newAccessToken, newRefreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
           id: user.id,
+          deviceId: deviceId,
         },
         {
           secret: this.configService.get<string>('jwtAccessTokenSecret'),
-          expiresIn: '30 minutes',
+          expiresIn: settings.timeLife.ACCESS_TOKEN,
         },
       ),
       this.jwtService.signAsync(
         {
           id: user.id,
+          deviceId: deviceId,
         },
         {
           secret: this.configService.get<string>('jwtRefreshTokenSecret'),
-          expiresIn: '5 days',
+          expiresIn: settings.timeLife.REFRESH_TOKEN,
         },
       ),
     ]);
 
-    return [newAccessToken, newRefreshToken];
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 }

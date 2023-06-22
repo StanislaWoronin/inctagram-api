@@ -39,6 +39,6 @@ export class UpdatePairTokenCommandHandler
       ),
     ]);
 
-    return { accessToken: newAccessToken, refreshToken: newAccessToken };
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 }

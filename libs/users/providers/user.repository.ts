@@ -10,9 +10,16 @@ export class UserRepository {
     private userModel: Model<UsersDocument>,
   ) {}
 
-  async createUser(user: UserAggregate) {
+  async createUser(user: UserAggregate): Promise<UsersDocument> {
     const createdUser = await this.userModel.create(user);
     console.log(createdUser);
     return createdUser;
+  }
+  async createUserDeviceId(user: UserAggregate): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { id: user.id },
+      { $push: { deviceId: user.deviceId } },
+    );
+    return result.modifiedCount === 1;
   }
 }

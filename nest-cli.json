@@ -10,13 +10,13 @@
   "monorepo": true,
   "root": "apps/inctagram-api",
   "projects": {
-    "api-getaway": {
+    "api-gateway": {
       "type": "application",
-      "root": "apps/api-getaway",
+      "root": "apps/api-gateway",
       "entryFile": "main",
-      "sourceRoot": "apps/api-getaway/src",
+      "sourceRoot": "apps/api-gateway/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/api-getaway/tsconfig.app.json"
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
       }
     },
     "auth": {

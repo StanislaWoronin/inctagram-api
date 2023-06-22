@@ -22,6 +22,8 @@ export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, type: String })
   password: string;
 
+  deviceId: string | null[];
+
   passwordHash: string;
 
   passwordConfirmation: string;
