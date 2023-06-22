@@ -13,7 +13,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('API_GATEWAY');
-  const serverUrl = configService.get<string>('BASE_URL');
+  const serverUrl = `http://localhost:${port}`;
   const userConfig = new DocumentBuilder()
     .setTitle('Inctagram-api')
     .setDescription('The Users API description')
@@ -61,12 +61,9 @@ async function bootstrap() {
     });
   }
   await app.listen(port, () => {
+    Logger.log(`Application started on ${serverUrl}.`, 'Api-getaway.Main');
     Logger.log(
-      `Application started on http://localhost:${port}.`,
-      'Api-getaway.Main',
-    );
-    Logger.log(
-      `Swagger documentation on http://localhost:${port}/swagger.`,
+      `Swagger documentation on ${serverUrl}/swagger.`,
       'Api-getaway.Main',
     );
   });

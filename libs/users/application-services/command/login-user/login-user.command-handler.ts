@@ -16,15 +16,15 @@ export class LoginUserCommandHandler
     private configService: ConfigService,
   ) {}
 
-  async execute(data: LoginUserCommand): Promise<string[]> {
+  async execute({ data }: LoginUserCommand): Promise<string[]> {
     const user = await this.userQueryRepository.getUserByLoginOrEmail(
-      data.user.loginOrEmail,
+      data.loginOrEmail,
     );
     if (!user) {
       throw new UnauthorizedException();
     }
     const passwordEqual = await bcrypt.compare(
-      data.user.password,
+      data.password,
       user.passwordHash,
     );
 

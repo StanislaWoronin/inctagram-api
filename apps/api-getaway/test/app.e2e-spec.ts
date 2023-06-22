@@ -5,6 +5,7 @@ import { createApp } from '../create-app';
 import { Requests } from './requests/requests';
 import { preparedRegistrationData } from './prepared-data/prepared-registration.data';
 import { preparedLoginData } from './prepared-data/prepared-login-data';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 describe('Test auth controller.', () => {
   const second = 1000;
@@ -12,9 +13,14 @@ describe('Test auth controller.', () => {
 
   let app: INestApplication;
   let server;
+  let mms: MongoMemoryServer;
   let requests: Requests;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    mms = await MongoMemoryServer.create();
+    const mongoUrl = mms.getUri();
+    process.env['MONGO_URI'] = mongoUrl;
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppGatewayModule],
     }).compile();
@@ -22,9 +28,14 @@ describe('Test auth controller.', () => {
     const rawApp = await moduleFixture.createNestApplication();
     app = createApp(rawApp);
     await app.init();
+    //app.startAllMicroservices();
 
     server = await app.getHttpServer();
     requests = new Requests(server);
+  });
+
+  beforeEach(async () => {
+    //await requests.testing().deleteAll();
   });
 
   describe('Create new user', () => {

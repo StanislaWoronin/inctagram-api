@@ -10,10 +10,13 @@ export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, unique: true, type: String })
   id: string = randomUUID();
 
+  @Prop({ unique: true, type: String })
+  deviseId: string = null;
+
   @Prop({ required: true, type: String })
   login: string;
 
-  @Prop({ required: true, unique: true, type: String })
+  @Prop({ required: true, type: String })
   email: string;
 
   @Prop({ required: true, type: String })
@@ -34,7 +37,7 @@ export class UserAggregate extends UserService implements IUser {
     required: true,
     type: EmailConfirmation,
   })
-  emailConfirmation: EmailConfirmation;
+  emailConfirmation: EmailConfirmation = new EmailConfirmation();
 
   static create(user: Partial<IUser>) {
     const _user = new UserAggregate();

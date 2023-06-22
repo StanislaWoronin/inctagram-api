@@ -15,42 +15,18 @@ import { MongooseConfig } from '../../../libs/providers/mongo-db';
 import { UserAggregate, UserSchema } from '../../../libs/users/schema';
 import { UserQueryRepository } from '../../../libs/users/providers/user.query.repository';
 import { JwtModule } from '@nestjs/jwt';
+import { UserModule } from '../../../libs/users/user.module';
 
 @Module({
   imports: [
-    //ProvidersModule,
-    MongooseModule.forRootAsync({
-      useClass: MongooseConfig,
-    }),
-    MongooseModule.forFeature([
-      { name: UserAggregate.name, schema: UserSchema },
-    ]), // TODO providermodule
+    UserModule,
     CqrsModule,
     SharedModule,
     ClientsModule.register([getProviderOptions(Microservices.Auth)]),
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [
-    ...USER_COMMANDS_HANDLERS,
-    ...USER_QUERIES_HANDLERS,
-    {
-      provide: UserFacade,
-      inject: [CommandBus, QueryBus],
-      useFactory: userFacadeFactory,
-    },
-    UserRepository,
-    UserQueryRepository,
-  ],
-  exports: [UserFacade],
+  providers: [],
+  exports: [],
 })
-export class AuthModule implements OnModuleInit {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly queryBus: QueryBus,
-  ) {}
-  onModuleInit(): any {
-    this.commandBus.register(USER_COMMANDS_HANDLERS);
-    this.queryBus.register(USER_QUERIES_HANDLERS);
-  }
-}
+export class AuthModule {}

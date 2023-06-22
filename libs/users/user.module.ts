@@ -4,9 +4,23 @@ import { UserFacade } from './application-services';
 import { USER_QUERIES_HANDLERS } from './application-services/queries';
 import { USER_COMMANDS_HANDLERS } from './application-services/command';
 import { userFacadeFactory } from './application-services/user-facade.factory';
+import { UserRepository } from './providers/user.repository';
+import { UserQueryRepository } from './providers/user.query.repository';
+import { JwtService } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseConfig } from '../providers/mongo-db';
+import { UserAggregate, UserSchema } from './schema';
 
 @Module({
-  imports: [CqrsModule],
+  imports: [
+    CqrsModule,
+    MongooseModule.forRootAsync({
+      useClass: MongooseConfig,
+    }),
+    MongooseModule.forFeature([
+      { name: UserAggregate.name, schema: UserSchema },
+    ]),
+  ],
   providers: [
     ...USER_COMMANDS_HANDLERS,
     ...USER_QUERIES_HANDLERS,
@@ -15,6 +29,9 @@ import { userFacadeFactory } from './application-services/user-facade.factory';
       inject: [CommandBus, QueryBus],
       useFactory: userFacadeFactory,
     },
+    UserRepository,
+    UserQueryRepository,
+    JwtService,
   ],
   exports: [UserFacade],
 })
@@ -24,7 +41,7 @@ export class UserModule implements OnModuleInit {
     private readonly queryBus: QueryBus,
   ) {}
   onModuleInit(): any {
-    this.commandBus.register();
-    this.queryBus.register();
+    this.commandBus.register(USER_COMMANDS_HANDLERS);
+    this.queryBus.register(USER_QUERIES_HANDLERS);
   }
 }
