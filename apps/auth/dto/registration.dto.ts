@@ -25,7 +25,7 @@ export class RegistrationDto implements IRegistrationDto {
     userValidationConstant.nameLength.min,
     userValidationConstant.nameLength.max,
   )
-  name: string;
+  login: string;
 
   @ApiProperty({
     example: 'qwerty123',
