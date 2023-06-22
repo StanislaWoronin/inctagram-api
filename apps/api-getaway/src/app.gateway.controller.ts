@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Inject,
@@ -33,6 +34,13 @@ export class AppGatewayController {
   constructor(
     @Inject(Microservices.Auth) private userProxyClient: ClientProxy,
   ) {}
+
+  @Get()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiRegistration()
+  async mainEntry() {
+    return 'Hello World';
+  }
 
   @Post('auth/registration')
   @HttpCode(HttpStatus.NO_CONTENT)
