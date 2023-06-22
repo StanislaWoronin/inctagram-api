@@ -41,7 +41,7 @@ export class AppGatewayController {
   @ApiExcludeEndpoint()
   @Get()
   async mainEntry() {
-    return 'Hello World';
+    return 'Welcome to INCTAGRAM API!!!';
   }
 
   @Post('auth/registration')

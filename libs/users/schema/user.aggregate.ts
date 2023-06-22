@@ -4,6 +4,9 @@ import { randomUUID } from 'crypto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { EmailConfirmation } from './email-confirmation.schema';
+import { BadRequestException } from '@nestjs/common';
+import { settings } from '../../shared/settings';
+import bcrypt from 'bcrypt';
 
 @Schema()
 export class UserAggregate extends UserService implements IUser {
@@ -41,9 +44,14 @@ export class UserAggregate extends UserService implements IUser {
   })
   emailConfirmation: EmailConfirmation = new EmailConfirmation();
 
-  static create(user: Partial<IUser>) {
+  static async create(user: Partial<IUser>) {
+    if (user.password !== user.passwordConfirmation)
+      throw new BadRequestException('Incorrect password confirmation');
     const _user = new UserAggregate();
     Object.assign(_user, user);
+    const salt = await bcrypt.genSalt(Number(settings.SALT_GENERATE_ROUND));
+    const hash = await bcrypt.hash(user.password, salt);
+    _user.passwordHash = hash;
     return _user;
   }
 }

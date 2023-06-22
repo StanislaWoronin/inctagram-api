@@ -17,4 +17,5 @@ export const settings = {
     ACCESS_TOKEN: '10000', // msec
     REFRESH_TOKEN: '20000', // msec
   },
+  SALT_GENERATE_ROUND: 10,
 };
