@@ -1,6 +1,8 @@
 export enum Commands {
-  Registration = 'registrate',
-  Login = 'login',
   EmailResending = 'email-resending',
+  Login = 'login',
+  Logout = 'logout',
+  Registration = 'registrate',
   RegistrationConfirmation = 'registration-confirmation',
+  UpdatePairToken = 'update-pair-token',
 }

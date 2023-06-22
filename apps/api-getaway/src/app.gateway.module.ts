@@ -6,9 +6,20 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { getProviderOptions } from '../../../libs/providers/rabbit-mq/providers.option';
 import { AppGatewayController } from './app.gateway.controller';
+import { JwtService } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseConfig } from '../../../libs/providers/mongo-db';
+import { UserAggregate, UserSchema } from '../../../libs/users/schema';
+import { UserQueryRepository } from '../../../libs/users/providers/user.query.repository';
 
 @Module({
   imports: [
+    MongooseModule.forRootAsync({
+      useClass: MongooseConfig,
+    }),
+    MongooseModule.forFeature([
+      { name: UserAggregate.name, schema: UserSchema },
+    ]),
     SharedModule,
     ClientsModule.register([getProviderOptions(Microservices.Auth)]),
     ServeStaticModule.forRoot({
@@ -17,6 +28,6 @@ import { AppGatewayController } from './app.gateway.controller';
     }),
   ],
   controllers: [AppGatewayController],
-  providers: [],
+  providers: [JwtService, UserQueryRepository],
 })
 export class AppGatewayModule {}

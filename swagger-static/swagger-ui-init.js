@@ -199,7 +199,7 @@ window.onload = function() {
       },
       "/auth/refresh-token": {
         "post": {
-          "operationId": "createRefreshToken",
+          "operationId": "updatePairToken",
           "summary": "Update authorization tokens",
           "parameters": [],
           "responses": {
@@ -367,7 +367,7 @@ window.onload = function() {
   "customOptions": {
     "urls": [
       {
-        "url": "http://localhost:5000/swagger-json",
+        "url": "http://localhost:5002/swagger-json",
         "name": "Users API"
       }
     ]

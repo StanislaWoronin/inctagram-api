@@ -27,12 +27,15 @@ import { ResendingEmailConfirmationDto } from '../../auth/dto/resending-email-co
 import { RegistrationConfirmationDto } from '../../auth/dto/registration-confirmation.dto';
 import { PasswordRecoveryDto } from '../../auth/dto/password-recovery.dto';
 import { NewPasswordDto } from '../../auth/dto/new-password.dto';
+import { RefreshTokenValidationGuard } from '../../../libs/guards/refresh-token-validation.guard';
+import { CurrentDeviceId } from '../../../libs/decorators/device-id.decorator';
+import { CurrentUser } from '../../../libs/decorators/current-user.decorator';
 
 @Controller()
 @ApiTags('Auth')
 export class AppGatewayController {
   constructor(
-    @Inject(Microservices.Auth) private userProxyClient: ClientProxy,
+    @Inject(Microservices.Auth) private authProxyClient: ClientProxy,
   ) {}
 
   @ApiExcludeEndpoint()
@@ -46,7 +49,7 @@ export class AppGatewayController {
   @ApiRegistration()
   async registration(@Body() dto: RegistrationDto) {
     const pattern = { cmd: Commands.Registration };
-    return this.userProxyClient.send(pattern, dto);
+    return this.authProxyClient.send(pattern, dto);
   }
 
   @Post('auth/login')
@@ -55,7 +58,7 @@ export class AppGatewayController {
   @UseGuards()
   async login(@Body() dto: LoginDto) {
     const pattern = { cmd: Commands.Login };
-    return this.userProxyClient.send(pattern, dto);
+    return this.authProxyClient.send(pattern, dto);
   }
 
   @Post('auth/registration-email-resending')
@@ -65,7 +68,7 @@ export class AppGatewayController {
     @Body() email: ResendingEmailConfirmationDto,
   ) {
     const pattern = { cmd: Commands.EmailResending };
-    return this.userProxyClient.send(pattern, email);
+    return this.authProxyClient.send(pattern, email);
   }
 
   @Post('auth/registration-confirmation')
@@ -73,7 +76,7 @@ export class AppGatewayController {
   @ApiRegistrationConfirmation()
   async registrationConfirmation(@Body() dto: RegistrationConfirmationDto) {
     const pattern = { cmd: Commands.RegistrationConfirmation };
-    return this.userProxyClient.send(pattern, dto);
+    return this.authProxyClient.send(pattern, dto);
   }
 
   @Post('auth/password-recovery')
@@ -88,13 +91,22 @@ export class AppGatewayController {
 
   @Post('auth/refresh-token')
   @HttpCode(HttpStatus.OK)
-  @UseGuards()
+  @UseGuards(RefreshTokenValidationGuard)
   @ApiRefreshToken()
-  async createRefreshToken() {}
+  async updatePairToken(
+    @CurrentUser() userId: string,
+    @CurrentDeviceId() deviceId: string,
+  ) {
+    const pattern = { cmd: Commands.UpdatePairToken };
+    return this.authProxyClient.send(pattern, { userId, deviceId });
+  }
 
   @Post('auth/logout')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards()
+  @UseGuards(RefreshTokenValidationGuard)
   @ApiLogout()
-  async logout() {}
+  async logout(@CurrentUser() userId: string) {
+    const pattern = { cmd: Commands.Logout };
+    return this.authProxyClient.send(pattern, { userId });
+  }
 }
