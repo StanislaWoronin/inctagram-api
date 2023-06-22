@@ -8,7 +8,7 @@
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start": "nest start",
+    "start": "concurrently \"nest start api-getaway \" \"nest start auth \"",
     "start:app": "concurrently \"nest start api-getaway --watch\" \"nest start auth --watch\"",
     "start:dev": "concurrently \"nest start api-getaway --watch\" \"nest start auth --watch\"",
     "start:debug": "concurrently \"nest start api-getaway --watch --debug\" \"nest start auth --watch --debug\"",
@@ -41,9 +41,11 @@
     "mongoose": "^7.3.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
-    "vercel": "^30.2.3"
+    "vercel": "^30.2.3",
+    "webpack": "^5.88.0"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.2.16",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",

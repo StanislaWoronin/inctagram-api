@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Inject,
@@ -9,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Commands, Microservices } from '../../../libs/shared';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import {
   ApiLogin,
   ApiLogout,
@@ -33,6 +34,12 @@ export class AppGatewayController {
   constructor(
     @Inject(Microservices.Auth) private userProxyClient: ClientProxy,
   ) {}
+
+  @ApiExcludeEndpoint()
+  @Get()
+  async mainEntry() {
+    return 'Hello World';
+  }
 
   @Post('auth/registration')
   @HttpCode(HttpStatus.NO_CONTENT)
