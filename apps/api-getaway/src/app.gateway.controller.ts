@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Commands, Microservices } from '../../../libs/shared';
 import { ClientProxy } from '@nestjs/microservices';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import {
   ApiLogin,
   ApiLogout,
@@ -35,9 +35,8 @@ export class AppGatewayController {
     @Inject(Microservices.Auth) private userProxyClient: ClientProxy,
   ) {}
 
+  @ApiExcludeEndpoint()
   @Get()
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiRegistration()
   async mainEntry() {
     return 'Hello World';
   }
