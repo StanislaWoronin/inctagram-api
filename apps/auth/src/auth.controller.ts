@@ -1,19 +1,21 @@
-import {Controller} from '@nestjs/common';
-import {MessagePattern} from '@nestjs/microservices';
-import {RegistrationDto, SessionIdDto, UpdatePasswordDto,} from '../../../libs/users/dto';
-import {Commands} from '../../../libs/shared';
-import {UserFacade} from '../../../libs/users/application-services';
-import {LoginDto} from '../dto/login.dto';
-import {PairTokenResponse} from '../../../libs/users/response/pair-token.response';
-import { ViewUser } from '../../../libs/users/response';
+import { Controller, Res } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
+import {
+  RegistrationDto,
+  SessionIdDto,
+  UpdatePasswordDto,
+} from '../../../libs/users/dto';
+import { Commands } from '../../../libs/shared';
+import { UserFacade } from '../../../libs/users/application-services';
+import { LoginDto } from '../dto/login.dto';
+import {PairTokenResponse, ViewUser} from '../../../libs/users/response';
 
 @Controller()
 export class AuthController {
   constructor(private readonly userFacade: UserFacade) {}
 
   @MessagePattern({ cmd: Commands.Registration })
-  async registration(data: RegistrationDto): Promise<ViewUser> {
-    // @ts-ignore
+  async registration(data: RegistrationDto):Promise<ViewUser>{
     return await this.userFacade.commands.registrationUser(data);
   }
 
@@ -21,8 +23,12 @@ export class AuthController {
   async login(
     data: LoginDto,
   ): Promise<PairTokenResponse> {
-    // @ts-ignore
     return await this.userFacade.commands.loginUser(data);
+  }
+
+  @MessagePattern({ cmd: Commands.EmailConfirmationCodeResending })
+  async emailConfirmationCodeResending(email: string) {
+    return await this.userFacade.commands.emailConfirmationCodeResending(email);
   }
 
   @MessagePattern({ cmd: Commands.PasswordRecovery })
@@ -36,10 +42,7 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: Commands.UpdatePairToken })
-  async updatePairToken(
-    data: SessionIdDto,
-  ): Promise<PairTokenResponse> {
-    // @ts-ignore
+  async updatePairToken(data: SessionIdDto): Promise<PairTokenResponse> {
     return await this.userFacade.commands.updatePairToken(data);
   }
 

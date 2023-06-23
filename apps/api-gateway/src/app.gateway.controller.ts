@@ -51,6 +51,7 @@ export class AppGatewayController {
   }
 
   @Post('auth/registration')
+  @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistration()
   async registration(@Body() dto: RegistrationDto): Promise<ViewUser> {
     const pattern = { cmd: Commands.Registration };
@@ -73,7 +74,7 @@ export class AppGatewayController {
     response.cookie('refreshToken', 'cookies.refreshToken', {
       httpOnly: true,
       secure: true,
-      maxAge: settings.timeLife.ONE_DAY,
+      maxAge: settings.timeLife.TOKEN_TIME,
     });
     return this.authProxyClient.send(pattern, dto);
   }
@@ -84,7 +85,7 @@ export class AppGatewayController {
   async registrationEmailResending(
     @Body() email: ResendingEmailConfirmationDto,
   ) {
-    const pattern = { cmd: Commands.EmailResending };
+    const pattern = { cmd: Commands.EmailConfirmationCodeResending };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, email).pipe(map((result) => result)),
     );

@@ -22,6 +22,6 @@ export class ViewUser implements TViewUser {
       login: user.login,
       email: user.email,
       createdAt: user.createdAt,
-    }
+    };
   }
 }

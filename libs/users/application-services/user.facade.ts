@@ -18,6 +18,11 @@ import {
   UpdatePairTokenCommand,
   UpdatePairTokenCommandHandler,
 } from './command/update-pair-token';
+import {
+  EmailConfirmationCodeResendingCommand,
+  EmailConfirmationCodeResendingCommandHandler,
+} from './command/email-confirmation-code-resending';
+import {PairTokenResponse, ViewUser} from "../response";
 
 @Injectable()
 export class UserFacade {
@@ -33,48 +38,43 @@ export class UserFacade {
     registrationUser: (data: RegistrationDto) => this.registrationUser(data),
     updatePairToken: (dto: SessionIdDto) => this.updatePairToken(dto),
     updatePassword: (data: UpdatePasswordDto) => this.updatePassword(data),
+    emailConfirmationCodeResending: (email: string) =>
+      this.emailConfirmationCodeResending(email),
   };
   queries = {};
 
-  private async loginUser(dto: LoginDto) {
-    return this.commandBus.execute<
-      LoginUserCommand,
-      LoginUserCommandHandler['execute']
-    >(new LoginUserCommand(dto));
+  private async loginUser(dto: LoginDto): Promise<PairTokenResponse> {
+    const command = new LoginUserCommand(dto);
+    return await this.commandBus.execute(command);
   }
 
   private logout(dto: SessionIdDto) {
-    return this.commandBus.execute<
-      LogoutCommand,
-      LogoutCommandHandler['execute']
-    >(new LogoutCommand(dto));
+    const command = new LogoutCommand(dto);
+    return this.commandBus.execute(command);
+  }
+
+  private emailConfirmationCodeResending(email: string) {
+    const command = new EmailConfirmationCodeResendingCommand(email);
+    return this.commandBus.execute(command);
   }
 
   private passwordRecovery(email: string) {
-    return this.commandBus.execute<
-      PasswordRecoveryCommand,
-      PasswordRecoveryCommandHandler['execute']
-    >(new PasswordRecoveryCommand(email));
+    const command = new PasswordRecoveryCommand(email);
+    return this.commandBus.execute(command);
   }
 
-  private registrationUser(dto: RegistrationDto) {
-    return this.commandBus.execute<
-      CreateUserCommand,
-      CreateUserCommandHandler['execute']
-    >(new CreateUserCommand(dto));
+  private async registrationUser(dto: RegistrationDto): Promise<ViewUser> {
+    const command = new CreateUserCommand(dto);
+    return await this.commandBus.execute(command);
   }
 
   private updatePairToken(dto: SessionIdDto) {
-    return this.commandBus.execute<
-      UpdatePairTokenCommand,
-      UpdatePairTokenCommandHandler['execute']
-    >(new UpdatePairTokenCommand(dto));
+    const command = new UpdatePairTokenCommand(dto);
+    return this.commandBus.execute(command);
   }
 
   private updatePassword(dto: UpdatePasswordDto) {
-    return this.commandBus.execute<
-      UpdatePasswordCommand,
-      UpdatePasswordCommandHandler
-    >(new UpdatePasswordCommand(dto));
+    const command = new UpdatePasswordCommand(dto);
+    return this.commandBus.execute(command);
   }
 }

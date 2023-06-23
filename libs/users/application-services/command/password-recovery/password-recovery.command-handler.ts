@@ -1,7 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { PasswordRecoveryCommand } from './password-recovery.command';
 import { UserQueryRepository } from '../../../providers/user.query.repository';
-import { BadRequestException } from '@nestjs/common';
 import { UserRepository } from '../../../providers/user.repository';
 import { EmailManager } from '../../../../adapters/email.adapter';
 
@@ -26,7 +25,10 @@ export class PasswordRecoveryCommandHandler
         passwordRecovery,
       );
       if (isSuccess)
-        this.emailManger.sendPasswordRecoveryEmail(email, passwordRecovery);
+        await this.emailManger.sendPasswordRecoveryEmail(
+          email,
+          passwordRecovery,
+        );
 
       return;
     }

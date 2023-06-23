@@ -46,6 +46,7 @@ export class LoginUserCommandHandler
         {
           id: user.id,
           deviceId: deviceId,
+          lastActiveDate: new Date(),
         },
         {
           secret: this.configService.get<string>('jwtAccessTokenSecret'),
@@ -56,6 +57,7 @@ export class LoginUserCommandHandler
         {
           id: user.id,
           deviceId: deviceId,
+          lastActiveDate: new Date(),
         },
         {
           secret: this.configService.get<string>('jwtRefreshTokenSecret'),

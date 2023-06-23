@@ -60,4 +60,15 @@ export class UserRepository {
 
     return result.modifiedCount === 1;
   }
+
+  async updateEmailConfirmationCode(
+    userId: string,
+    emailConfirmationCode: string,
+  ): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { id: userId },
+      { $set: { 'emailConfirmation.confirmationCode': emailConfirmationCode } },
+    );
+    return result.modifiedCount === 1;
+  }
 }

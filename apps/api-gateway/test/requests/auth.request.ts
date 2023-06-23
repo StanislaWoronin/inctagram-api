@@ -1,16 +1,16 @@
 import request from 'supertest';
 import { RegistrationDto } from '../../../../libs/users/dto';
 import { TestResponse } from '../types/test-response';
-import { UserViewResponse } from '../../../../libs/users/response';
+import { ViewUser} from '../../../../libs/users/response';
 import { LoginDto } from '../../../auth/dto/login.dto';
-import { LoginResponse } from '../../../../libs/users/response/login.response';
+import { LoginResponse } from '../../../../libs/users/response';
 
 export class AuthRequest {
   constructor(private readonly server: any) {}
 
   async registrationUser(
     registrationUserDto: RegistrationDto,
-  ): Promise<TestResponse<UserViewResponse>> {
+  ): Promise<TestResponse<ViewUser>> {
     const response = await request(this.server)
       .post('/auth/registration')
       .send(registrationUserDto);

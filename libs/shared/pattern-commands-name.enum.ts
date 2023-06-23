@@ -1,5 +1,5 @@
 export enum Commands {
-  EmailResending = 'email-resending',
+  EmailConfirmationCodeResending = 'email-resending',
   Login = 'login',
   Logout = 'logout',
   PasswordRecovery = 'password-recovery',

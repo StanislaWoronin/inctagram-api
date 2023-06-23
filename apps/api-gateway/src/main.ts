@@ -37,7 +37,7 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, usersDocument, options1);
   await app.listen(port, () => {
     Logger.log(
-      `Application listen on http://localhost/${port}`,
+      `Application listen on http://localhost:${port}`,
       'Api-getaway.Main',
     );
     Logger.log(`Application started on ${serverUrl}`, 'Api-getaway.Main');

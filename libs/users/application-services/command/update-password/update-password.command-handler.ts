@@ -22,8 +22,8 @@ export class UpdatePasswordCommandHandler
     );
     if (!user) throw new NotFoundException();
 
-    const isDifferent = user.passwordRecovery !== recoveryCode
-    const isExpired = recoveryCode < Date.now()
+    const isDifferent = user.passwordRecovery !== recoveryCode;
+    const isExpired = recoveryCode < Date.now();
     if (isDifferent || isExpired)
       throw new BadRequestException(
         'The time to update the' +
