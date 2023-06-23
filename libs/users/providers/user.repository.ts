@@ -11,15 +11,23 @@ export class UserRepository {
   ) {}
 
   async createUser(user: UserAggregate): Promise<UsersDocument> {
-    const createdUser = await this.userModel.create(user);
-    console.log(createdUser);
-    return createdUser;
+    console.log('COrrect', user);
+    return await this.userModel.create(user);
   }
   async createUserDeviceId(user: UserAggregate): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: user.id },
       { $push: { deviceId: user.deviceId } },
     );
+    return result.modifiedCount === 1;
+  }
+
+  async removeDeviceId(userId: string): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { id: userId },
+      { $set: { deviceId: null } },
+    );
+
     return result.modifiedCount === 1;
   }
 }

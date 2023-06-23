@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 export const settings = {
-  transportName: Transport.RMQ,
+  transportName: Transport.TCP,
   rmqUrl: process.env.RMQ_URL,
   host: {
     localHost: '0.0.0.0',
@@ -14,7 +14,7 @@ export const settings = {
   },
   timeLife: {
     CONFIRMATION_CODE: '24', // hour
-    ACCESS_TOKEN: '10000', // msec
-    REFRESH_TOKEN: '20000', // msec
+    ACCESS_TOKEN: '1 hour', // hour
+    REFRESH_TOKEN: '24 hours', // hour
   },
 };

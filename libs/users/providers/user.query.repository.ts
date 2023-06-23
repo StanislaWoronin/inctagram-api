@@ -35,7 +35,7 @@ export class UserQueryRepository {
   async removeDeviceId(userId: string): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },
-      { $set: { deviseId: null } },
+      { $set: { deviceId: null } },
     );
 
     return result.modifiedCount === 1;
