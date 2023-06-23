@@ -10,7 +10,7 @@ export class CreateUserCommandHandler
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(data: CreateUserCommand): Promise<UserAggregate> {
-    const user = UserAggregate.create(data.user);
+    const user = await UserAggregate.create(data.user);
     await this.userRepository.createUser(user);
     return user;
   }

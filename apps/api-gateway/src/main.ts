@@ -6,6 +6,8 @@ import { createApp } from '../create-app';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createWriteStream } from 'fs';
 import { get } from 'http';
+import { getProviderOptions } from '../../../libs/providers/rabbit-mq/providers.option';
+import { Microservices } from '../../../libs/shared';
 
 async function bootstrap() {
   const rawApp = await NestFactory.create(AppGatewayModule);
@@ -13,7 +15,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('API_GATEWAY');
-  const serverUrl = `http://localhost:${port}`;
+  const serverUrl = `https://inctagram-api.fly.dev`;
   const userConfig = new DocumentBuilder()
     .setTitle('Inctagram-api')
     .setDescription('The Users API description')
