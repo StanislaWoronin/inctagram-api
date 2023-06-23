@@ -26,13 +26,18 @@ export function ApiRegistration() {
     }),
     ApiNoContentResponse({
       description:
-        'Input data is accepted. Email with confirmation code will be send to passed email address',
+        'Input data is accepted. Email with confirmation code will be send to' +
+        ' passed email address',
     }),
     ApiBadRequestResponse({
       description:
-        'If the inputModel has incorrect values (in particular if the user with the given email or password already exists)',
+        'If the inputModel has incorrect values (in particular if the user with' +
+        ' the given email or password already exists)',
       //type: [BadRequestResponse],
     }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -43,7 +48,8 @@ export function ApiLogin() {
     ApiBody({ type: LoginDto }),
     ApiOkResponse({
       description:
-        'Returns JWT accessToken (expired after 1 hour) in body and JWT refreshToken in cookie (http-only, secure) (expired after 24 hours)',
+        'Returns JWT accessToken (expired after 1 hour) in body and JWT' +
+        ' refreshToken in cookie (http-only, secure) (expired after 20 seconds)',
       //type: AccessToken,
     }),
     // ApiBadRequestResponse({
@@ -53,6 +59,9 @@ export function ApiLogin() {
     ApiUnauthorizedResponse({
       description: 'If the password or login is wrong',
     }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -66,12 +75,17 @@ export function ApiRegistrationEmailResending() {
     }),
     ApiNoContentResponse({
       description:
-        'Input data is accepted.Email with confirmation code will be send to passed email address.Confirmation code should be inside link as query param, for example: https://some-front.com/confirm-registration?code=youtcodehere',
+        'Input data is accepted.Email with confirmation code will be send to passed' +
+        ' email address.Confirmation code should be inside link as query param,' +
+        ' for example: https://some-front.com/confirm-registration?code=yourCodeHere',
     }),
     ApiBadRequestResponse({
       description: 'If the inputModel has incorrect values',
       //type: [BadRequestResponse],
     }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -93,6 +107,9 @@ export function ApiRegistrationConfirmation() {
         'If the confirmation code is incorrect, expired or already been applied',
       //type: [BadRequestResponse],
     }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -113,6 +130,9 @@ export function ApiPasswordRecovery() {
         'If the inputModel has invalid email (for example 222^gmail.com)',
       //type: BadRequestResponse,
     }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -129,9 +149,13 @@ export function ApiNewPassword() {
     }),
     ApiBadRequestResponse({
       description:
-        'If the inputModel has incorrect value (for incorrect password length) or RecoveryCode is incorrect or expired',
+        'If the inputModel has incorrect value (for incorrect password length) or' +
+        ' RecoveryCode is incorrect or expired or old password equil new password',
       //type: BadRequestResponse,
     }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -141,12 +165,14 @@ export function ApiRefreshToken() {
     ApiOperation({ summary: 'Update authorization tokens' }),
     ApiOkResponse({
       description:
-        'Returns JWT accessToken (expired after 1 hour) in body and JWT refreshToken in cookie (http-only, secure) (expired after 24 hours)',
+        'Returns JWT accessToken (expired after 1 hour) in body and JWT' +
+        ' refreshToken in cookie (http-only, secure) (expired after 24 hours).',
       //type: AccessToken,
     }),
     ApiUnauthorizedResponse({
       description:
-        'Returns JWT accessToken (expired after 1 hour) in body and JWT refreshToken in cookie (http-only, secure) (expired after 24 hours)',
+        'Returns JWT accessToken (expired after 1 hour) in body and JWT' +
+        ' refreshToken in cookie (http-only, secure) (expired after 24 hours).',
     }),
   );
 }
