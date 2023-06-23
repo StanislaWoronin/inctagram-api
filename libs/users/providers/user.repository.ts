@@ -12,7 +12,7 @@ export class UserRepository {
   ) {}
 
   async createUser(user: UserAggregate): Promise<UsersDocument> {
-    console.log('COrrect', user);
+    console.log('Correct', user);
     return await this.userModel.create(user);
   }
 
