@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller.reciever';
+import { AuthController } from './auth.controller';
 import { SharedModule } from '../../../libs';
 import { ClientsModule } from '@nestjs/microservices';
 import { getProviderOptions } from '../../../libs/providers/rabbit-mq/providers.option';

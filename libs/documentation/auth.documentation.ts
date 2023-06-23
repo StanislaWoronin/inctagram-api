@@ -6,7 +6,7 @@ import {
   ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTooManyRequestsResponse,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { RegistrationDto } from '../../apps/auth/dto/registration.dto';
@@ -18,6 +18,7 @@ import { NewPasswordDto } from '../../apps/auth/dto/new-password.dto';
 
 export function ApiRegistration() {
   return applyDecorators(
+    ApiTags('Auth'),
     ApiOperation({ summary: 'A new user is registered in the system' }),
     ApiBody({
       type: RegistrationDto,
@@ -42,6 +43,7 @@ export function ApiRegistration() {
 
 export function ApiLogin() {
   return applyDecorators(
+    ApiTags('Auth'),
     ApiOperation({ summary: 'New user login after registration' }),
     ApiBody({ type: LoginDto }),
     ApiOkResponse({
@@ -65,6 +67,7 @@ export function ApiLogin() {
 
 export function ApiRegistrationEmailResending() {
   return applyDecorators(
+    ApiTags('Auth'),
     ApiOperation({ summary: 'Re-sends registration confirmation code' }),
     ApiBody({
       type: ResendingEmailConfirmationDto,
@@ -88,6 +91,7 @@ export function ApiRegistrationEmailResending() {
 
 export function ApiRegistrationConfirmation() {
   return applyDecorators(
+    ApiTags('Auth'),
     ApiOperation({
       summary: 'Confirmation of registration via confirmation code',
     }),
@@ -111,6 +115,7 @@ export function ApiRegistrationConfirmation() {
 
 export function ApiPasswordRecovery() {
   return applyDecorators(
+    ApiTags('Auth'),
     ApiOperation({ summary: 'Password recovery request' }),
     ApiBody({
       type: PasswordRecoveryDto,
@@ -133,6 +138,7 @@ export function ApiPasswordRecovery() {
 
 export function ApiNewPassword() {
   return applyDecorators(
+    ApiTags('Auth'),
     ApiOperation({ summary: 'Sending a new password' }),
     ApiBody({
       type: NewPasswordDto,
@@ -155,6 +161,7 @@ export function ApiNewPassword() {
 
 export function ApiRefreshToken() {
   return applyDecorators(
+    ApiTags('Auth'),
     ApiOperation({ summary: 'Update authorization tokens' }),
     ApiOkResponse({
       description:
@@ -172,6 +179,7 @@ export function ApiRefreshToken() {
 
 export function ApiLogout() {
   return applyDecorators(
+    ApiTags('Auth'),
     ApiOperation({ summary: 'User logout' }),
     ApiBearerAuth(),
     ApiNoContentResponse({
@@ -180,6 +188,18 @@ export function ApiLogout() {
     ApiUnauthorizedResponse({
       description:
         'If the JWT refreshToken inside cookie is missing, expired or incorrect',
+    }),
+  );
+}
+
+export function ApiDropDatabase() {
+  return applyDecorators(
+    ApiTags('Delete data /Dev endpoint'),
+    ApiOperation({
+      summary: 'Clear database: delete all data from all tables/collections',
+    }),
+    ApiNoContentResponse({
+      description: 'All data is deleted',
     }),
   );
 }

@@ -28,11 +28,10 @@ export class UpdatePasswordCommandHandler
           ' password has expired. Request a new verification code.',
       );
 
-    const salt = await bcrypt.genSalt(Number(settings.SALT_GENERATE_ROUND));
-    const hash = await bcrypt.hash(newPassword, salt);
+    const hash = await bcrypt.hash(user.password, 10);
     if ((user.passwordHash = hash))
       throw new BadRequestException('New password to equal old.');
-
-    return await this.userRepository.updateUserPassword(userId, hash);
+    const newHash = await bcrypt.hash(newPassword, 10);
+    return await this.userRepository.updateUserPassword(userId, newHash);
   }
 }

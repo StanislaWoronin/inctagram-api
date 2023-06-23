@@ -8,7 +8,7 @@ import { BadRequestException } from '@nestjs/common';
 import { settings } from '../../shared/settings';
 import bcrypt from 'bcrypt';
 
-@Schema();
+@Schema()
 export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, type: String })
   id: string = randomUUID();
@@ -49,8 +49,7 @@ export class UserAggregate extends UserService implements IUser {
       throw new BadRequestException('Incorrect password confirmation');
     const _user = new UserAggregate();
     Object.assign(_user, user);
-    const salt = await bcrypt.genSalt(Number(settings.SALT_GENERATE_ROUND));
-    const hash = await bcrypt.hash(user.password, salt);
+    const hash = await bcrypt.hash(user.password, 10);
     _user.passwordHash = hash;
     return _user;
   }
