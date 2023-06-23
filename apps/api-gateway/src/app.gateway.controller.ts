@@ -1,17 +1,20 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
   Inject,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { Commands, Microservices } from '../../../libs/shared';
 import { ClientProxy } from '@nestjs/microservices';
 import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
 import {
+  ApiDropDatabase,
   ApiLogin,
   ApiLogout,
   ApiNewPassword,
@@ -28,11 +31,11 @@ import { RegistrationConfirmationDto } from '../../auth/dto/registration-confirm
 import { PasswordRecoveryDto } from '../../auth/dto/password-recovery.dto';
 import { NewPasswordDto } from '../../auth/dto/new-password.dto';
 import { RefreshTokenValidationGuard } from '../../../libs/guards/refresh-token-validation.guard';
+import { Response } from 'express';
 import { CurrentDeviceId } from '../../../libs/decorators/device-id.decorator';
 import { CurrentUser } from '../../../libs/decorators/current-user.decorator';
 
 @Controller()
-@ApiTags('Auth')
 export class AppGatewayController {
   constructor(
     @Inject(Microservices.Auth) private authProxyClient: ClientProxy,
@@ -55,9 +58,17 @@ export class AppGatewayController {
   @Post('auth/login')
   @HttpCode(HttpStatus.OK)
   @ApiLogin()
-  @UseGuards()
-  async login(@Body() dto: LoginDto) {
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
     const pattern = { cmd: Commands.Login };
+    const cookies = await this.authProxyClient.send(pattern, dto);
+    response.cookie('refreshToken', 'cookies.refreshToken', {
+      httpOnly: true,
+      secure: true,
+      maxAge: 86400000, // 24 hours
+    });
     return this.authProxyClient.send(pattern, dto);
   }
 
@@ -108,5 +119,12 @@ export class AppGatewayController {
   async logout(@CurrentUser() userId: string) {
     const pattern = { cmd: Commands.Logout };
     return this.authProxyClient.send(pattern, { userId });
+  }
+
+  @Delete('delete-all')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiDropDatabase()
+  async deleteDataInDb(): Promise<boolean> {
+    return true;
   }
 }

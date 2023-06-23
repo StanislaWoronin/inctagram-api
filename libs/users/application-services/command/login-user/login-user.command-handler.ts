@@ -36,9 +36,8 @@ export class LoginUserCommandHandler
     if (!passwordEqual) {
       throw new UnauthorizedException();
     }
-    const deviceId = randomUUID();
 
-    user.deviceId = deviceId;
+    const deviceId = randomUUID();
 
     await this.userRepository.createUserDeviceId(user);
 

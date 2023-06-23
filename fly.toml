@@ -6,9 +6,20 @@
 app = "inctagram-api"
 primary_region = "waw"
 
+[processes]
+api-gateway = "node dist/apps/api-gateway/src/main"
+auth-microservice= "node dist/apps/auth/src/main"
+
 [http_service]
-  internal_port = 3000
+  processes = ["api-gateway"]
+  internal_port = 5000
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
+
+
+
+
+
+

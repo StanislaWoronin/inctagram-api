@@ -4,14 +4,15 @@ import { randomUUID } from 'crypto';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { EmailConfirmation } from './email-confirmation.schema';
+import bcrypt from 'bcrypt';
 
-@Schema()
+Schema();
 export class UserAggregate extends UserService implements IUser {
-  @Prop({ required: true, unique: true, type: String })
+  @Prop({ required: true, type: String })
   id: string = randomUUID();
 
-  @Prop({ unique: true, type: String })
-  deviseId: string = null;
+  @Prop({ type: [String, null], default: [null] })
+  deviceId: string | null[];
 
   @Prop({ required: true, type: String })
   login: string;
@@ -21,8 +22,6 @@ export class UserAggregate extends UserService implements IUser {
 
   @Prop({ required: true, type: String })
   password: string;
-
-  deviceId: string | null[];
 
   passwordHash: string;
 
@@ -41,7 +40,8 @@ export class UserAggregate extends UserService implements IUser {
   })
   emailConfirmation: EmailConfirmation = new EmailConfirmation();
 
-  static create(user: Partial<IUser>) {
+  static async create(user: Partial<IUser>): Promise<UserAggregate> {
+    user.passwordHash = await bcrypt.hash(user.password, 10);
     const _user = new UserAggregate();
     Object.assign(_user, user);
     return _user;
