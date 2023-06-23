@@ -5,7 +5,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { EmailConfirmation } from './email-confirmation.schema';
 
-@Schema()
+Schema();
 export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, unique: true, type: String })
   id: string = randomUUID();

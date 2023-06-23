@@ -6,6 +6,8 @@ import { createApp } from '../create-app';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { createWriteStream } from 'fs';
 import { get } from 'http';
+import { getProviderOptions } from '../../../libs/providers/rabbit-mq/providers.option';
+import { Microservices } from '../../../libs/shared';
 
 async function bootstrap() {
   const rawApp = await NestFactory.create(AppGatewayModule);
@@ -37,6 +39,7 @@ async function bootstrap() {
     include: [AppGatewayModule],
   });
   SwaggerModule.setup('swagger', app, usersDocument, options1);
+  console.log(getProviderOptions(Microservices.Auth));
   await app.listen(port, () => {
     Logger.log(`Application started on ${serverUrl}.`, 'Api-getaway.Main');
     Logger.log(
