@@ -18,11 +18,6 @@ import {
   UpdatePairTokenCommand,
   UpdatePairTokenCommandHandler,
 } from './command/update-pair-token';
-import {
-  EmailConfirmationCodeResendingCommand,
-  EmailConfirmationCodeResendingCommandHandler,
-} from './command/email-confirmation-code-resending';
-import {PairTokenResponse, ViewUser} from "../response";
 
 @Injectable()
 export class UserFacade {
@@ -38,12 +33,10 @@ export class UserFacade {
     registrationUser: (data: RegistrationDto) => this.registrationUser(data),
     updatePairToken: (dto: SessionIdDto) => this.updatePairToken(dto),
     updatePassword: (data: UpdatePasswordDto) => this.updatePassword(data),
-    emailConfirmationCodeResending: (email: string) =>
-      this.emailConfirmationCodeResending(email),
   };
   queries = {};
 
-  private async loginUser(dto: LoginDto): Promise<PairTokenResponse> {
+  private async loginUser(dto: WithClientMeta<LoginDto>): Promise<PairTokenResponse> {
     const command = new LoginUserCommand(dto);
     return await this.commandBus.execute(command);
   }
@@ -68,7 +61,7 @@ export class UserFacade {
     return await this.commandBus.execute(command);
   }
 
-  private updatePairToken(dto: SessionIdDto) {
+  private updatePairToken(dto: WithClientMeta<SessionIdDto>) {
     const command = new UpdatePairTokenCommand(dto);
     return this.commandBus.execute(command);
   }

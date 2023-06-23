@@ -3,16 +3,18 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   HttpCode,
   HttpStatus,
   Inject,
+  Ip,
   Post,
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { Commands, Microservices } from '../../../libs/shared';
-import { ClientProxy } from '@nestjs/microservices';
-import { ApiExcludeEndpoint, ApiTags } from '@nestjs/swagger';
+import {Commands, Microservices} from '../../../libs/shared';
+import {ClientProxy} from '@nestjs/microservices';
+import {ApiExcludeEndpoint} from '@nestjs/swagger';
 import {
   ApiDropDatabase,
   ApiLogin,
@@ -24,19 +26,19 @@ import {
   ApiRegistrationConfirmation,
   ApiRegistrationEmailResending,
 } from '../../../libs/documentation/auth.documentation';
-import { RegistrationDto } from '../../auth/dto/registration.dto';
-import { LoginDto } from '../../auth/dto/login.dto';
-import { ResendingEmailConfirmationDto } from '../../auth/dto/resending-email-confirmation.dto';
-import { RegistrationConfirmationDto } from '../../auth/dto/registration-confirmation.dto';
-import { PasswordRecoveryDto } from '../../auth/dto/password-recovery.dto';
-import { NewPasswordDto } from '../../auth/dto/new-password.dto';
-import { RefreshTokenValidationGuard } from '../../../libs/guards/refresh-token-validation.guard';
-import { Response } from 'express';
-import { CurrentDeviceId } from '../../../libs/decorators/device-id.decorator';
-import { CurrentUser } from '../../../libs/decorators/current-user.decorator';
-import { settings } from '../../../libs/shared/settings';
-import { lastValueFrom, map } from 'rxjs';
-import { ViewUser } from '../../../libs/users/response';
+import {RegistrationDto} from '../../auth/dto/registration.dto';
+import {LoginDto} from '../../auth/dto/login.dto';
+import {ResendingEmailConfirmationDto} from '../../auth/dto/resending-email-confirmation.dto';
+import {RegistrationConfirmationDto} from '../../auth/dto/registration-confirmation.dto';
+import {PasswordRecoveryDto} from '../../auth/dto/password-recovery.dto';
+import {NewPasswordDto} from '../../auth/dto/new-password.dto';
+import {RefreshTokenValidationGuard} from '../../../libs/guards/refresh-token-validation.guard';
+import {Response} from 'express';
+import {CurrentDeviceId} from '../../../libs/decorators/device-id.decorator';
+import {CurrentUser} from '../../../libs/decorators/current-user.decorator';
+import {settings} from '../../../libs/shared/settings';
+import {lastValueFrom, map} from 'rxjs';
+import {LoginResponse, ViewUser} from '../../../libs/users/response';
 
 @Controller()
 export class AppGatewayController {
@@ -65,18 +67,20 @@ export class AppGatewayController {
   @ApiLogin()
   async login(
     @Body() dto: LoginDto,
+    @Ip() ipAddress: string,
+    @Headers('user-agent') title: string,
     @Res({ passthrough: true }) response: Response,
-  ) {
+  ): Promise<LoginResponse> {
     const pattern = { cmd: Commands.Login };
-    const cookies = await lastValueFrom(
-      this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
+    const tokens = await lastValueFrom(
+      this.authProxyClient.send(pattern, {dto, ipAddress, title}).pipe(map((result) => result)),
     );
-    response.cookie('refreshToken', 'cookies.refreshToken', {
+    response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: true,
       maxAge: settings.timeLife.TOKEN_TIME,
     });
-    return this.authProxyClient.send(pattern, dto);
+    return { accessToken: tokens.accessToken };
   }
 
   @Post('auth/registration-email-resending')
@@ -139,11 +143,15 @@ export class AppGatewayController {
   async updatePairToken(
     @CurrentUser() userId: string,
     @CurrentDeviceId() deviceId: string,
+    @Ip() ipAddress: string,
+    @Headers('user-agent') title: string,
+    @Res({ passthrough: true }) res: Response,
   ) {
+    const dto = { userId, deviceId, ipAddress, title };
     const pattern = { cmd: Commands.UpdatePairToken };
     return await lastValueFrom(
       this.authProxyClient
-        .send(pattern, { userId, deviceId })
+        .send(pattern, dto)
         .pipe(map((result) => result)),
     );
   }
