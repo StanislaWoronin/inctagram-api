@@ -48,7 +48,7 @@ export function ApiLogin() {
     ApiBody({ type: LoginDto }),
     ApiOkResponse({
       description:
-        'Returns JWT accessToken (expired after 1 hour) in body and JWT' +
+        'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +
         ' refreshToken in cookie (http-only, secure) (expired after 20 seconds)',
       //type: AccessToken,
     }),
@@ -150,7 +150,7 @@ export function ApiNewPassword() {
     ApiBadRequestResponse({
       description:
         'If the inputModel has incorrect value (for incorrect password length) or' +
-        ' RecoveryCode is incorrect or expired or old password equil new password',
+        ' RecoveryCode is incorrect or expired or old password equal new password',
       //type: BadRequestResponse,
     }),
     // ApiTooManyRequestsResponse({
@@ -165,14 +165,13 @@ export function ApiRefreshToken() {
     ApiOperation({ summary: 'Update authorization tokens' }),
     ApiOkResponse({
       description:
-        'Returns JWT accessToken (expired after 1 hour) in body and JWT' +
-        ' refreshToken in cookie (http-only, secure) (expired after 24 hours).',
+        'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +
+        ' refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
       //type: AccessToken,
     }),
     ApiUnauthorizedResponse({
       description:
-        'Returns JWT accessToken (expired after 1 hour) in body and JWT' +
-        ' refreshToken in cookie (http-only, secure) (expired after 24 hours).',
+        'If the JWT refreshToken inside cookie is missing, expired or incorrect',
     }),
   );
 }
