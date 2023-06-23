@@ -21,9 +21,10 @@ export class UpdatePasswordCommandHandler
       userId,
     );
     if (!user) throw new NotFoundException();
-    const isEqual = user.passwordRecovery !== recoveryCode
-    const isActive = recoveryCode < Date.now()
-    if (isEqual || isActive)
+
+    const isDifferent = user.passwordRecovery !== recoveryCode
+    const isExpired = recoveryCode < Date.now()
+    if (isDifferent || isExpired)
       throw new BadRequestException(
         'The time to update the' +
           ' password has expired. Request a new verification code.',
@@ -33,6 +34,7 @@ export class UpdatePasswordCommandHandler
     if ((user.passwordHash = hash))
       throw new BadRequestException('New password to equal old.');
     const newHash = await bcrypt.hash(newPassword, 10);
+
     return await this.userRepository.updateUserPassword(userId, newHash);
   }
 }
