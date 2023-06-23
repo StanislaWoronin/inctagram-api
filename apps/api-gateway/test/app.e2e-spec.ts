@@ -28,7 +28,6 @@ describe('Test auth controller.', () => {
     const rawApp = await moduleFixture.createNestApplication();
     app = createApp(rawApp);
     await app.init();
-    //app.startAllMicroservices();
 
     server = await app.getHttpServer();
     requests = new Requests(server);

@@ -39,10 +39,10 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: Commands.UpdatePairToken })
-  async updatePairToken(
-    data: SessionIdDto,
-  ): Promise<({ data }: UpdatePairTokenCommand) => Promise<PairTokenResponse>> {
-    return await this.userFacade.commands.updatePairToken(data);
+  async updatePairToken(dto: SessionIdDto): Promise<PairTokenResponse> {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return await this.userFacade.commands.updatePairToken(dto);
   }
 
   @MessagePattern({ cmd: Commands.Logout })

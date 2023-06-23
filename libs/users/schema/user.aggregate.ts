@@ -19,7 +19,7 @@ export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, type: String })
   login: string;
 
-  @Prop({ required: true, type: String })
+  @Prop({ required: true, unique: true, type: String })
   email: string;
 
   @Prop({ required: true, type: String })

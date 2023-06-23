@@ -14,8 +14,8 @@ export class UpdatePairTokenCommandHandler
     private configService: ConfigService,
   ) {}
 
-  async execute({ data }: UpdatePairTokenCommand): Promise<PairTokenResponse> {
-    const { userId, deviceId } = data;
+  async execute({ dto }: UpdatePairTokenCommand): Promise<PairTokenResponse> {
+    const { userId, deviceId } = dto;
     const [newAccessToken, newRefreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {

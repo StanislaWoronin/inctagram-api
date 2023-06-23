@@ -36,7 +36,7 @@ export class UserFacade {
   };
   queries = {};
 
-  private loginUser(dto: LoginDto) {
+  private async loginUser(dto: LoginDto) {
     return this.commandBus.execute<
       LoginUserCommand,
       LoginUserCommandHandler['execute']

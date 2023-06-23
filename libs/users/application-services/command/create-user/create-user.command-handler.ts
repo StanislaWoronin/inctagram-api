@@ -6,16 +6,16 @@ import { BadRequestException } from '@nestjs/common';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserCommandHandler
-  implements ICommandHandler<CreateUserCommand, boolean>
+  implements ICommandHandler<CreateUserCommand, any>
 {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async execute({ dto }: CreateUserCommand): Promise<boolean> {
+  async execute({ dto }: CreateUserCommand) {
     try {
       const newUser = await UserAggregate.create(dto);
-      await this.userRepository.createUser(newUser);
-      return true;
+      return await this.userRepository.createUser(newUser);
     } catch (e) {
+      console.log(e);
       throw new BadRequestException();
     }
   }

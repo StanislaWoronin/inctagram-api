@@ -23,7 +23,7 @@ export class UpdatePasswordCommandHandler
     if (!user) throw new NotFoundException();
     if (
       user.passwordRecovery !== recoveryCode ||
-      recoveryCode - settings.timeLife.PASSWORD_RECOVERY_CODE > Date.now()
+      recoveryCode - settings.timeLife.ONE_DAY > Date.now()
     )
       throw new BadRequestException(
         'The time to update the' +

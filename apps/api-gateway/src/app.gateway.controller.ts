@@ -34,6 +34,8 @@ import { RefreshTokenValidationGuard } from '../../../libs/guards/refresh-token-
 import { Response } from 'express';
 import { CurrentDeviceId } from '../../../libs/decorators/device-id.decorator';
 import { CurrentUser } from '../../../libs/decorators/current-user.decorator';
+import { settings } from '../../../libs/shared/settings';
+import { lastValueFrom, map } from 'rxjs';
 
 @Controller()
 export class AppGatewayController {
@@ -48,11 +50,13 @@ export class AppGatewayController {
   }
 
   @Post('auth/registration')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  //@HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistration()
   async registration(@Body() dto: RegistrationDto) {
     const pattern = { cmd: Commands.Registration };
-    return this.authProxyClient.send(pattern, dto);
+    return await lastValueFrom(
+      this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
+    );
   }
 
   @Post('auth/login')
@@ -63,11 +67,13 @@ export class AppGatewayController {
     @Res({ passthrough: true }) response: Response,
   ) {
     const pattern = { cmd: Commands.Login };
-    const cookies = await this.authProxyClient.send(pattern, dto);
+    const cookies = await lastValueFrom(
+      this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
+    );
     response.cookie('refreshToken', 'cookies.refreshToken', {
       httpOnly: true,
       secure: true,
-      maxAge: 86400000, // 24 hours
+      maxAge: settings.timeLife.ONE_DAY,
     });
     return this.authProxyClient.send(pattern, dto);
   }
@@ -79,7 +85,9 @@ export class AppGatewayController {
     @Body() email: ResendingEmailConfirmationDto,
   ) {
     const pattern = { cmd: Commands.EmailResending };
-    return this.authProxyClient.send(pattern, email);
+    return await lastValueFrom(
+      this.authProxyClient.send(pattern, email).pipe(map((result) => result)),
+    );
   }
 
   @Post('auth/registration-confirmation')
@@ -87,7 +95,9 @@ export class AppGatewayController {
   @ApiRegistrationConfirmation()
   async registrationConfirmation(@Body() dto: RegistrationConfirmationDto) {
     const pattern = { cmd: Commands.RegistrationConfirmation };
-    return this.authProxyClient.send(pattern, dto);
+    return await lastValueFrom(
+      this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
+    );
   }
 
   @Post('auth/password-recovery')
@@ -95,7 +105,11 @@ export class AppGatewayController {
   @ApiPasswordRecovery()
   async passwordRecovery(@Body() dto: PasswordRecoveryDto) {
     const pattern = { cmd: Commands.PasswordRecovery };
-    return this.authProxyClient.send(pattern, dto.email);
+    return await lastValueFrom(
+      this.authProxyClient
+        .send(pattern, dto.email)
+        .pipe(map((result) => result)),
+    );
   }
 
   @Post('auth/new-password')
@@ -106,11 +120,15 @@ export class AppGatewayController {
     @CurrentUser() userId: string,
   ) {
     const pattern = { cmd: Commands.UpdatePassword };
-    return this.authProxyClient.send(pattern, {
-      userId,
-      newPassword,
-      recoveryCode,
-    });
+    return await lastValueFrom(
+      this.authProxyClient
+        .send(pattern, {
+          userId,
+          newPassword,
+          recoveryCode,
+        })
+        .pipe(map((result) => result)),
+    );
   }
 
   @Post('auth/refresh-token')
@@ -122,7 +140,11 @@ export class AppGatewayController {
     @CurrentDeviceId() deviceId: string,
   ) {
     const pattern = { cmd: Commands.UpdatePairToken };
-    return this.authProxyClient.send(pattern, { userId, deviceId });
+    return await lastValueFrom(
+      this.authProxyClient
+        .send(pattern, { userId, deviceId })
+        .pipe(map((result) => result)),
+    );
   }
 
   @Post('auth/logout')
@@ -134,7 +156,11 @@ export class AppGatewayController {
     @CurrentDeviceId() deviceId: string,
   ) {
     const pattern = { cmd: Commands.Logout };
-    return this.authProxyClient.send(pattern, { userId, deviceId });
+    return await lastValueFrom(
+      this.authProxyClient
+        .send(pattern, { userId, deviceId })
+        .pipe(map((result) => result)),
+    );
   }
 
   @Delete('delete-all')
