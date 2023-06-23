@@ -21,10 +21,9 @@ export class UpdatePasswordCommandHandler
       userId,
     );
     if (!user) throw new NotFoundException();
-    if (
-      user.passwordRecovery !== recoveryCode ||
-      recoveryCode - settings.timeLife.ONE_DAY > Date.now()
-    )
+    const isEqual = user.passwordRecovery !== recoveryCode
+    const isActive = recoveryCode < Date.now()
+    if (isEqual || isActive)
       throw new BadRequestException(
         'The time to update the' +
           ' password has expired. Request a new verification code.',

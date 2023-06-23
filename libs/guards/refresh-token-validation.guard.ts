@@ -25,7 +25,7 @@ export class RefreshTokenValidationGuard implements CanActivate {
     const tokenPayload: any = await this.jwtService.decode(
       req.cookies.refreshToken,
     );
-    console.log({ tokenPayload });
+
     if (!tokenPayload) {
       // console.log('Токен не рассекретился')
       throw new UnauthorizedException();

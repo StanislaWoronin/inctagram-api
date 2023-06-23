@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { RegistrationDto } from '../../../../libs/users/dto';
 import { TestResponse } from '../types/test-response';
-import { RegistrationResponse } from '../../../../libs/users/response';
+import { UserViewResponse } from '../../../../libs/users/response';
 import { LoginDto } from '../../../auth/dto/login.dto';
 import { LoginResponse } from '../../../../libs/users/response/login.response';
 
@@ -10,7 +10,7 @@ export class AuthRequest {
 
   async registrationUser(
     registrationUserDto: RegistrationDto,
-  ): Promise<TestResponse<RegistrationResponse>> {
+  ): Promise<TestResponse<UserViewResponse>> {
     const response = await request(this.server)
       .post('/auth/registration')
       .send(registrationUserDto);

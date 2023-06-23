@@ -36,6 +36,7 @@ import { CurrentDeviceId } from '../../../libs/decorators/device-id.decorator';
 import { CurrentUser } from '../../../libs/decorators/current-user.decorator';
 import { settings } from '../../../libs/shared/settings';
 import { lastValueFrom, map } from 'rxjs';
+import { ViewUser } from '../../../libs/users/response';
 
 @Controller()
 export class AppGatewayController {
@@ -50,9 +51,8 @@ export class AppGatewayController {
   }
 
   @Post('auth/registration')
-  //@HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistration()
-  async registration(@Body() dto: RegistrationDto) {
+  async registration(@Body() dto: RegistrationDto): Promise<ViewUser> {
     const pattern = { cmd: Commands.Registration };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
