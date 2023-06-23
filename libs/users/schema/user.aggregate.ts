@@ -13,7 +13,7 @@ export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, type: String })
   id: string = randomUUID();
 
-  @Prop({ type: String })
+  @Prop({ array: true })
   devicesId: string[] = [];
 
   @Prop({ required: true, type: String })
