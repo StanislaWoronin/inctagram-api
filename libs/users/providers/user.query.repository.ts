@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserAggregate, UsersDocument } from '../schema';
+import {Devise, UserAggregate, UsersDocument} from '../schema';
 import { Model } from 'mongoose';
 import { SessionIdDto } from '../dto';
 
@@ -26,9 +26,5 @@ export class UserQueryRepository {
   async userExists(userId: string): Promise<boolean> {
     const userExists = await this.userModel.exists({ id: userId });
     return !!userExists;
-  }
-
-  async getUserDeviceId(userId: string): Promise<string | null> {
-    return this.userModel.findOne({ id: userId });
   }
 }

@@ -7,14 +7,15 @@ import { EmailConfirmation } from './email-confirmation.schema';
 import { BadRequestException } from '@nestjs/common';
 import { settings } from '../../shared/settings';
 import bcrypt from 'bcrypt';
+import {Devise} from "./devise.schema";
 
 @Schema()
 export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, type: String })
   id: string = randomUUID();
 
-  @Prop({ array: true })
-  devicesId: string[] = [];
+  @Prop({ array: true, default: [] })
+  devices: Devise[];
 
   @Prop({ required: true, type: String })
   login: string;
@@ -51,6 +52,7 @@ export class UserAggregate extends UserService implements IUser {
     Object.assign(_user, user);
     const hash = await bcrypt.hash(user.password, 10);
     _user.passwordHash = hash;
+
     return _user;
   }
 }

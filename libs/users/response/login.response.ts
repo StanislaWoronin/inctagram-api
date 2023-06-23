@@ -1,1 +1,3 @@
-export class LoginResponse {}
+export class LoginResponse {
+  accessToken: string
+}

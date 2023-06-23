@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { RegistrationDto, SessionIdDto, UpdatePasswordDto } from '../dto';
+import {RegistrationDto, SessionIdDto, UpdatePasswordDto, WithClientMeta} from '../dto';
 import { LoginDto } from '../../../apps/auth/dto/login.dto';
 import {
   CreateUserCommand,
@@ -27,16 +27,16 @@ export class UserFacade {
   ) {}
 
   commands = {
-    loginUser: (dto: LoginDto) => this.loginUser(dto),
+    loginUser: (dto: WithClientMeta<LoginDto>) => this.loginUser(dto),
     logout: (dto: SessionIdDto) => this.logout(dto),
     passwordRecovery: (email: string) => this.passwordRecovery(email),
     registrationUser: (data: RegistrationDto) => this.registrationUser(data),
-    updatePairToken: (dto: SessionIdDto) => this.updatePairToken(dto),
+    updatePairToken: (dto: WithClientMeta<SessionIdDto>) => this.updatePairToken(dto),
     updatePassword: (data: UpdatePasswordDto) => this.updatePassword(data),
   };
   queries = {};
 
-  private async loginUser(dto: LoginDto) {
+  private async loginUser(dto: WithClientMeta<LoginDto>) {
     return this.commandBus.execute<
       LoginUserCommand,
       LoginUserCommandHandler['execute']
@@ -64,7 +64,7 @@ export class UserFacade {
     >(new CreateUserCommand(dto));
   }
 
-  private updatePairToken(dto: SessionIdDto) {
+  private updatePairToken(dto: WithClientMeta<SessionIdDto>) {
     return this.commandBus.execute<
       UpdatePairTokenCommand,
       UpdatePairTokenCommandHandler['execute']

@@ -1,6 +1,6 @@
 import {Controller} from '@nestjs/common';
 import {MessagePattern} from '@nestjs/microservices';
-import {RegistrationDto, SessionIdDto, UpdatePasswordDto,} from '../../../libs/users/dto';
+import {RegistrationDto, SessionIdDto, UpdatePasswordDto, WithClientMeta,} from '../../../libs/users/dto';
 import {Commands} from '../../../libs/shared';
 import {UserFacade} from '../../../libs/users/application-services';
 import {LoginDto} from '../dto/login.dto';
@@ -19,10 +19,10 @@ export class AuthController {
 
   @MessagePattern({ cmd: Commands.Login })
   async login(
-    data: LoginDto,
+    dto: WithClientMeta<LoginDto>,
   ): Promise<PairTokenResponse> {
     // @ts-ignore
-    return await this.userFacade.commands.loginUser(data);
+    return await this.userFacade.commands.loginUser(dto);
   }
 
   @MessagePattern({ cmd: Commands.PasswordRecovery })
@@ -37,10 +37,10 @@ export class AuthController {
 
   @MessagePattern({ cmd: Commands.UpdatePairToken })
   async updatePairToken(
-    data: SessionIdDto,
+    dto: WithClientMeta<SessionIdDto>,
   ): Promise<PairTokenResponse> {
     // @ts-ignore
-    return await this.userFacade.commands.updatePairToken(data);
+    return await this.userFacade.commands.updatePairToken(dto);
   }
 
   @MessagePattern({ cmd: Commands.Logout })

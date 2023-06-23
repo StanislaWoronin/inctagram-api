@@ -23,6 +23,7 @@ export class CreateUserCommandHandler
 
       return ViewUser.create(createdUser);
     } catch (e) {
+      console.log(e)
       throw new BadRequestException();
     }
   }

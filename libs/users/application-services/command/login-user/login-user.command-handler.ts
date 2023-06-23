@@ -1,14 +1,15 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { LoginUserCommand } from './login-user.command';
-import { UserQueryRepository } from '../../../providers/user.query.repository';
-import { UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import {CommandHandler, ICommandHandler} from '@nestjs/cqrs';
+import {LoginUserCommand} from './login-user.command';
+import {UserQueryRepository} from '../../../providers/user.query.repository';
+import {UnauthorizedException} from '@nestjs/common';
+import {JwtService} from '@nestjs/jwt';
+import {ConfigService} from '@nestjs/config';
 import bcrypt from 'bcrypt';
-import { settings } from '../../../../shared/settings';
-import { PairTokenResponse } from '../../../response/pair-token.response';
-import { randomUUID } from 'crypto';
-import { UserRepository } from '../../../providers/user.repository';
+import {settings} from '../../../../shared/settings';
+import {PairTokenResponse} from '../../../response/pair-token.response';
+import {randomUUID} from 'crypto';
+import {UserRepository} from '../../../providers/user.repository';
+import {Devise} from "../../../schema";
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserCommandHandler
@@ -21,15 +22,16 @@ export class LoginUserCommandHandler
     private configService: ConfigService,
   ) {}
 
-  async execute({ data }: LoginUserCommand): Promise<PairTokenResponse> {
+  async execute({ dto }: LoginUserCommand): Promise<PairTokenResponse> {
+    const {loginOrEmail, password, ipAddress, title} = dto
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      data.loginOrEmail,
+      loginOrEmail,
     );
     if (!user) {
       throw new UnauthorizedException();
     }
     const passwordEqual = await bcrypt.compare(
-      data.password,
+      password,
       user.passwordHash,
     );
 
@@ -38,8 +40,8 @@ export class LoginUserCommandHandler
     }
 
     const deviceId = randomUUID();
-
-    await this.userRepository.createUserDeviceId({ userId: user.id, deviceId });
+    const device = Devise.create({ipAddress, title})
+    await this.userRepository.createUserDevice(user.id, device);
 
     const [newAccessToken, newRefreshToken] = await Promise.all([
       this.jwtService.signAsync(

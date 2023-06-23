@@ -15,7 +15,10 @@ export class LogoutCommandHandler implements ICommandHandler<LogoutCommand> {
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
       userId,
     );
-    const newDevices = user.devicesId.filter((device) => device !== deviceId);
+    const newDevices = user.devices.filter(d => {
+      if (d.deviceId !== deviceId) return d
+    });
+
     return await this.userRepository.removeDeviceId(userId, newDevices);
   }
 }
