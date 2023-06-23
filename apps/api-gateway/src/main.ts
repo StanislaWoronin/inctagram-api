@@ -15,6 +15,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('API_GATEWAY');
+  console.log('Port for check: ', port);
   const serverUrl = `http://localhost:${port}`;
   const userConfig = new DocumentBuilder()
     .setTitle('Inctagram-api')
@@ -39,7 +40,6 @@ async function bootstrap() {
     include: [AppGatewayModule],
   });
   SwaggerModule.setup('swagger', app, usersDocument, options1);
-  console.log(getProviderOptions(Microservices.Auth));
   await app.listen(port, () => {
     Logger.log(`Application started on ${serverUrl}.`, 'Api-getaway.Main');
     Logger.log(
