@@ -5,7 +5,7 @@ import {Commands} from '../../../libs/shared';
 import {UserFacade} from '../../../libs/users/application-services';
 import {LoginDto} from '../dto/login.dto';
 import {PairTokenResponse} from '../../../libs/users/response/pair-token.response';
-import {ViewUser} from '../../../libs/users/response';
+import { ViewUser } from '../../../libs/users/response';
 
 @Controller()
 export class AuthController {
