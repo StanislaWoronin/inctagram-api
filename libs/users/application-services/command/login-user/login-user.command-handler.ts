@@ -33,7 +33,6 @@ export class LoginUserCommandHandler
       user.passwordHash,
     );
 
-    console.log(user);
     if (!passwordEqual) {
       throw new UnauthorizedException();
     }
