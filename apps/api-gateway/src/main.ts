@@ -15,8 +15,7 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('API_GATEWAY');
-  console.log('Port for check: ', port);
-  const serverUrl = `http://localhost:${port}`;
+  const serverUrl = `https://inctagram-api.fly.dev`;
   const userConfig = new DocumentBuilder()
     .setTitle('Inctagram-api')
     .setDescription('The Users API description')
