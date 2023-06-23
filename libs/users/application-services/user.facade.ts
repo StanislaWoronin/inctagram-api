@@ -27,27 +27,27 @@ export class UserFacade {
   ) {}
 
   commands = {
-    loginUser: (data: LoginDto) => this.loginUser(data),
-    logout: (userId: string) => this.logout(userId),
+    loginUser: (dto: LoginDto) => this.loginUser(dto),
+    logout: (dto: SessionIdDto) => this.logout(dto),
     passwordRecovery: (email: string) => this.passwordRecovery(email),
     registrationUser: (data: RegistrationDto) => this.registrationUser(data),
-    updatePairToken: (data: SessionIdDto) => this.updatePairToken(data),
+    updatePairToken: (dto: SessionIdDto) => this.updatePairToken(dto),
     updatePassword: (data: UpdatePasswordDto) => this.updatePassword(data),
   };
   queries = {};
 
-  private loginUser(data: LoginDto) {
+  private loginUser(dto: LoginDto) {
     return this.commandBus.execute<
       LoginUserCommand,
       LoginUserCommandHandler['execute']
-    >(new LoginUserCommand(data));
+    >(new LoginUserCommand(dto));
   }
 
-  private logout(userId: string) {
+  private logout(dto: SessionIdDto) {
     return this.commandBus.execute<
       LogoutCommand,
       LogoutCommandHandler['execute']
-    >(new LogoutCommand(userId));
+    >(new LogoutCommand(dto));
   }
 
   private passwordRecovery(email: string) {
@@ -57,24 +57,24 @@ export class UserFacade {
     >(new PasswordRecoveryCommand(email));
   }
 
-  private registrationUser(data: RegistrationDto) {
+  private registrationUser(dto: RegistrationDto) {
     return this.commandBus.execute<
       CreateUserCommand,
       CreateUserCommandHandler['execute']
-    >(new CreateUserCommand(data));
+    >(new CreateUserCommand(dto));
   }
 
-  private updatePairToken(data: SessionIdDto) {
+  private updatePairToken(dto: SessionIdDto) {
     return this.commandBus.execute<
       UpdatePairTokenCommand,
       UpdatePairTokenCommandHandler['execute']
-    >(new UpdatePairTokenCommand(data));
+    >(new UpdatePairTokenCommand(dto));
   }
 
-  private updatePassword(data: UpdatePasswordDto) {
+  private updatePassword(dto: UpdatePasswordDto) {
     return this.commandBus.execute<
       UpdatePasswordCommand,
       UpdatePasswordCommandHandler
-    >(new UpdatePasswordCommand(data));
+    >(new UpdatePasswordCommand(dto));
   }
 }

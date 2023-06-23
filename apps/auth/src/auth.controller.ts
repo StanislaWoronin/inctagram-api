@@ -46,7 +46,7 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: Commands.Logout })
-  async logout(userId: string) {
-    return this.userFacade.commands.logout(userId);
+  async logout(dto: SessionIdDto) {
+    return this.userFacade.commands.logout(dto);
   }
 }

@@ -2,7 +2,7 @@ import { EmailConfirmation } from './email-confirmation.schema';
 
 export interface IUser {
   id: string;
-  deviceId: string | null;
+  devicesId: string[];
   login: string;
   email: string;
   passwordHash: string;

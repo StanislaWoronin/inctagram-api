@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UserAggregate, UsersDocument } from '../schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { SessionIdDto } from '../dto';
 
 @Injectable()
 export class UserRepository {
@@ -15,11 +16,13 @@ export class UserRepository {
     return await this.userModel.create(user);
   }
 
-  async createUserDeviceId(user: UserAggregate): Promise<boolean> {
+  async createUserDeviceId(dto: SessionIdDto): Promise<boolean> {
+    const { userId, deviceId } = dto;
     const result = await this.userModel.updateOne(
-      { id: user.id },
-      { $set: { deviceId: user.deviceId } },
+      { id: userId },
+      { $push: { devicesId: deviceId } },
     );
+
     return result.modifiedCount === 1;
   }
 
@@ -50,10 +53,10 @@ export class UserRepository {
     return result.modifiedCount === 1;
   }
 
-  async removeDeviceId(userId: string): Promise<boolean> {
+  async removeDeviceId(userId: string, devices: string[]): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },
-      { $pull: { deviceId: null } },
+      { $set: { devicesId: devices } },
     );
 
     return result.modifiedCount === 1;

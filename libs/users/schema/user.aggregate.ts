@@ -14,7 +14,7 @@ export class UserAggregate extends UserService implements IUser {
   id: string = randomUUID();
 
   @Prop({ type: String })
-  deviceId: string = null;
+  devicesId: string[] = [];
 
   @Prop({ required: true, type: String })
   login: string;

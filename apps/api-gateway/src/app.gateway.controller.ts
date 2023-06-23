@@ -129,9 +129,12 @@ export class AppGatewayController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(RefreshTokenValidationGuard)
   @ApiLogout()
-  async logout(@CurrentUser() userId: string) {
+  async logout(
+    @CurrentUser() userId: string,
+    @CurrentDeviceId() deviceId: string,
+  ) {
     const pattern = { cmd: Commands.Logout };
-    return this.authProxyClient.send(pattern, { userId });
+    return this.authProxyClient.send(pattern, { userId, deviceId });
   }
 
   @Delete('delete-all')

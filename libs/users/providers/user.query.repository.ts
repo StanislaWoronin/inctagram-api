@@ -11,7 +11,7 @@ export class UserQueryRepository {
     private userModel: Model<UsersDocument>,
   ) {}
 
-  async getUserByLoginOrEmail(
+  async getUserByIdOrLoginOrEmail(
     loginOrEmailOrId: string,
   ): Promise<UserAggregate | null> {
     return this.userModel.findOne({
@@ -30,14 +30,5 @@ export class UserQueryRepository {
 
   async getUserDeviceId(userId: string): Promise<string | null> {
     return this.userModel.findOne({ id: userId });
-  }
-
-  async removeDeviceId(userId: string): Promise<boolean> {
-    const result = await this.userModel.updateOne(
-      { id: userId },
-      { $set: { deviceId: null } },
-    );
-
-    return result.modifiedCount === 1;
   }
 }

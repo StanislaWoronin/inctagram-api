@@ -17,7 +17,9 @@ export class UpdatePasswordCommandHandler
 
   async execute({ dto }: UpdatePasswordCommand) {
     const { userId, newPassword, recoveryCode } = dto;
-    const user = await this.userQueryRepository.getUserByLoginOrEmail(userId);
+    const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
+      userId,
+    );
     if (!user) throw new NotFoundException();
     if (
       user.passwordRecovery !== recoveryCode ||
