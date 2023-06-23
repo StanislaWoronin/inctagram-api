@@ -1,12 +1,21 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { LogoutCommand } from './logout.command';
 import { UserRepository } from '../../../providers/user.repository';
+import { UserQueryRepository } from '../../../providers/user.query.repository';
 
 @CommandHandler(LogoutCommand)
 export class LogoutCommandHandler implements ICommandHandler<LogoutCommand> {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    private userQueryRepository: UserQueryRepository,
+  ) {}
 
-  async execute({ userId }: LogoutCommand) {
-    return await this.userRepository.removeDeviceId(userId);
+  async execute({ dto }: LogoutCommand) {
+    const { userId, deviceId } = dto;
+    const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
+      userId,
+    );
+    const newDevices = user.devicesId.filter((device) => device !== deviceId);
+    return await this.userRepository.removeDeviceId(userId, newDevices);
   }
 }

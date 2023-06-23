@@ -1,5 +1,5 @@
 import { SessionIdDto } from '../../../dto';
 
 export class LogoutCommand {
-  constructor(public readonly userId: string) {}
+  constructor(public readonly dto: SessionIdDto) {}
 }

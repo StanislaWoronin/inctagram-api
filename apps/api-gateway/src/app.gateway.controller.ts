@@ -41,10 +41,10 @@ export class AppGatewayController {
     @Inject(Microservices.Auth) private authProxyClient: ClientProxy,
   ) {}
 
-  @ApiExcludeEndpoint()
   @Get()
+  @ApiExcludeEndpoint()
   async mainEntry() {
-    return 'Hello World';
+    return 'Welcome to INCTAGRAM API!!!';
   }
 
   @Post('auth/registration')
@@ -93,12 +93,25 @@ export class AppGatewayController {
   @Post('auth/password-recovery')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiPasswordRecovery()
-  async passwordRecovery(@Body() dto: PasswordRecoveryDto) {}
+  async passwordRecovery(@Body() dto: PasswordRecoveryDto) {
+    const pattern = { cmd: Commands.PasswordRecovery };
+    return this.authProxyClient.send(pattern, dto.email);
+  }
 
   @Post('auth/new-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNewPassword()
-  async createNewPassword(@Body() dto: NewPasswordDto) {}
+  async updatePassword(
+    @Body() { newPassword, recoveryCode }: NewPasswordDto,
+    @CurrentUser() userId: string,
+  ) {
+    const pattern = { cmd: Commands.UpdatePassword };
+    return this.authProxyClient.send(pattern, {
+      userId,
+      newPassword,
+      recoveryCode,
+    });
+  }
 
   @Post('auth/refresh-token')
   @HttpCode(HttpStatus.OK)
@@ -116,9 +129,12 @@ export class AppGatewayController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(RefreshTokenValidationGuard)
   @ApiLogout()
-  async logout(@CurrentUser() userId: string) {
+  async logout(
+    @CurrentUser() userId: string,
+    @CurrentDeviceId() deviceId: string,
+  ) {
     const pattern = { cmd: Commands.Logout };
-    return this.authProxyClient.send(pattern, { userId });
+    return this.authProxyClient.send(pattern, { userId, deviceId });
   }
 
   @Delete('delete-all')

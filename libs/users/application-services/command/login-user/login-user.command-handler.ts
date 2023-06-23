@@ -22,7 +22,7 @@ export class LoginUserCommandHandler
   ) {}
 
   async execute({ data }: LoginUserCommand): Promise<PairTokenResponse> {
-    const user = await this.userQueryRepository.getUserByLoginOrEmail(
+    const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
       data.loginOrEmail,
     );
     if (!user) {
@@ -39,7 +39,7 @@ export class LoginUserCommandHandler
 
     const deviceId = randomUUID();
 
-    await this.userRepository.createUserDeviceId(user);
+    await this.userRepository.createUserDeviceId({ userId: user.id, deviceId });
 
     const [newAccessToken, newRefreshToken] = await Promise.all([
       this.jwtService.signAsync(

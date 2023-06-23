@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfig } from '../providers/mongo-db';
 import { UserAggregate, UserSchema } from './schema';
+import { EmailAdapters, EmailManager } from '../adapters/email.adapter';
 
 @Module({
   imports: [
@@ -32,6 +33,8 @@ import { UserAggregate, UserSchema } from './schema';
     UserRepository,
     UserQueryRepository,
     JwtService,
+    EmailAdapters,
+    EmailManager,
   ],
   exports: [UserFacade],
 })

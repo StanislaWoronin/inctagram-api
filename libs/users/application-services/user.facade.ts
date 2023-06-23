@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
-import { RegistrationDto, SessionIdDto } from '../dto';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { RegistrationDto, SessionIdDto, UpdatePasswordDto } from '../dto';
+import { LoginDto } from '../../../apps/auth/dto/login.dto';
 import {
   CreateUserCommand,
   CreateUserCommandHandler,
-  LogoutCommand,
-  LogoutCommandHandler,
-} from './command';
-import { LoginDto } from '../../../apps/auth/dto/login.dto';
-import {
   LoginUserCommand,
   LoginUserCommandHandler,
-} from './command/login-user';
+  LogoutCommand,
+  LogoutCommandHandler,
+  PasswordRecoveryCommand,
+  PasswordRecoveryCommandHandler,
+  UpdatePasswordCommand,
+  UpdatePasswordCommandHandler,
+} from './command';
 import {
   UpdatePairTokenCommand,
   UpdatePairTokenCommandHandler,
@@ -25,38 +27,54 @@ export class UserFacade {
   ) {}
 
   commands = {
+    loginUser: (dto: LoginDto) => this.loginUser(dto),
+    logout: (dto: SessionIdDto) => this.logout(dto),
+    passwordRecovery: (email: string) => this.passwordRecovery(email),
     registrationUser: (data: RegistrationDto) => this.registrationUser(data),
-    loginUser: (data: LoginDto) => this.loginUser(data),
-    updatePairToken: (data: SessionIdDto) => this.updatePairToken(data),
-    logout: (userId: string) => this.logout(userId),
+    updatePairToken: (dto: SessionIdDto) => this.updatePairToken(dto),
+    updatePassword: (data: UpdatePasswordDto) => this.updatePassword(data),
   };
   queries = {};
 
-  private registrationUser(data: RegistrationDto) {
-    return this.commandBus.execute<
-      CreateUserCommand,
-      CreateUserCommandHandler['execute']
-    >(new CreateUserCommand(data));
-  }
-
-  private loginUser(data: LoginDto) {
+  private loginUser(dto: LoginDto) {
     return this.commandBus.execute<
       LoginUserCommand,
       LoginUserCommandHandler['execute']
-    >(new LoginUserCommand(data));
+    >(new LoginUserCommand(dto));
   }
 
-  private updatePairToken(data: SessionIdDto) {
-    return this.commandBus.execute<
-      UpdatePairTokenCommand,
-      UpdatePairTokenCommandHandler['execute']
-    >(new UpdatePairTokenCommand(data));
-  }
-
-  private logout(userId: string) {
+  private logout(dto: SessionIdDto) {
     return this.commandBus.execute<
       LogoutCommand,
       LogoutCommandHandler['execute']
-    >(new LogoutCommand(userId));
+    >(new LogoutCommand(dto));
+  }
+
+  private passwordRecovery(email: string) {
+    return this.commandBus.execute<
+      PasswordRecoveryCommand,
+      PasswordRecoveryCommandHandler['execute']
+    >(new PasswordRecoveryCommand(email));
+  }
+
+  private registrationUser(dto: RegistrationDto) {
+    return this.commandBus.execute<
+      CreateUserCommand,
+      CreateUserCommandHandler['execute']
+    >(new CreateUserCommand(dto));
+  }
+
+  private updatePairToken(dto: SessionIdDto) {
+    return this.commandBus.execute<
+      UpdatePairTokenCommand,
+      UpdatePairTokenCommandHandler['execute']
+    >(new UpdatePairTokenCommand(dto));
+  }
+
+  private updatePassword(dto: UpdatePasswordDto) {
+    return this.commandBus.execute<
+      UpdatePasswordCommand,
+      UpdatePasswordCommandHandler
+    >(new UpdatePasswordCommand(dto));
   }
 }
