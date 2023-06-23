@@ -34,4 +34,20 @@ export class UserRepository {
     );
     return result.modifiedCount === 1;
   }
+
+  async updateUserPassword(
+    userId: string,
+    passwordHash: string,
+  ): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { id: userId },
+      {
+        $set: {
+          passwordHash,
+          passwordRecovery: null,
+        },
+      },
+    );
+    return result.modifiedCount === 1;
+  }
 }

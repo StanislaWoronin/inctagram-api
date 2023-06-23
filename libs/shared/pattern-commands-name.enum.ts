@@ -3,7 +3,7 @@ export enum Commands {
   Login = 'login',
   Logout = 'logout',
   PasswordRecovery = 'password-recovery',
-  NewPassword = 'new-password',
+  UpdatePassword = 'update-password',
   Registration = 'registration',
   RegistrationConfirmation = 'registration-confirmation',
   UpdatePairToken = 'update-pair-token',

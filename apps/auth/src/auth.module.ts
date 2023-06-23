@@ -21,7 +21,7 @@ import {
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [EmailAdapters, EmailManager],
+  providers: [],
   exports: [],
 })
 export class AuthModule {}

@@ -1,6 +1,10 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import { RegistrationDto, SessionIdDto } from '../../../libs/users/dto';
+import {
+  RegistrationDto,
+  SessionIdDto,
+  UpdatePasswordDto,
+} from '../../../libs/users/dto';
 import { Commands } from '../../../libs/shared';
 import { UserFacade } from '../../../libs/users/application-services';
 import { LoginDto } from '../dto/login.dto';
@@ -14,10 +18,7 @@ export class AuthController {
 
   @MessagePattern({ cmd: Commands.Registration })
   async registration(data: RegistrationDto) {
-    console.log('auth');
-    const res = await this.userFacade.commands.registrationUser(data);
-    console.log({ res });
-    return res;
+    return await this.userFacade.commands.registrationUser(data);
   }
 
   @MessagePattern({ cmd: Commands.Login })
@@ -30,6 +31,11 @@ export class AuthController {
   @MessagePattern({ cmd: Commands.PasswordRecovery })
   async passwordRecovery(email: string) {
     return await this.userFacade.commands.passwordRecovery(email);
+  }
+
+  @MessagePattern({ cmd: Commands.PasswordRecovery })
+  async updatePassword(dto: UpdatePasswordDto) {
+    return await this.userFacade.commands.updatePassword(dto);
   }
 
   @MessagePattern({ cmd: Commands.UpdatePairToken })

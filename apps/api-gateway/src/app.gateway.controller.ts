@@ -38,8 +38,8 @@ export class AppGatewayController {
     @Inject(Microservices.Auth) private authProxyClient: ClientProxy,
   ) {}
 
-  @ApiExcludeEndpoint()
   @Get()
+  @ApiExcludeEndpoint()
   async mainEntry() {
     return 'Welcome to INCTAGRAM API!!!';
   }
@@ -90,7 +90,17 @@ export class AppGatewayController {
   @Post('auth/new-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNewPassword()
-  async createNewPassword(@Body() dto: NewPasswordDto) {}
+  async updatePassword(
+    @Body() { newPassword, recoveryCode }: NewPasswordDto,
+    @CurrentUser() userId: string,
+  ) {
+    const pattern = { cmd: Commands.UpdatePassword };
+    return this.authProxyClient.send(pattern, {
+      userId,
+      newPassword,
+      recoveryCode,
+    });
+  }
 
   @Post('auth/refresh-token')
   @HttpCode(HttpStatus.OK)

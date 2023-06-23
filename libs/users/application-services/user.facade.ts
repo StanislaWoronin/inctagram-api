@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { RegistrationDto, SessionIdDto } from '../dto';
+import { RegistrationDto, SessionIdDto, UpdatePasswordDto } from '../dto';
 import { LoginDto } from '../../../apps/auth/dto/login.dto';
 import {
   CreateUserCommand,
@@ -11,6 +11,8 @@ import {
   LogoutCommandHandler,
   PasswordRecoveryCommand,
   PasswordRecoveryCommandHandler,
+  UpdatePasswordCommand,
+  UpdatePasswordCommandHandler,
 } from './command';
 import {
   UpdatePairTokenCommand,
@@ -30,21 +32,22 @@ export class UserFacade {
     passwordRecovery: (email: string) => this.passwordRecovery(email),
     registrationUser: (data: RegistrationDto) => this.registrationUser(data),
     updatePairToken: (data: SessionIdDto) => this.updatePairToken(data),
+    updatePassword: (data: UpdatePasswordDto) => this.updatePassword(data),
   };
   queries = {};
-
-  private registrationUser(data: RegistrationDto) {
-    return this.commandBus.execute<
-      CreateUserCommand,
-      CreateUserCommandHandler['execute']
-    >(new CreateUserCommand(data));
-  }
 
   private loginUser(data: LoginDto) {
     return this.commandBus.execute<
       LoginUserCommand,
       LoginUserCommandHandler['execute']
     >(new LoginUserCommand(data));
+  }
+
+  private logout(userId: string) {
+    return this.commandBus.execute<
+      LogoutCommand,
+      LogoutCommandHandler['execute']
+    >(new LogoutCommand(userId));
   }
 
   private passwordRecovery(email: string) {
@@ -54,6 +57,13 @@ export class UserFacade {
     >(new PasswordRecoveryCommand(email));
   }
 
+  private registrationUser(data: RegistrationDto) {
+    return this.commandBus.execute<
+      CreateUserCommand,
+      CreateUserCommandHandler['execute']
+    >(new CreateUserCommand(data));
+  }
+
   private updatePairToken(data: SessionIdDto) {
     return this.commandBus.execute<
       UpdatePairTokenCommand,
@@ -61,10 +71,10 @@ export class UserFacade {
     >(new UpdatePairTokenCommand(data));
   }
 
-  private logout(userId: string) {
+  private updatePassword(data: UpdatePasswordDto) {
     return this.commandBus.execute<
-      LogoutCommand,
-      LogoutCommandHandler['execute']
-    >(new LogoutCommand(userId));
+      UpdatePasswordCommand,
+      UpdatePasswordCommandHandler
+    >(new UpdatePasswordCommand(data));
   }
 }

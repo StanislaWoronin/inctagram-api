@@ -25,11 +25,13 @@ export function ApiRegistration() {
     }),
     ApiNoContentResponse({
       description:
-        'Input data is accepted. Email with confirmation code will be send to passed email address',
+        'Input data is accepted. Email with confirmation code will be send to' +
+        ' passed email address',
     }),
     ApiBadRequestResponse({
       description:
-        'If the inputModel has incorrect values (in particular if the user with the given email or password already exists)',
+        'If the inputModel has incorrect values (in particular if the user with' +
+        ' the given email or password already exists)',
       //type: [BadRequestResponse],
     }),
     // ApiTooManyRequestsResponse({
@@ -44,7 +46,8 @@ export function ApiLogin() {
     ApiBody({ type: LoginDto }),
     ApiOkResponse({
       description:
-        'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds)',
+        'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +
+        ' refreshToken in cookie (http-only, secure) (expired after 20 seconds)',
       //type: AccessToken,
     }),
     // ApiBadRequestResponse({
@@ -69,7 +72,9 @@ export function ApiRegistrationEmailResending() {
     }),
     ApiNoContentResponse({
       description:
-        'Input data is accepted.Email with confirmation code will be send to passed email address.Confirmation code should be inside link as query param, for example: https://some-front.com/confirm-registration?code=youtcodehere',
+        'Input data is accepted.Email with confirmation code will be send to passed' +
+        ' email address.Confirmation code should be inside link as query param,' +
+        ' for example: https://some-front.com/confirm-registration?code=yourCodeHere',
     }),
     ApiBadRequestResponse({
       description: 'If the inputModel has incorrect values',
@@ -138,7 +143,8 @@ export function ApiNewPassword() {
     }),
     ApiBadRequestResponse({
       description:
-        'If the inputModel has incorrect value (for incorrect password length) or RecoveryCode is incorrect or expired',
+        'If the inputModel has incorrect value (for incorrect password length) or' +
+        ' RecoveryCode is incorrect or expired or old password equil new password',
       //type: BadRequestResponse,
     }),
     // ApiTooManyRequestsResponse({
@@ -152,12 +158,14 @@ export function ApiRefreshToken() {
     ApiOperation({ summary: 'Update authorization tokens' }),
     ApiOkResponse({
       description:
-        'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
+        'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +
+        ' refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
       //type: AccessToken,
     }),
     ApiUnauthorizedResponse({
       description:
-        'Returns JWT accessToken (expired after 10 seconds) in body and JWT refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
+        'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +
+        ' refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
     }),
   );
 }

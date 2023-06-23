@@ -14,7 +14,7 @@ export class UserAggregate extends UserService implements IUser {
   id: string = randomUUID();
 
   @Prop({ unique: true, type: String })
-  deviseId: string = null;
+  deviceId: string = null;
 
   @Prop({ required: true, type: String })
   login: string;
@@ -28,12 +28,6 @@ export class UserAggregate extends UserService implements IUser {
   @Prop({ type: Number })
   passwordRecovery: number = null;
 
-  password: string;
-
-  passwordConfirmation: string;
-
-  deviceId: string = null;
-
   @Prop({
     required: true,
     type: String,
@@ -46,6 +40,9 @@ export class UserAggregate extends UserService implements IUser {
     type: EmailConfirmation,
   })
   emailConfirmation: EmailConfirmation = new EmailConfirmation();
+
+  readonly password: string;
+  readonly passwordConfirmation: string;
 
   static async create(user: Partial<IUser>) {
     if (user.password !== user.passwordConfirmation)

@@ -25,6 +25,7 @@ export class PasswordRecoveryCommandHandler
       );
       if (isSuccess)
         this.emailManger.sendPasswordRecoveryEmail(email, passwordRecovery);
+
       return;
     }
   }

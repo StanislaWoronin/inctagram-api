@@ -14,6 +14,7 @@ export const settings = {
   },
   timeLife: {
     CONFIRMATION_CODE: '24', // hour
+    PASSWORD_RECOVERY_CODE: 86400000, // msec
     ACCESS_TOKEN: '10000', // msec
     REFRESH_TOKEN: '20000', // msec
   },
