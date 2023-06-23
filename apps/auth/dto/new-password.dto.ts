@@ -18,5 +18,5 @@ export class NewPasswordDto {
   @ApiProperty({ description: 'Password recovery code' })
   @IsString()
   //@Validate(PasswordRecoveryValidator)
-  recoveryCode: string;
+  recoveryCode: number;
 }

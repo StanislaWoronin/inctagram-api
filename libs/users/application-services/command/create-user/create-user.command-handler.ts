@@ -5,13 +5,22 @@ import { UserAggregate } from '../../../schema';
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserCommandHandler
-  implements ICommandHandler<CreateUserCommand, UserAggregate>
+  implements ICommandHandler<CreateUserCommand, boolean>
 {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async execute(data: CreateUserCommand): Promise<UserAggregate> {
-    const user = await UserAggregate.create(data.user);
-    await this.userRepository.createUser(user);
-    return user;
+  async execute({ dto }: CreateUserCommand): Promise<boolean> {
+    try {
+      const newUser = await UserAggregate.create(dto);
+      const createdUser = await this.userRepository.createUser(newUser);
+      if (!createdUser) {
+        throw new Error('Something went wrong.');
+      }
+      return true;
+    } catch (e) {
+      console.log(e); // check it
+      throw new BadRequestException();
+      return false;
+    }
   }
 }

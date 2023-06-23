@@ -14,10 +14,38 @@ export class UserRepository {
     console.log('COrrect', user);
     return await this.userModel.create(user);
   }
+
   async createUserDeviceId(user: UserAggregate): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: user.id },
-      { $push: { deviceId: user.deviceId } },
+      { $set: { deviceId: user.deviceId } },
+    );
+    return result.modifiedCount === 1;
+  }
+
+  async setPasswordRecovery(
+    userId: string,
+    passwordRecovery: number,
+  ): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { id: userId },
+      { $set: { passwordRecovery } },
+    );
+    return result.modifiedCount === 1;
+  }
+
+  async updateUserPassword(
+    userId: string,
+    passwordHash: string,
+  ): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { id: userId },
+      {
+        $set: {
+          passwordHash,
+          passwordRecovery: null,
+        },
+      },
     );
     return result.modifiedCount === 1;
   }
