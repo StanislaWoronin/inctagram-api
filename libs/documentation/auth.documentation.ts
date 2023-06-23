@@ -32,9 +32,9 @@ export function ApiRegistration() {
         'If the inputModel has incorrect values (in particular if the user with the given email or password already exists)',
       //type: [BadRequestResponse],
     }),
-    ApiTooManyRequestsResponse({
-      description: 'More than 5 attempts from one IP-address during 10 seconds',
-    }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -54,9 +54,9 @@ export function ApiLogin() {
     ApiUnauthorizedResponse({
       description: 'If the password or login is wrong',
     }),
-    ApiTooManyRequestsResponse({
-      description: 'More than 5 attempts from one IP-address during 10 seconds',
-    }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -75,9 +75,9 @@ export function ApiRegistrationEmailResending() {
       description: 'If the inputModel has incorrect values',
       //type: [BadRequestResponse],
     }),
-    ApiTooManyRequestsResponse({
-      description: 'More than 5 attempts from one IP-address during 10 seconds',
-    }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -98,9 +98,9 @@ export function ApiRegistrationConfirmation() {
         'If the confirmation code is incorrect, expired or already been applied',
       //type: [BadRequestResponse],
     }),
-    ApiTooManyRequestsResponse({
-      description: 'More than 5 attempts from one IP-address during 10 seconds',
-    }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -120,9 +120,9 @@ export function ApiPasswordRecovery() {
         'If the inputModel has invalid email (for example 222^gmail.com)',
       //type: BadRequestResponse,
     }),
-    ApiTooManyRequestsResponse({
-      description: 'More than 5 attempts from one IP-address during 10 seconds',
-    }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
@@ -141,9 +141,9 @@ export function ApiNewPassword() {
         'If the inputModel has incorrect value (for incorrect password length) or RecoveryCode is incorrect or expired',
       //type: BadRequestResponse,
     }),
-    ApiTooManyRequestsResponse({
-      description: 'More than 5 attempts from one IP-address during 10 seconds',
-    }),
+    // ApiTooManyRequestsResponse({
+    //   description: 'More than 5 attempts from one IP-address during 10 seconds',
+    // }),
   );
 }
 
