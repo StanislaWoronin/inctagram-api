@@ -11,6 +11,7 @@ api-gateway = "node dist/apps/api-gateway/src/main"
 auth-microservice= "node dist/apps/auth/src/main"
 
 [http_service]
+  processes = ["app"]
   internal_port = 5000
   force_https = true
   auto_stop_machines = true
