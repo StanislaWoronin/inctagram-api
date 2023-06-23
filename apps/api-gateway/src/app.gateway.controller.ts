@@ -82,7 +82,10 @@ export class AppGatewayController {
   @Post('auth/password-recovery')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiPasswordRecovery()
-  async passwordRecovery(@Body() dto: PasswordRecoveryDto) {}
+  async passwordRecovery(@Body() dto: PasswordRecoveryDto) {
+    const pattern = { cmd: Commands.PasswordRecovery };
+    return this.authProxyClient.send(pattern, dto.email);
+  }
 
   @Post('auth/new-password')
   @HttpCode(HttpStatus.NO_CONTENT)

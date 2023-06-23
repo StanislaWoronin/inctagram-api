@@ -27,6 +27,11 @@ export class AuthController {
     return await this.userFacade.commands.loginUser(data);
   }
 
+  @MessagePattern({ cmd: Commands.PasswordRecovery })
+  async passwordRecovery(email: string) {
+    return await this.userFacade.commands.passwordRecovery(email);
+  }
+
   @MessagePattern({ cmd: Commands.UpdatePairToken })
   async updatePairToken(
     data: SessionIdDto,

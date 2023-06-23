@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CommandBus, EventBus, QueryBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { RegistrationDto, SessionIdDto } from '../dto';
+import { LoginDto } from '../../../apps/auth/dto/login.dto';
 import {
   CreateUserCommand,
   CreateUserCommandHandler,
-  LogoutCommand,
-  LogoutCommandHandler,
-} from './command';
-import { LoginDto } from '../../../apps/auth/dto/login.dto';
-import {
   LoginUserCommand,
   LoginUserCommandHandler,
-} from './command/login-user';
+  LogoutCommand,
+  LogoutCommandHandler,
+  PasswordRecoveryCommand,
+  PasswordRecoveryCommandHandler,
+} from './command';
 import {
   UpdatePairTokenCommand,
   UpdatePairTokenCommandHandler,
@@ -25,10 +25,11 @@ export class UserFacade {
   ) {}
 
   commands = {
-    registrationUser: (data: RegistrationDto) => this.registrationUser(data),
     loginUser: (data: LoginDto) => this.loginUser(data),
-    updatePairToken: (data: SessionIdDto) => this.updatePairToken(data),
     logout: (userId: string) => this.logout(userId),
+    passwordRecovery: (email: string) => this.passwordRecovery(email),
+    registrationUser: (data: RegistrationDto) => this.registrationUser(data),
+    updatePairToken: (data: SessionIdDto) => this.updatePairToken(data),
   };
   queries = {};
 
@@ -44,6 +45,13 @@ export class UserFacade {
       LoginUserCommand,
       LoginUserCommandHandler['execute']
     >(new LoginUserCommand(data));
+  }
+
+  private passwordRecovery(email: string) {
+    return this.commandBus.execute<
+      PasswordRecoveryCommand,
+      PasswordRecoveryCommandHandler['execute']
+    >(new PasswordRecoveryCommand(email));
   }
 
   private updatePairToken(data: SessionIdDto) {
