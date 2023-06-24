@@ -3,6 +3,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
@@ -15,6 +16,7 @@ import { ResendingEmailConfirmationDto } from '../../apps/auth/dto/resending-ema
 import { RegistrationConfirmationDto } from '../../apps/auth/dto/registration-confirmation.dto';
 import { PasswordRecoveryDto } from '../../apps/auth/dto/password-recovery.dto';
 import { NewPasswordDto } from '../../apps/auth/dto/new-password.dto';
+import { ViewUser } from '../users/response';
 
 export function ApiRegistration() {
   return applyDecorators(
@@ -24,10 +26,11 @@ export function ApiRegistration() {
       type: RegistrationDto,
       required: true,
     }),
-    ApiNoContentResponse({
+    ApiCreatedResponse({
       description:
         'Input data is accepted. Email with confirmation code will be send to' +
         ' passed email address',
+      type: ViewUser,
     }),
     ApiBadRequestResponse({
       description:

@@ -11,6 +11,8 @@ import {
   EmailAdapters,
   EmailManager,
 } from '../../../libs/adapters/email.adapter';
+import { UserRepository } from '../../../libs/users/providers/user.repository';
+import { UserQueryRepository } from '../../../libs/users/providers/user.query.repository';
 
 @Module({
   imports: [

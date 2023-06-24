@@ -7,19 +7,20 @@ import { EmailConfirmation } from './email-confirmation.schema';
 import { BadRequestException } from '@nestjs/common';
 import { settings } from '../../shared/settings';
 import bcrypt from 'bcrypt';
+import { Device } from './device.schema';
 
 @Schema()
 export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, type: String })
   id: string = randomUUID();
 
-  @Prop({ type: String })
-  devicesId: string[] = [];
+  @Prop({ array: true, default: [] })
+  devices: Device[];
 
   @Prop({ required: true, type: String })
   login: string;
 
-  @Prop({ required: true, type: String })
+  @Prop({ required: true, unique: true, type: String })
   email: string;
 
   @Prop({ required: true, type: String })
@@ -51,6 +52,7 @@ export class UserAggregate extends UserService implements IUser {
     Object.assign(_user, user);
     const hash = await bcrypt.hash(user.password, 10);
     _user.passwordHash = hash;
+
     return _user;
   }
 }
