@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { UserAggregate, UsersDocument } from '../schema';
+import { Device, UserAggregate, UsersDocument } from '../schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { SessionIdDto } from '../dto';
 
 @Injectable()
 export class UserRepository {
@@ -12,15 +11,13 @@ export class UserRepository {
   ) {}
 
   async createUser(user: UserAggregate): Promise<UsersDocument> {
-    console.log('COrrect', user);
     return await this.userModel.create(user);
   }
 
-  async createUserDeviceId(dto: SessionIdDto): Promise<boolean> {
-    const { userId, deviceId } = dto;
+  async createUserDevice(userId: string, device: Device): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },
-      { $push: { devicesId: deviceId } },
+      { $push: { devices: device } },
     );
 
     return result.modifiedCount === 1;
@@ -53,12 +50,23 @@ export class UserRepository {
     return result.modifiedCount === 1;
   }
 
-  async removeDeviceId(userId: string, devices: string[]): Promise<boolean> {
+  async removeDeviceId(userId: string, deviceId: string): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },
-      { $set: { devicesId: devices } },
+      { $pull: { userDevicesData: { deviceId: deviceId } } },
     );
 
+    return result.modifiedCount === 1;
+  }
+
+  async updateEmailConfirmationCode(
+    userId: string,
+    emailConfirmationCode: string,
+  ): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { id: userId },
+      { $set: { 'emailConfirmation.confirmationCode': emailConfirmationCode } },
+    );
     return result.modifiedCount === 1;
   }
 }

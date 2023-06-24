@@ -1,8 +1,9 @@
 import { EmailConfirmation } from './email-confirmation.schema';
+import { Device } from './device.schema';
 
 export interface IUser {
   id: string;
-  devicesId: string[];
+  devices: Device[];
   login: string;
   email: string;
   passwordHash: string;
