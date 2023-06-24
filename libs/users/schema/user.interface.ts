@@ -7,7 +7,7 @@ export interface IUser {
   login: string;
   email: string;
   passwordHash: string;
-  passwordRecovery: number | null;
+  passwordRecoveryCode: number | null;
   createdAt: string;
   emailConfirmation: EmailConfirmation;
   readonly password: string;

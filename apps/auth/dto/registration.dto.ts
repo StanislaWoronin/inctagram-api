@@ -1,10 +1,15 @@
-import { RegistrationDto as IRegistrationDto } from '../../../libs/users/dto';
 import { ApiProperty } from '@nestjs/swagger';
 import { userValidationConstant } from '../../../libs/users/user-validation.constant';
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { IUser } from '../../../libs/users/schema';
 
-export class RegistrationDto implements IRegistrationDto {
+export type TRegistration = Pick<
+  IUser,
+  'login' | 'email' | 'password' | 'passwordConfirmation'
+>;
+
+export class RegistrationDto implements TRegistration {
   @ApiProperty({ example: 'somemail@mail.com', description: 'User`s email' })
   @IsNotEmpty()
   @IsString()

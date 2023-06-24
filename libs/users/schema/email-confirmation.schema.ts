@@ -4,6 +4,12 @@ import { randomUUID } from 'crypto';
 import { add } from 'date-fns';
 import { settings } from '../../shared/settings';
 
+export interface IEmailConfirmation {
+  confirmationCode: string;
+  expirationDate: string;
+  isConfirmed: boolean;
+}
+
 @Schema({ _id: false, versionKey: false })
 export class EmailConfirmation {
   @Prop({ required: false, type: String, default: null })

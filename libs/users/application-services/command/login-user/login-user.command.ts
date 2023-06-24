@@ -1,4 +1,4 @@
-import { LoginDto } from '../../../../../apps/auth/dto/login.dto';
+import { LoginDto } from '../../../../../apps/auth/dto';
 import { WithClientMeta } from '../../../dto';
 
 export class LoginUserCommand {

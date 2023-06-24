@@ -27,7 +27,7 @@ export class UserAggregate extends UserService implements IUser {
   passwordHash: string;
 
   @Prop({ type: Number })
-  passwordRecovery: number = null;
+  passwordRecoveryCode: number = null;
 
   @Prop({
     required: true,

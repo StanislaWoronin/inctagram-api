@@ -22,10 +22,8 @@ export class LoginUserCommandHandler
     private configService: ConfigService,
   ) {}
 
-  async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
-    console.log(command.dto.ipAddress);
-    const { loginOrEmail, password, ipAddress, title } = command.dto;
-    console.log('loginOrEmail', Object.values(loginOrEmail));
+  async execute({ dto }: LoginUserCommand): Promise<PairTokenResponse> {
+    const { loginOrEmail, password, ipAddress, title } = dto;
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
       loginOrEmail,
     );

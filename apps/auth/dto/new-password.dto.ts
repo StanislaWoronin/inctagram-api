@@ -1,8 +1,13 @@
 import { IsString, Length, Validate } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { userValidationConstant } from '../../../libs/users/user-validation.constant';
+import { IUser } from '../../../libs/users/schema';
 
-export class NewPasswordDto {
+export type TNewPassword = Pick<IUser, 'passwordRecoveryCode'>;
+
+export class NewPasswordDto implements TNewPassword {
+  userId: string;
+
   @ApiProperty({
     description: 'New password',
     minLength: userValidationConstant.passwordLength.min,
@@ -18,5 +23,5 @@ export class NewPasswordDto {
   @ApiProperty({ description: 'Password recovery code' })
   @IsString()
   //@Validate(PasswordRecoveryValidator)
-  recoveryCode: number;
+  passwordRecoveryCode: number;
 }
