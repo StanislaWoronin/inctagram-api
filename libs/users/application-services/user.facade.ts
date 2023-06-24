@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { SessionIdDto, WithClientMeta } from '../dto';
 import {
   LoginDto,
   NewPasswordDto,
+  SessionIdDto,
   TRegistration,
+  WithClientMeta,
 } from '../../../apps/auth/dto';
 import {
   CreateUserCommand,
@@ -39,7 +40,6 @@ export class UserFacade {
       this.emailConfirmationCodeResending(email),
     registrationConfirmation: (code: string) =>
       this.registrationConfirmation(code),
-
   };
   queries = {
     getUserByIdOrLoginOrEmail: (loginOrEmail: string) =>

@@ -1,15 +1,15 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
-import {
-  RegistrationDto,
-  SessionIdDto,
-  UpdatePasswordDto,
-  WithClientMeta,
-} from '../../../libs/users/dto';
 import { Commands } from '../../../libs/shared';
 import { UserFacade } from '../../../libs/users/application-services';
 import { PairTokenResponse, ViewUser } from '../../../libs/users/response';
 import { LoginDto } from '../dto/login.dto';
+import {
+  NewPasswordDto,
+  RegistrationDto,
+  SessionIdDto,
+  WithClientMeta,
+} from '../dto';
 
 @Controller()
 export class AuthController {
