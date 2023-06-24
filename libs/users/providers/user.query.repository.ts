@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import {Devise, UserAggregate, UsersDocument} from '../schema';
+import { UserAggregate, UsersDocument } from '../schema';
 import { Model } from 'mongoose';
-import { SessionIdDto } from '../dto';
 
 @Injectable()
 export class UserQueryRepository {

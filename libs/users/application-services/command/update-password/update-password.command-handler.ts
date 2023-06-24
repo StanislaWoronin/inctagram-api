@@ -3,7 +3,6 @@ import { UpdatePasswordCommand } from './update-password.command';
 import { UserRepository } from '../../../providers/user.repository';
 import { UserQueryRepository } from '../../../providers/user.query.repository';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { settings } from '../../../../shared/settings';
 import bcrypt from 'bcrypt';
 
 @CommandHandler(UpdatePasswordCommand)
@@ -15,8 +14,8 @@ export class UpdatePasswordCommandHandler
     private userQueryRepository: UserQueryRepository,
   ) {}
 
-  async execute({ dto }: UpdatePasswordCommand) {
-    const { userId, newPassword, recoveryCode } = dto;
+  async execute(command: UpdatePasswordCommand) {
+    const { userId, newPassword, recoveryCode } = command.dto;
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
       userId,
     );

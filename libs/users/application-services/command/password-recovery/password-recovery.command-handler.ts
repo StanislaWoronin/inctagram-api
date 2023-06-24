@@ -14,9 +14,9 @@ export class PasswordRecoveryCommandHandler
     private emailManger: EmailManager,
   ) {}
 
-  async execute({ email }: PasswordRecoveryCommand) {
+  async execute(command: PasswordRecoveryCommand) {
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      email,
+      command.email,
     );
     if (user) {
       const passwordRecovery = Date.now();
@@ -26,7 +26,7 @@ export class PasswordRecoveryCommandHandler
       );
       if (isSuccess)
         await this.emailManger.sendPasswordRecoveryEmail(
-          email,
+          command.email,
           passwordRecovery,
         );
 

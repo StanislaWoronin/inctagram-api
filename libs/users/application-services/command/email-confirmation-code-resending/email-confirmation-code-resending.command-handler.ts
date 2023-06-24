@@ -16,11 +16,11 @@ export class EmailConfirmationCodeResendingCommandHandler
     private emailManger: EmailManager,
   ) {}
 
-  async execute({
-    email,
-  }: EmailConfirmationCodeResendingCommand): Promise<boolean> {
+  async execute(
+    command: EmailConfirmationCodeResendingCommand,
+  ): Promise<boolean> {
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      email,
+      command.email,
     );
     if (user.emailConfirmation.isConfirmed) {
       throw new BadRequestException('Email is already confirmed');
@@ -31,7 +31,8 @@ export class EmailConfirmationCodeResendingCommandHandler
       newEmailConfirmationCode,
     );
     await this.emailManger.sendConfirmationEmail(
-      email,newEmailConfirmationCode
+      command.email,
+      newEmailConfirmationCode,
     );
     return true;
   }

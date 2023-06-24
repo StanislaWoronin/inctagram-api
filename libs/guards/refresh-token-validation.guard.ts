@@ -34,7 +34,9 @@ export class RefreshTokenValidationGuard implements CanActivate {
     const user = await this.queryUsersRepository.getUserByIdOrLoginOrEmail(
       tokenPayload.userId,
     );
-    const device = user.devices.filter(d => d.deviceId === tokenPayload.deviceId)
+    const device = user.devices.filter(
+      (d) => d.deviceId === tokenPayload.deviceId,
+    );
 
     if (!device) {
       // console.log('Пользовотель не нашелся')

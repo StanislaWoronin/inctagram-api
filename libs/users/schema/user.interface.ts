@@ -1,9 +1,9 @@
 import { EmailConfirmation } from './email-confirmation.schema';
-import {Devise} from "./devise.schema";
+import { Device } from './device.schema';
 
 export interface IUser {
   id: string;
-  devices: Devise[];
+  devices: Device[];
   login: string;
   email: string;
   passwordHash: string;
