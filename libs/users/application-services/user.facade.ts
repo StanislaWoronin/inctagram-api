@@ -17,6 +17,9 @@ import {
 import { UpdatePairTokenCommand } from './command/update-pair-token';
 import { PairTokenResponse, ViewUser } from '../response';
 import { EmailConfirmationCodeResendingCommand } from './command/email-confirmation-code-resending';
+import { GetUserByLoginOrEmailCommand } from './queries/get-user-by-login-or-email-query';
+import { RegistrationConfirmationCommand } from './command/registration-confirmation';
+import { GetUserByConfirmationCodeCommand } from './queries/get-user-by-confirmation-code-query';
 
 @Injectable()
 export class UserFacade {
@@ -35,8 +38,15 @@ export class UserFacade {
     updatePassword: (data: UpdatePasswordDto) => this.updatePassword(data),
     emailConfirmationCodeResending: (email: string) =>
       this.emailConfirmationCodeResending(email),
+    registrationConfirmation: (code: string) =>
+      this.registrationConfirmation(code),
   };
-  queries = {};
+  queries = {
+    getUserByIdOrLoginOrEmail: (loginOrEmail: string) =>
+      this.getUserByIdOrLoginOrEmail(loginOrEmail),
+    getUserByConfirmationCode: (code: string) =>
+      this.getUserByConfirmationCode(code),
+  };
 
   private async loginUser(
     dto: WithClientMeta<LoginDto>,
@@ -52,6 +62,11 @@ export class UserFacade {
 
   private emailConfirmationCodeResending(email: string) {
     const command = new EmailConfirmationCodeResendingCommand(email);
+    return this.commandBus.execute(command);
+  }
+
+  private registrationConfirmation(code: string) {
+    const command = new RegistrationConfirmationCommand(code);
     return this.commandBus.execute(command);
   }
 
@@ -73,5 +88,17 @@ export class UserFacade {
   private updatePassword(dto: UpdatePasswordDto) {
     const command = new UpdatePasswordCommand(dto);
     return this.commandBus.execute(command);
+  }
+
+  private async getUserByIdOrLoginOrEmail(
+    loginOrEmail: string,
+  ): Promise<ViewUser> {
+    const command = new GetUserByLoginOrEmailCommand(loginOrEmail);
+    return await this.queryBus.execute(command);
+  }
+
+  private async getUserByConfirmationCode(code: string): Promise<ViewUser> {
+    const command = new GetUserByConfirmationCodeCommand(code);
+    return await this.queryBus.execute(command);
   }
 }

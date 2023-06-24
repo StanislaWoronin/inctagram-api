@@ -1,14 +1,16 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { EmailConfirmationCodeResendingCommand } from './email-confirmation-code-resending.command';
 import { UserQueryRepository } from '../../../providers/user.query.repository';
 import { UserRepository } from '../../../providers/user.repository';
 import { EmailManager } from '../../../../adapters/email.adapter';
-import { BadRequestException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+
+export class EmailConfirmationCodeResendingCommand {
+  constructor(public readonly email: string) {}
+}
 
 @CommandHandler(EmailConfirmationCodeResendingCommand)
 export class EmailConfirmationCodeResendingCommandHandler
-  implements ICommandHandler<EmailConfirmationCodeResendingCommand>
+  implements ICommandHandler<EmailConfirmationCodeResendingCommand, boolean>
 {
   constructor(
     private userRepository: UserRepository,
@@ -22,9 +24,6 @@ export class EmailConfirmationCodeResendingCommandHandler
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
       command.email,
     );
-    if (user.emailConfirmation.isConfirmed) {
-      throw new BadRequestException('Email is already confirmed');
-    }
     const newEmailConfirmationCode = randomUUID();
     await this.userRepository.updateEmailConfirmationCode(
       user.id,

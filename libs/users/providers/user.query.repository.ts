@@ -26,4 +26,10 @@ export class UserQueryRepository {
     const userExists = await this.userModel.exists({ id: userId });
     return !!userExists;
   }
+
+  async getUserByConfirmationCode(code: string): Promise<UserAggregate | null> {
+    return this.userModel.findOne({
+      'emailConfirmationCode.confirmationCode': code,
+    });
+  }
 }

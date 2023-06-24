@@ -69,4 +69,15 @@ export class UserRepository {
     );
     return result.modifiedCount === 1;
   }
+
+  async updateUserEmailStatus(
+    userId: string,
+    status: boolean,
+  ): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { id: userId },
+      { $set: { 'emailConfirmation.isConfirmed': status } },
+    );
+    return result.modifiedCount === 1;
+  }
 }

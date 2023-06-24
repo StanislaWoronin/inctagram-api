@@ -7,7 +7,6 @@ import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcrypt';
 import { settings } from '../../../../shared/settings';
 import { PairTokenResponse } from '../../../response';
-import { randomUUID } from 'crypto';
 import { UserRepository } from '../../../providers/user.repository';
 import { Device } from '../../../schema';
 
@@ -23,9 +22,7 @@ export class LoginUserCommandHandler
   ) {}
 
   async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
-    console.log(command.dto.ipAddress);
     const { loginOrEmail, password, ipAddress, title } = command.dto;
-    console.log('loginOrEmail', Object.values(loginOrEmail));
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
       loginOrEmail,
     );
@@ -33,12 +30,10 @@ export class LoginUserCommandHandler
       throw new UnauthorizedException();
     }
     const passwordEqual = await bcrypt.compare(password, user.passwordHash);
-
     if (!passwordEqual) {
       throw new UnauthorizedException();
     }
 
-    const deviceId = randomUUID();
     const device = Device.create({ ipAddress, title });
     await this.userRepository.createUserDevice(user.id, device);
 
@@ -46,27 +41,26 @@ export class LoginUserCommandHandler
       this.jwtService.signAsync(
         {
           id: user.id,
-          deviceId: deviceId,
+          deviceId: device.deviceId,
           lastActiveDate: new Date(),
         },
         {
-          secret: this.configService.get<string>('jwtAccessTokenSecret'),
+          secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
           expiresIn: settings.timeLife.ACCESS_TOKEN,
         },
       ),
       this.jwtService.signAsync(
         {
           id: user.id,
-          deviceId: deviceId,
+          deviceId: device.deviceId,
           lastActiveDate: new Date(),
         },
         {
-          secret: this.configService.get<string>('jwtRefreshTokenSecret'),
+          secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
           expiresIn: settings.timeLife.REFRESH_TOKEN,
         },
       ),
     ]);
-
     return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
 }
