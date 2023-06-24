@@ -1,10 +1,10 @@
 export enum Commands {
-  EmailConfirmationCodeResending = 'email-resending',
   Login = 'login',
   Logout = 'logout',
   PasswordRecovery = 'password-recovery',
   UpdatePassword = 'update-password',
   Registration = 'registration',
   RegistrationConfirmation = 'registration-confirmation',
+  EmailConfirmationResending = 'confirmation-email-resending',
   UpdatePairToken = 'update-pair-token',
 }

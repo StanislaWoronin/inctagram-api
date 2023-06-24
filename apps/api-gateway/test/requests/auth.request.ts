@@ -1,15 +1,14 @@
 import request from 'supertest';
-import { RegistrationDto } from '../../../../libs/users/dto';
 import { TestResponse } from '../types/test-response';
 import { ViewUser } from '../../../../libs/users/response';
-import { LoginDto } from '../../../auth/dto/login.dto';
+import { LoginDto, TRegistration } from '../../../auth/dto';
 import { LoginResponse } from '../../../../libs/users/response';
 
 export class AuthRequest {
   constructor(private readonly server: any) {}
 
   async registrationUser(
-    registrationUserDto: RegistrationDto,
+    registrationUserDto: TRegistration,
   ): Promise<TestResponse<ViewUser>> {
     const response = await request(this.server)
       .post('/auth/registration')

@@ -14,15 +14,15 @@ export class UpdatePasswordCommandHandler
     private userQueryRepository: UserQueryRepository,
   ) {}
 
-  async execute(command: UpdatePasswordCommand) {
-    const { userId, newPassword, recoveryCode } = command.dto;
+  async execute({ dto }: UpdatePasswordCommand) {
+    const { userId, newPassword, passwordRecoveryCode } = dto;
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
       userId,
     );
     if (!user) throw new NotFoundException();
 
-    const isDifferent = user.passwordRecovery !== recoveryCode;
-    const isExpired = recoveryCode < Date.now();
+    const isDifferent = user.passwordRecoveryCode !== passwordRecoveryCode;
+    const isExpired = passwordRecoveryCode < Date.now();
     if (isDifferent || isExpired)
       throw new BadRequestException(
         'The time to update the' +

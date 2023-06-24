@@ -2,8 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsString, Length } from 'class-validator';
 import { userValidationConstant } from '../../../libs/users/user-validation.constant';
+import { IUser } from '../../../libs/users/schema';
 
-export class LoginDto {
+export type TLogin = Pick<IUser, 'password'> & { loginOrEmail: string };
+
+export class LoginDto implements TLogin {
   @ApiProperty()
   @IsString()
   @Transform(({ value }) => value?.trim())

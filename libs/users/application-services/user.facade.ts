@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { SessionIdDto, WithClientMeta } from '../dto';
 import {
-  RegistrationDto,
-  SessionIdDto,
-  UpdatePasswordDto,
-  WithClientMeta,
-} from '../dto';
-import { LoginDto } from '../../../apps/auth/dto/login.dto';
+  LoginDto,
+  NewPasswordDto,
+  TRegistration,
+} from '../../../apps/auth/dto';
 import {
   CreateUserCommand,
   LoginUserCommand,
@@ -32,14 +31,15 @@ export class UserFacade {
     loginUser: (dto: WithClientMeta<LoginDto>) => this.loginUser(dto),
     logout: (dto: SessionIdDto) => this.logout(dto),
     passwordRecovery: (email: string) => this.passwordRecovery(email),
-    registrationUser: (data: RegistrationDto) => this.registrationUser(data),
+    registrationUser: (data: TRegistration) => this.registrationUser(data),
     updatePairToken: (dto: WithClientMeta<SessionIdDto>) =>
       this.updatePairToken(dto),
-    updatePassword: (data: UpdatePasswordDto) => this.updatePassword(data),
+    updatePassword: (data: NewPasswordDto) => this.updatePassword(data),
     emailConfirmationCodeResending: (email: string) =>
       this.emailConfirmationCodeResending(email),
     registrationConfirmation: (code: string) =>
       this.registrationConfirmation(code),
+
   };
   queries = {
     getUserByIdOrLoginOrEmail: (loginOrEmail: string) =>
@@ -75,7 +75,7 @@ export class UserFacade {
     return this.commandBus.execute(command);
   }
 
-  private async registrationUser(dto: RegistrationDto): Promise<ViewUser> {
+  private async registrationUser(dto: TRegistration): Promise<ViewUser> {
     const command = new CreateUserCommand(dto);
     return await this.commandBus.execute(command);
   }
@@ -85,7 +85,7 @@ export class UserFacade {
     return this.commandBus.execute(command);
   }
 
-  private updatePassword(dto: UpdatePasswordDto) {
+  private updatePassword(dto: NewPasswordDto) {
     const command = new UpdatePasswordCommand(dto);
     return this.commandBus.execute(command);
   }

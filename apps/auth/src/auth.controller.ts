@@ -30,18 +30,13 @@ export class AuthController {
     return await this.userFacade.commands.emailConfirmationCodeResending(email);
   }
 
-  @MessagePattern({ cmd: Commands.RegistrationConfirmation })
-  async registrationConfirmation(email: string) {
-    return await this.userFacade.commands.registrationConfirmation(email);
-  }
-
   @MessagePattern({ cmd: Commands.PasswordRecovery })
   async passwordRecovery(email: string) {
     return await this.userFacade.commands.passwordRecovery(email);
   }
 
   @MessagePattern({ cmd: Commands.UpdatePassword })
-  async updatePassword(dto: UpdatePasswordDto) {
+  async updatePassword(dto: NewPasswordDto) {
     return await this.userFacade.commands.updatePassword(dto);
   }
 

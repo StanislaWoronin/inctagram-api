@@ -10,12 +10,13 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { RegistrationDto } from '../../apps/auth/dto/registration.dto';
-import { LoginDto } from '../../apps/auth/dto/login.dto';
-import { ResendingEmailConfirmationDto } from '../../apps/auth/dto/resending-email-confirmation.dto';
-import { RegistrationConfirmationDto } from '../../apps/auth/dto/registration-confirmation.dto';
-import { PasswordRecoveryDto } from '../../apps/auth/dto/password-recovery.dto';
-import { NewPasswordDto } from '../../apps/auth/dto/new-password.dto';
+import {
+  RegistrationDto,
+  LoginDto,
+  EmailDto,
+  RegistrationConfirmationDto,
+  NewPasswordDto,
+} from '../../apps/auth/dto';
 import { ViewUser } from '../users/response';
 
 export function ApiRegistration() {
@@ -73,7 +74,7 @@ export function ApiRegistrationEmailResending() {
     ApiTags('Auth'),
     ApiOperation({ summary: 'Re-sends registration confirmation code' }),
     ApiBody({
-      type: ResendingEmailConfirmationDto,
+      type: EmailDto,
       required: true,
     }),
     ApiNoContentResponse({
@@ -121,7 +122,7 @@ export function ApiPasswordRecovery() {
     ApiTags('Auth'),
     ApiOperation({ summary: 'Password recovery request' }),
     ApiBody({
-      type: PasswordRecoveryDto,
+      type: EmailDto,
       required: true,
     }),
     ApiNoContentResponse({
