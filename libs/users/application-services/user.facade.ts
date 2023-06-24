@@ -16,7 +16,7 @@ import {
 } from './command';
 import { UpdatePairTokenCommand } from './command/update-pair-token';
 import { PairTokenResponse, ViewUser } from '../response';
-import { EmailConfirmationCodeResendingCommand } from './command/email-confirmation-code-resending';
+import { ConfirmationCodeResendingCommand } from './command/email-confirmation-code-resending';
 import { GetUserByLoginOrEmailCommand } from './queries/get-user-by-login-or-email-query';
 import { RegistrationConfirmationCommand } from './command/registration-confirmation';
 import { GetUserByConfirmationCodeCommand } from './queries/get-user-by-confirmation-code-query';
@@ -36,8 +36,8 @@ export class UserFacade {
     updatePairToken: (dto: WithClientMeta<SessionIdDto>) =>
       this.updatePairToken(dto),
     updatePassword: (data: NewPasswordDto) => this.updatePassword(data),
-    emailConfirmationCodeResending: (email: string) =>
-      this.emailConfirmationCodeResending(email),
+    confirmationCodeResending: (email: string) =>
+      this.confirmationCodeResending(email),
     registrationConfirmation: (code: string) =>
       this.registrationConfirmation(code),
   };
@@ -60,8 +60,8 @@ export class UserFacade {
     return this.commandBus.execute(command);
   }
 
-  private emailConfirmationCodeResending(email: string) {
-    const command = new EmailConfirmationCodeResendingCommand(email);
+  private confirmationCodeResending(email: string) {
+    const command = new ConfirmationCodeResendingCommand(email);
     return this.commandBus.execute(command);
   }
 

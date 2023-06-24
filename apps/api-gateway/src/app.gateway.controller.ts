@@ -88,8 +88,8 @@ export class AppGatewayController {
   @Post('auth/confirmation-email-resending')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistrationEmailResending()
-  async emailConfirmationResending(@Body() dto: TEmail) {
-    const pattern = { cmd: Commands.EmailConfirmationCodeResending };
+  async confirmationCodeResending(@Body() dto: TEmail) {
+    const pattern = { cmd: Commands.ConfirmationCodeResending };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
     );

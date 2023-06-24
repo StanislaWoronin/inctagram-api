@@ -4,13 +4,13 @@ import { UserRepository } from '../../../providers/user.repository';
 import { EmailManager } from '../../../../adapters/email.adapter';
 import { randomUUID } from 'crypto';
 
-export class EmailConfirmationCodeResendingCommand {
+export class ConfirmationCodeResendingCommand {
   constructor(public readonly email: string) {}
 }
 
-@CommandHandler(EmailConfirmationCodeResendingCommand)
-export class EmailConfirmationCodeResendingCommandHandler
-  implements ICommandHandler<EmailConfirmationCodeResendingCommand, boolean>
+@CommandHandler(ConfirmationCodeResendingCommand)
+export class ConfirmationCodeResendingCommandHandler
+  implements ICommandHandler<ConfirmationCodeResendingCommand, boolean>
 {
   constructor(
     private userRepository: UserRepository,
@@ -18,9 +18,7 @@ export class EmailConfirmationCodeResendingCommandHandler
     private emailManger: EmailManager,
   ) {}
 
-  async execute(
-    command: EmailConfirmationCodeResendingCommand,
-  ): Promise<boolean> {
+  async execute(command: ConfirmationCodeResendingCommand): Promise<boolean> {
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
       command.email,
     );

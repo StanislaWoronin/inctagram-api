@@ -25,9 +25,14 @@ export class AuthController {
     return await this.userFacade.commands.loginUser(data);
   }
 
-  @MessagePattern({ cmd: Commands.EmailConfirmationCodeResending })
-  async emailConfirmationCodeResending(email: string) {
-    return await this.userFacade.commands.emailConfirmationCodeResending(email);
+  @MessagePattern({ cmd: Commands.ConfirmationCodeResending })
+  async confirmationCodeResending(email: string) {
+    return await this.userFacade.commands.confirmationCodeResending(email);
+  }
+
+  @MessagePattern({ cmd: Commands.RegistrationConfirmation })
+  async registrationConfirmation(email: string) {
+    return await this.userFacade.commands.registrationConfirmation(email);
   }
 
   @MessagePattern({ cmd: Commands.PasswordRecovery })

@@ -6,7 +6,7 @@ import { UpdatePairTokenCommandHandler } from './update-pair-token';
 import { LogoutCommandHandler } from './logout/logout.command-handler';
 import { PasswordRecoveryCommandHandler } from './password-recovery';
 import { UpdatePasswordCommandHandler } from './update-password';
-import { EmailConfirmationCodeResendingCommandHandler } from './email-confirmation-code-resending';
+import { ConfirmationCodeResendingCommandHandler } from './email-confirmation-code-resending';
 import { RegistrationConfirmationCommandHandler } from './registration-confirmation';
 
 // Commands
@@ -27,7 +27,7 @@ export const USER_COMMANDS_HANDLERS: Type<ICommandHandler>[] = [
   CreateUserCommandHandler,
   LoginUserCommandHandler,
   LogoutCommandHandler,
-  EmailConfirmationCodeResendingCommandHandler,
+  ConfirmationCodeResendingCommandHandler,
   RegistrationConfirmationCommandHandler,
   PasswordRecoveryCommandHandler,
   UpdatePairTokenCommandHandler,

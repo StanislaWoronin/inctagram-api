@@ -5,6 +5,6 @@ export enum Commands {
   UpdatePassword = 'update-password',
   Registration = 'registration',
   RegistrationConfirmation = 'registration-confirmation',
-  EmailConfirmationCodeResending = 'confirmation-email-resending',
+  ConfirmationCodeResending = 'confirmation-email-resending',
   UpdatePairToken = 'update-pair-token',
 }

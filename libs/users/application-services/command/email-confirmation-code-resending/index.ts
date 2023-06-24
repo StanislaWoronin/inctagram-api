@@ -1,1 +1,1 @@
-export * from './email-confirmation-code-resending.command-handler';
+export * from './confirmation-code-resending-command.handler';
