@@ -23,9 +23,9 @@ export class LoginUserCommandHandler
   ) {}
 
   async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
-    console.log(command.dto);
+    console.log(command.dto.ipAddress);
     const { loginOrEmail, password, ipAddress, title } = command.dto;
-    console.log('loginOrEmail', loginOrEmail);
+    console.log('loginOrEmail', Object.values(loginOrEmail));
     const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
       loginOrEmail,
     );

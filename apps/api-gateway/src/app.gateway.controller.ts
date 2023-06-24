@@ -75,7 +75,7 @@ export class AppGatewayController {
     const pattern = { cmd: Commands.Login };
     const tokens = await lastValueFrom(
       this.authProxyClient
-        .send(pattern, { dto, ipAddress, title })
+        .send(pattern, { ...dto, ipAddress, title })
         .pipe(map((result) => result)),
     );
     response.cookie('refreshToken', tokens.refreshToken, {
