@@ -17,15 +17,16 @@ export class RegistrationConfirmationCommandHandler
   ) {}
 
   async execute(command: RegistrationConfirmationCommand): Promise<boolean> {
-    const user = await this.userQueryRepository.getUserByConfirmationCode(
+    const user = await this.userQueryRepository.getEmailConfirmationByCode(
       command.code,
     );
+
     const newEmailConfirmationCode = randomUUID();
     await this.userRepository.updateEmailConfirmationCode(
       user.id,
       newEmailConfirmationCode,
     );
-    await this.userRepository.updateUserEmailStatus(user.id, true);
+    await this.userRepository.updateUserConfirmationStatus(user.id);
     return true;
   }
 }

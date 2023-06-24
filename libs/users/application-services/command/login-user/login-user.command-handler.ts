@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { LoginUserCommand } from './login-user.command';
 import { UserQueryRepository } from '../../../providers/user.query.repository';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +8,11 @@ import { settings } from '../../../../shared/settings';
 import { PairTokenResponse } from '../../../response';
 import { UserRepository } from '../../../providers/user.repository';
 import { Device } from '../../../schema';
+import { LoginDto, WithClientMeta } from '../../../../../apps/auth/dto';
+
+export class LoginUserCommand {
+  constructor(public readonly dto: WithClientMeta<LoginDto>) {}
+}
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserCommandHandler
@@ -22,10 +26,9 @@ export class LoginUserCommandHandler
   ) {}
 
   async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
+    console.log('handler');
     const { loginOrEmail, password, ipAddress, title } = command.dto;
-    const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      loginOrEmail,
-    );
+    const user = await this.userQueryRepository.getUserByField(loginOrEmail);
     if (!user) {
       throw new UnauthorizedException();
     }

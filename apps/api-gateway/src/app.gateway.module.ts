@@ -11,6 +11,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfig } from '../../../libs/providers/mongo-db';
 import { UserAggregate, UserSchema } from '../../../libs/users/schema';
 import { UserQueryRepository } from '../../../libs/users/providers/user.query.repository';
+import { TestingRepository } from '../../auth/src/testing.repository';
 
 @Module({
   imports: [
@@ -28,6 +29,6 @@ import { UserQueryRepository } from '../../../libs/users/providers/user.query.re
     }),
   ],
   controllers: [AppGatewayController],
-  providers: [JwtService, UserQueryRepository],
+  providers: [JwtService, UserQueryRepository, TestingRepository],
 })
 export class AppGatewayModule {}

@@ -1,8 +1,12 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { PasswordRecoveryCommand } from './password-recovery.command';
 import { UserQueryRepository } from '../../../providers/user.query.repository';
 import { UserRepository } from '../../../providers/user.repository';
 import { EmailManager } from '../../../../adapters/email.adapter';
+import { settings } from '../../../../shared/settings';
+
+export class PasswordRecoveryCommand {
+  constructor(public readonly email: string) {}
+}
 
 @CommandHandler(PasswordRecoveryCommand)
 export class PasswordRecoveryCommandHandler
@@ -14,23 +18,17 @@ export class PasswordRecoveryCommandHandler
     private emailManger: EmailManager,
   ) {}
 
-  async execute(command: PasswordRecoveryCommand) {
-    const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      command.email,
-    );
+  async execute({ email }: PasswordRecoveryCommand) {
+    const user = await this.userQueryRepository.getUserByField(email);
     if (user) {
-      const passwordRecovery = Date.now();
+      const passwordRecovery = Date.now() + settings.timeLife.ONE_DAY;
       const isSuccess = await this.userRepository.setPasswordRecovery(
         user.id,
         passwordRecovery,
       );
       if (isSuccess)
-        await this.emailManger.sendPasswordRecoveryEmail(
-          command.email,
-          passwordRecovery,
-        );
-
-      return;
+        this.emailManger.sendPasswordRecoveryEmail(email, passwordRecovery);
     }
+    return true;
   }
 }

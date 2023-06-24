@@ -25,11 +25,11 @@ export class UserRepository {
 
   async setPasswordRecovery(
     userId: string,
-    passwordRecovery: number,
+    passwordRecoveryCode: number,
   ): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },
-      { $set: { passwordRecovery } },
+      { $set: { passwordRecoveryCode } },
     );
     return result.modifiedCount === 1;
   }
@@ -70,13 +70,16 @@ export class UserRepository {
     return result.modifiedCount === 1;
   }
 
-  async updateUserEmailStatus(
-    userId: string,
-    status: boolean,
-  ): Promise<boolean> {
+  async updateUserConfirmationStatus(userId: string): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },
-      { $set: { 'emailConfirmation.isConfirmed': status } },
+      {
+        $set: {
+          'emailConfirmation.confirmationCode': null,
+          'emailConfirmation.expirationDate': null,
+          'emailConfirmation.isConfirmed': true,
+        },
+      },
     );
     return result.modifiedCount === 1;
   }

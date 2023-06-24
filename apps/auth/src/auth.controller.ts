@@ -1,19 +1,25 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
 import { Commands } from '../../../libs/shared';
 import { UserFacade } from '../../../libs/users/application-services';
 import { PairTokenResponse, ViewUser } from '../../../libs/users/response';
 import { LoginDto } from '../dto/login.dto';
 import {
+  EmailDto,
   NewPasswordDto,
+  RegistrationConfirmationDto,
   RegistrationDto,
   SessionIdDto,
   WithClientMeta,
 } from '../dto';
+import { TestingRepository } from './testing.repository';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly userFacade: UserFacade) {}
+  constructor(
+    private readonly userFacade: UserFacade,
+    private readonly testingRepository: TestingRepository,
+  ) {}
 
   @MessagePattern({ cmd: Commands.Registration })
   async registration(data: RegistrationDto): Promise<ViewUser> {
@@ -26,18 +32,20 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: Commands.ConfirmationCodeResending })
-  async confirmationCodeResending(email: string) {
-    return await this.userFacade.commands.confirmationCodeResending(email);
+  async confirmationCodeResending(dto: EmailDto) {
+    return await this.userFacade.commands.confirmationCodeResending(dto.email);
   }
 
   @MessagePattern({ cmd: Commands.RegistrationConfirmation })
-  async registrationConfirmation(email: string) {
-    return await this.userFacade.commands.registrationConfirmation(email);
+  async registrationConfirmation(dto: RegistrationConfirmationDto) {
+    return await this.userFacade.commands.registrationConfirmation(
+      dto.confirmationCode,
+    );
   }
 
   @MessagePattern({ cmd: Commands.PasswordRecovery })
-  async passwordRecovery(email: string) {
-    return await this.userFacade.commands.passwordRecovery(email);
+  async passwordRecovery(dto: EmailDto) {
+    return await this.userFacade.commands.passwordRecovery(dto.email);
   }
 
   @MessagePattern({ cmd: Commands.UpdatePassword })
@@ -55,5 +63,15 @@ export class AuthController {
   @MessagePattern({ cmd: Commands.Logout })
   async logout(dto: SessionIdDto) {
     return this.userFacade.commands.logout(dto);
+  }
+
+  @MessagePattern({ cmd: Commands.DeleteAll })
+  async deleteAll({}) {
+    return this.testingRepository.deleteAll();
+  }
+
+  @MessagePattern({ cmd: Commands.GetUser })
+  async getUser({ data }) {
+    return this.testingRepository.getUser(data);
   }
 }

@@ -1,4 +1,6 @@
 export enum Commands {
+  DeleteAll = 'delete-all',
+  GetUser = 'get-user',
   Login = 'login',
   Logout = 'logout',
   PasswordRecovery = 'password-recovery',

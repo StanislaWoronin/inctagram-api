@@ -1,5 +1,6 @@
 import { AuthRequest } from './auth.request';
 import { Testing } from './testing.request';
+import { UserFactory } from './user.factory';
 
 export class Requests {
   private readonly server: any;
@@ -12,6 +13,10 @@ export class Requests {
   }
 
   testing() {
-    //eturn new Testing();
+    return new Testing(this.server);
+  }
+
+  userFactory() {
+    return new UserFactory(this.auth());
   }
 }

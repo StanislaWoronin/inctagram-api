@@ -13,9 +13,19 @@ import {
 } from '../../../libs/adapters/email.adapter';
 import { UserRepository } from '../../../libs/users/providers/user.repository';
 import { UserQueryRepository } from '../../../libs/users/providers/user.query.repository';
+import { TestingRepository } from './testing.repository';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseConfig } from '../../../libs/providers/mongo-db';
+import { UserAggregate, UserSchema } from '../../../libs/users/schema';
 
 @Module({
   imports: [
+    MongooseModule.forRootAsync({
+      useClass: MongooseConfig,
+    }),
+    MongooseModule.forFeature([
+      { name: UserAggregate.name, schema: UserSchema },
+    ]),
     UserModule,
     CqrsModule,
     SharedModule,
@@ -23,7 +33,7 @@ import { UserQueryRepository } from '../../../libs/users/providers/user.query.re
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [],
+  providers: [TestingRepository],
   exports: [],
 })
 export class AuthModule {}
