@@ -15,8 +15,6 @@ export class GetUserByLoginOrEmailQuery
   async execute(
     query: GetUserByLoginOrEmailCommand,
   ): Promise<UserAggregate | null> {
-    return await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      query.loginOrEmail,
-    );
+    return await this.userQueryRepository.getUserByField(query.loginOrEmail);
   }
 }

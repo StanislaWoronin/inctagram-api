@@ -3,11 +3,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { userValidationConstant } from '../../../libs/users/user-validation.constant';
 import { IUser } from '../../../libs/users/schema';
 
-export type TNewPassword = Pick<IUser, 'passwordRecoveryCode'>;
+export type TNewPassword = Pick<IUser, 'passwordRecoveryCode'> & {
+  newPassword: string;
+  passwordConfirmation: string;
+};
 
 export class NewPasswordDto implements TNewPassword {
-  userId: string;
-
   @ApiProperty({
     description: 'New password',
     minLength: userValidationConstant.passwordLength.min,
@@ -19,6 +20,10 @@ export class NewPasswordDto implements TNewPassword {
     userValidationConstant.passwordLength.max,
   )
   newPassword: string;
+
+  @ApiProperty()
+  @IsString()
+  passwordConfirmation: string;
 
   @ApiProperty({ description: 'Password recovery code' })
   @IsString()

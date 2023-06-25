@@ -10,6 +10,11 @@ import { PairTokenResponse } from '../../../response';
 import { UserRepository } from '../../../providers/user.repository';
 import { Device } from '../../../schema';
 import { randomUUID } from 'crypto';
+import { LoginDto, WithClientMeta } from '../../../../../apps/auth/dto';
+
+export class LoginUserCommand {
+  constructor(public readonly dto: WithClientMeta<LoginDto>) {}
+}
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserCommandHandler
@@ -23,10 +28,9 @@ export class LoginUserCommandHandler
   ) {}
 
   async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
+    console.log('handler');
     const { loginOrEmail, password, ipAddress, title } = command.dto;
-    const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      loginOrEmail,
-    );
+    const user = await this.userQueryRepository.getUserByField(loginOrEmail);
     if (!user) {
       throw new UnauthorizedException();
     }

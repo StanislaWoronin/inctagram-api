@@ -9,19 +9,13 @@ import { UpdatePasswordCommandHandler } from './update-password';
 import { ConfirmationCodeResendingCommandHandler } from './email-confirmation-code-resending';
 import { RegistrationConfirmationCommandHandler } from './registration-confirmation';
 
-// Commands
-export * from './create-user/create-user.command';
-export * from './logout/logout.command';
-export * from './login-user/login-user.command';
-export * from './password-recovery/password-recovery.command';
-export * from './update-password/update-password.command';
-
-// Commands handler
-export * from './create-user/create-user.command-handler';
-export * from './logout/logout.command-handler';
-export * from './login-user/login-user.command-handler';
-export * from './password-recovery/password-recovery.command-handler';
-export * from './update-password/update-password.command-handler';
+export * from './create-user';
+export * from './email-confirmation-code-resending';
+export * from './login-user';
+export * from './logout';
+export * from './password-recovery';
+export * from './registration-confirmation';
+export * from './update-password';
 
 export const USER_COMMANDS_HANDLERS: Type<ICommandHandler>[] = [
   CreateUserCommandHandler,

@@ -1,11 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreateUserCommand } from './create-user.command';
 import { UserRepository } from '../../../providers/user.repository';
 import { UserAggregate } from '../../../schema';
 import { BadRequestException } from '@nestjs/common';
 import { ViewUser } from '../../../response';
 import { EmailManager } from '../../../../adapters/email.adapter';
 import { randomUUID } from 'crypto';
+import { TRegistration } from '../../../../../apps/auth/dto';
+
+export class CreateUserCommand {
+  constructor(public readonly dto: TRegistration) {}
+}
 
 @CommandHandler(CreateUserCommand)
 export class CreateUserCommandHandler

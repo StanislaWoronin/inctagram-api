@@ -1,5 +1,4 @@
 import { Controller } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
 import { Commands } from '../../../libs/shared';
 import { UserFacade } from '../../../libs/users/application-services';
 import { PairTokenResponse, ViewUser } from '../../../libs/users/response';
@@ -12,10 +11,15 @@ import {
   SessionIdDto,
   WithClientMeta,
 } from '../dto';
+import { TestingRepository } from './testing.repository';
+import { MessagePattern } from '@nestjs/microservices';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly userFacade: UserFacade) {}
+  constructor(
+    private readonly userFacade: UserFacade,
+    private readonly testingRepository: TestingRepository,
+  ) {}
 
   @MessagePattern({ cmd: Commands.Registration })
   async registration(data: RegistrationDto): Promise<ViewUser> {
@@ -59,5 +63,15 @@ export class AuthController {
   @MessagePattern({ cmd: Commands.Logout })
   async logout(dto: SessionIdDto) {
     return this.userFacade.commands.logout(dto);
+  }
+
+  @MessagePattern({ cmd: Commands.DeleteAll })
+  async deleteAll({}) {
+    return this.testingRepository.deleteAll();
+  }
+
+  @MessagePattern({ cmd: Commands.GetUser })
+  async getUser({ data }) {
+    return this.testingRepository.getUser(data);
   }
 }

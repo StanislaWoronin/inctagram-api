@@ -19,14 +19,15 @@ export class ConfirmationCodeResendingCommandHandler
   ) {}
 
   async execute(command: ConfirmationCodeResendingCommand): Promise<boolean> {
-    const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      command.email,
-    );
+    console.log('handler');
+    const user = await this.userQueryRepository.getUserByField(command.email);
+    console.log(user);
     const newEmailConfirmationCode = randomUUID();
     await this.userRepository.updateEmailConfirmationCode(
       user.id,
       newEmailConfirmationCode,
     );
+    console.log('after update');
     await this.emailManger.sendConfirmationEmail(
       command.email,
       newEmailConfirmationCode,

@@ -8,12 +8,12 @@ import {
   HttpStatus,
   Inject,
   Ip,
+  Param,
   Post,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { Commands, Microservices } from '../../../libs/shared';
-import { ClientProxy } from '@nestjs/microservices';
 import { ApiExcludeEndpoint } from '@nestjs/swagger';
 import {
   ApiDropDatabase,
@@ -32,6 +32,7 @@ import {
   TEmail,
   TLogin,
   TRegistrationConfirmation,
+  EmailDto,
 } from '../../auth/dto';
 import { RefreshTokenValidationGuard } from '../../../libs/guards/refresh-token-validation.guard';
 import { Response } from 'express';
@@ -40,6 +41,7 @@ import { CurrentUser } from '../../../libs/decorators/current-user.decorator';
 import { settings } from '../../../libs/shared/settings';
 import { lastValueFrom, map } from 'rxjs';
 import { LoginResponse, ViewUser } from '../../../libs/users/response';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Controller()
 export class AppGatewayController {
@@ -77,6 +79,7 @@ export class AppGatewayController {
         .send(pattern, { ...dto, ipAddress, title })
         .pipe(map((result) => result)),
     );
+
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: true,
@@ -88,7 +91,7 @@ export class AppGatewayController {
   @Post('auth/confirmation-email-resending')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistrationEmailResending()
-  async confirmationCodeResending(@Body() dto: TEmail) {
+  async confirmationCodeResending(@Body() dto: EmailDto) {
     const pattern = { cmd: Commands.ConfirmationCodeResending };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
@@ -118,18 +121,12 @@ export class AppGatewayController {
   @Post('auth/new-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNewPassword()
-  async updatePassword(
-    @Body() dto: TNewPassword,
-    @CurrentUser() userId: string,
-  ) {
+  async updatePassword(@Body() dto: TNewPassword) {
     const pattern = { cmd: Commands.UpdatePassword };
+    console.log('getaway', dto);
+    console.log(dto.passwordRecoveryCode);
     return await lastValueFrom(
-      this.authProxyClient
-        .send(pattern, {
-          userId,
-          ...dto,
-        })
-        .pipe(map((result) => result)),
+      this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
     );
   }
 
@@ -171,7 +168,18 @@ export class AppGatewayController {
   @Delete('testing/delete-all')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiDropDatabase()
-  async deleteDataInDb(): Promise<boolean> {
-    return true;
+  async deleteDataInDb() {
+    const pattern = { cmd: Commands.DeleteAll };
+    return await lastValueFrom(
+      this.authProxyClient.send(pattern, {}).pipe(map((result) => result)),
+    );
+  }
+
+  @Get('testing/users/:data')
+  async getUser(@Param() data: string) {
+    const pattern = { cmd: Commands.GetUser };
+    return await lastValueFrom(
+      this.authProxyClient.send(pattern, data).pipe(map((result) => result)),
+    );
   }
 }

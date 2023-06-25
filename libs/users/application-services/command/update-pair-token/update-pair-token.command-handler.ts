@@ -1,5 +1,4 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UpdatePairTokenCommand } from './update-pair-token.command';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { settings } from '../../../../shared/settings';
@@ -8,6 +7,11 @@ import { UserRepository } from '../../../providers/user.repository';
 import { UserQueryRepository } from '../../../providers/user.query.repository';
 import { Device } from '../../../schema';
 import { randomUUID } from 'crypto';
+import { SessionIdDto, WithClientMeta } from '../../../../../apps/auth/dto';
+
+export class UpdatePairTokenCommand {
+  constructor(public readonly dto: WithClientMeta<SessionIdDto>) {}
+}
 
 @CommandHandler(UpdatePairTokenCommand)
 export class UpdatePairTokenCommandHandler
@@ -22,9 +26,7 @@ export class UpdatePairTokenCommandHandler
 
   async execute(command: UpdatePairTokenCommand): Promise<PairTokenResponse> {
     const { userId, deviceId, ipAddress, title } = command.dto;
-    const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      userId,
-    );
+    const user = await this.userQueryRepository.getUserByField(userId);
     const [device] = user.devices.filter((d) => d.deviceId === deviceId);
     const ipIsDifferent = device.ipAddress !== ipAddress;
     const titleIsDifferent = device.title !== title;

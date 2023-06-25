@@ -14,7 +14,6 @@ const validationPipeSettings = {
   stopAtFirstError: true,
 
   exceptionFactory: (errorsMessages) => {
-    console.log('pipe');
     const errorsForResponse = [];
 
     errorsMessages.forEach((e) => {

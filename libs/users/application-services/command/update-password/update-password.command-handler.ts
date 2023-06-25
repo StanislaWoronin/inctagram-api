@@ -1,9 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UpdatePasswordCommand } from './update-password.command';
 import { UserRepository } from '../../../providers/user.repository';
 import { UserQueryRepository } from '../../../providers/user.query.repository';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
+import { NewPasswordDto } from '../../../../../apps/auth/dto';
+
+export class UpdatePasswordCommand {
+  constructor(public readonly dto: NewPasswordDto) {}
+}
 
 @CommandHandler(UpdatePasswordCommand)
 export class UpdatePasswordCommandHandler
@@ -15,11 +19,12 @@ export class UpdatePasswordCommandHandler
   ) {}
 
   async execute({ dto }: UpdatePasswordCommand) {
-    const { userId, newPassword, passwordRecoveryCode } = dto;
-    const user = await this.userQueryRepository.getUserByIdOrLoginOrEmail(
-      userId,
-    );
-    if (!user) throw new NotFoundException();
+    const { newPassword, passwordConfirmation, passwordRecoveryCode } = dto;
+
+    const user =
+      await this.userQueryRepository.getUserByFiePasswordRecoveryCode(
+        passwordRecoveryCode,
+      );
 
     const isDifferent = user.passwordRecoveryCode !== passwordRecoveryCode;
     const isExpired = passwordRecoveryCode < Date.now();
@@ -29,11 +34,10 @@ export class UpdatePasswordCommandHandler
           ' password has expired. Request a new verification code.',
       );
 
-    const hash = await bcrypt.hash(user.password, 10);
-    if ((user.passwordHash = hash))
+    const hash = await bcrypt.hash(newPassword, 10);
+    if (user.passwordHash === hash)
       throw new BadRequestException('New password to equal old.');
-    const newHash = await bcrypt.hash(newPassword, 10);
 
-    return await this.userRepository.updateUserPassword(userId, newHash);
+    return await this.userRepository.updateUserPassword(user.id, hash);
   }
 }
