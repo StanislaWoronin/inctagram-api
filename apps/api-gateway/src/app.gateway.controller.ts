@@ -140,6 +140,7 @@ export class AppGatewayController {
     @Res({ passthrough: true }) response: Response,
   ): Promise<TokenResponse> {
     const pattern = { cmd: Commands.UpdatePairToken };
+    console.log({ userId, deviceId, ipAddress, title });
     const tokens = await lastValueFrom(
       this.authProxyClient
         .send(pattern, { userId, deviceId, ipAddress, title })

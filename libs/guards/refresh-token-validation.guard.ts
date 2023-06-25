@@ -6,6 +6,8 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserQueryRepository } from '../users/providers/user.query.repository';
+import { TTokenPayload } from '../shared';
+import { log } from 'util';
 
 @Injectable()
 export class RefreshTokenValidationGuard implements CanActivate {
@@ -21,20 +23,20 @@ export class RefreshTokenValidationGuard implements CanActivate {
       console.log('Отсутствует токен в req.cookies.refreshToken');
       throw new UnauthorizedException();
     }
-    console.log(req.cookies.refreshToken);
-    const tokenPayload: any = await this.jwtService.decode(
+
+    // @ts-ignore
+    const tokenPayload: TTokenPayload = await this.jwtService.decode(
       req.cookies.refreshToken,
     );
-    console.log({ tokenPayload });
     if (!tokenPayload) {
       console.log('Токен не рассекретился');
       throw new UnauthorizedException();
     }
-
+    console.log(tokenPayload.id);
     const user = await this.queryUsersRepository.getUserByField(
-      tokenPayload.userId,
+      tokenPayload.id,
     );
-    console.log(user.devices);
+    console.log(user);
     const device = user.devices.filter(
       (d) => d.deviceId === tokenPayload.deviceId,
     );
@@ -44,7 +46,7 @@ export class RefreshTokenValidationGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    req.userId = tokenPayload.userId;
+    req.userId = tokenPayload.id;
     req.deviceId = tokenPayload.deviceId;
     return true;
   }
