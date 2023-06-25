@@ -1,6 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserQueryRepository } from '../../providers/user.query.repository';
-import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcrypt';
@@ -10,6 +9,7 @@ import { UserRepository } from '../../providers/user.repository';
 import { Device } from '../../schema';
 import { randomUUID } from 'crypto';
 import { LoginDto, WithClientMeta } from '../../../../apps/auth/dto';
+import { RpcException } from '@nestjs/microservices';
 
 export class LoginUserCommand {
   constructor(public readonly dto: WithClientMeta<LoginDto>) {}
@@ -30,14 +30,14 @@ export class LoginUserCommandHandler
     const { loginOrEmail, password, ipAddress, title } = command.dto;
     const user = await this.userQueryRepository.getUserByField(loginOrEmail);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new RpcException("User doesn't exist");
     }
     if (!user.emailConfirmation.isConfirmed) {
-      throw new UnauthorizedException();
+      throw new RpcException('Email is not confirmed');
     }
     const passwordEqual = await bcrypt.compare(password, user.passwordHash);
     if (!passwordEqual) {
-      throw new UnauthorizedException();
+      throw new RpcException('Password is incorrect');
     }
 
     const deviceId = randomUUID();

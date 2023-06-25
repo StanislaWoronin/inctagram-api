@@ -4,7 +4,6 @@ import { MicroserviceOptions, RpcException } from '@nestjs/microservices';
 import { Microservices } from '../../../libs/shared';
 import { getTransportOptions } from '../../../libs/providers/rabbit-mq/transport.options';
 import { ValidationPipe } from '@nestjs/common';
-import { ExceptionFilter } from '../../../libs/exception-filters/exception.filter';
 import { useContainer } from 'class-validator';
 
 export const validationPipeSettings = {
@@ -32,7 +31,6 @@ async function bootstrap() {
   );
   app.useGlobalPipes(new ValidationPipe(validationPipeSettings));
   useContainer(app.select(AuthModule), { fallbackOnErrors: true });
-  app.useGlobalFilters(new ExceptionFilter());
   await app.listen();
 }
 bootstrap();

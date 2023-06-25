@@ -1,13 +1,8 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserQueryRepository } from '../users/providers/user.query.repository';
 import { TTokenPayload } from '../shared';
-import { log } from 'util';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class RefreshTokenValidationGuard implements CanActivate {
@@ -20,8 +15,7 @@ export class RefreshTokenValidationGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
 
     if (!req.cookies.refreshToken) {
-      console.log('Отсутствует токен в req.cookies.refreshToken');
-      throw new UnauthorizedException();
+      throw new RpcException("No token provided in 'Authorization' header");
     }
 
     // @ts-ignore
@@ -30,7 +24,7 @@ export class RefreshTokenValidationGuard implements CanActivate {
     );
     if (!tokenPayload) {
       console.log('Токен не рассекретился');
-      throw new UnauthorizedException();
+      throw new RpcException('Wrong token');
     }
     console.log(tokenPayload.id);
     const user = await this.queryUsersRepository.getUserByField(
@@ -42,8 +36,7 @@ export class RefreshTokenValidationGuard implements CanActivate {
     );
     console.log(device);
     if (!device) {
-      console.log('Пользовотель не нашелся');
-      throw new UnauthorizedException();
+      throw new RpcException("User doesn't exist");
     }
 
     req.userId = tokenPayload.id;

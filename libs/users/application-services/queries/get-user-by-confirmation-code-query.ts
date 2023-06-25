@@ -1,7 +1,7 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UserQueryRepository } from '../../providers/user.query.repository';
 import { UserAggregate } from '../../schema';
-import { BadRequestException } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 
 export class GetUserByConfirmationCodeCommand {
   constructor(public readonly code: string) {}
@@ -21,17 +21,17 @@ export class GetUserByConfirmationCodeQuery
       query.code,
     );
     if (!user) {
-      throw new BadRequestException('Not found');
+      throw new RpcException('Not found');
     }
     if (user.emailConfirmation.isConfirmed) {
-      throw new BadRequestException('User already confirmed');
+      throw new RpcException('User already confirmed');
     }
     if (user.emailConfirmation.confirmationCode !== query.code) {
-      throw new BadRequestException('Wrong code');
+      throw new RpcException('Wrong code');
     }
     const currentTime = new Date().toISOString();
     if (user.emailConfirmation.expirationDate < currentTime) {
-      throw new BadRequestException('Code expired');
+      throw new RpcException('Code expired');
     }
     return user;
   }

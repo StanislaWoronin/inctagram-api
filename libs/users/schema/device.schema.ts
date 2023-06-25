@@ -12,7 +12,7 @@ export class Device implements IDevice {
     required: true,
     type: String,
   })
-  deviceId: string = randomUUID();
+  deviceId: string;
 
   @Prop({ required: true, type: String })
   ipAddress: string;
