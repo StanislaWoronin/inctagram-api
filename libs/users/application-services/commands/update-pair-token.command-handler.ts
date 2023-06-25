@@ -1,13 +1,13 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { settings } from '../../../../shared/settings';
-import { PairTokenResponse } from '../../../response';
-import { UserRepository } from '../../../providers/user.repository';
-import { UserQueryRepository } from '../../../providers/user.query.repository';
-import { Device } from '../../../schema';
+import { settings } from '../../../shared/settings';
+import { PairTokenResponse } from '../../response';
+import { UserRepository } from '../../providers/user.repository';
+import { UserQueryRepository } from '../../providers/user.query.repository';
+import { Device } from '../../schema';
 import { randomUUID } from 'crypto';
-import { SessionIdDto, WithClientMeta } from '../../../../../apps/auth/dto';
+import { SessionIdDto, WithClientMeta } from '../../../../apps/auth/dto';
 
 export class UpdatePairTokenCommand {
   constructor(public readonly dto: WithClientMeta<SessionIdDto>) {}

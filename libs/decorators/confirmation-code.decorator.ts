@@ -9,7 +9,7 @@ import { UserFacade } from '../users/application-services';
 
 @ValidatorConstraint({ name: 'IsConfirmationCodeExist', async: true })
 @Injectable()
-export class IsConfirmationCodeConstraint
+export class IsConfirmationCodeExistConstraint
   implements ValidatorConstraintInterface
 {
   constructor(private readonly userFacade: UserFacade) {}
@@ -27,7 +27,7 @@ export function IsConfirmationCodeExist(validationOptions?: ValidationOptions) {
       propertyName: propertyName,
       options: validationOptions,
       constraints: [],
-      validator: IsConfirmationCodeConstraint,
+      validator: IsConfirmationCodeExistConstraint,
     });
   };
 }

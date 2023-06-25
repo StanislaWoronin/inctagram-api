@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserQueryRepository } from '../../../providers/user.query.repository';
-import { UserRepository } from '../../../providers/user.repository';
-import { EmailManager } from '../../../../adapters/email.adapter';
-import { settings } from '../../../../shared/settings';
+import { UserQueryRepository } from '../../providers/user.query.repository';
+import { UserRepository } from '../../providers/user.repository';
+import { EmailManager } from '../../../adapters/email.adapter';
+import { settings } from '../../../shared/settings';
 
 export class PasswordRecoveryCommand {
   constructor(public readonly email: string) {}
@@ -27,7 +27,10 @@ export class PasswordRecoveryCommandHandler
         passwordRecovery,
       );
       if (isSuccess)
-        this.emailManger.sendPasswordRecoveryEmail(email, passwordRecovery);
+        await this.emailManger.sendPasswordRecoveryEmail(
+          email,
+          passwordRecovery,
+        );
     }
     return true;
   }

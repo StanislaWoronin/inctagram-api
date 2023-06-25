@@ -17,6 +17,8 @@ import { TestingRepository } from './testing.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfig } from '../../../libs/providers/mongo-db';
 import { UserAggregate, UserSchema } from '../../../libs/users/schema';
+import { IsConfirmationCodeExistConstraint } from '../../../libs/decorators/confirmation-code.decorator';
+import { IsLoginExistConstraint } from '../../../libs/decorators/login.decorator';
 
 @Module({
   imports: [

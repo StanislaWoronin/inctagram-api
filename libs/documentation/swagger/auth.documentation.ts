@@ -16,8 +16,8 @@ import {
   EmailDto,
   RegistrationConfirmationDto,
   NewPasswordDto,
-} from '../../apps/auth/dto';
-import { ViewUser } from '../users/response';
+} from '../../../apps/auth/dto';
+import { ViewUser } from '../../users/response';
 
 export function ApiRegistration() {
   return applyDecorators(

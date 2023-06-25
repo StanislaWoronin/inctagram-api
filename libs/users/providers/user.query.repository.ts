@@ -10,13 +10,19 @@ export class UserQueryRepository {
     private userModel: Model<UsersDocument>,
   ) {}
 
-  async getUserByField(data: string): Promise<UserAggregate | null> {
+  async getUserByField(
+    loginOrEmailOrId: string,
+  ): Promise<UserAggregate | null> {
     return this.userModel.findOne({
-      $or: [{ id: data }, { email: data }, { login: data }],
+      $or: [
+        { id: loginOrEmailOrId },
+        { email: loginOrEmailOrId },
+        { login: loginOrEmailOrId },
+      ],
     });
   }
 
-  async getUserByFiePasswordRecoveryCode(
+  async getUserByFieldPasswordRecoveryCode(
     code: number,
   ): Promise<UserAggregate | null> {
     return this.userModel.findOne({
@@ -33,16 +39,5 @@ export class UserQueryRepository {
     return this.userModel.findOne({
       'emailConfirmationCode.confirmationCode': code,
     });
-  }
-
-  async getEmailConfirmationByCode(confirmationCode: string) {
-    const emailConfirmation = await this.userModel
-      .findOne({ 'emailConfirmation.confirmationCode': confirmationCode })
-      .select({
-        id: 1,
-        // emailConfirmation: 1,
-      });
-
-    return emailConfirmation;
   }
 }

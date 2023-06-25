@@ -1,8 +1,10 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { CommandBus, CqrsModule, EventBus, QueryBus } from '@nestjs/cqrs';
-import { UserFacade } from './application-services';
-import { USER_QUERIES_HANDLERS } from './application-services/queries';
-import { USER_COMMANDS_HANDLERS } from './application-services/command';
+import { CommandBus, CqrsModule, QueryBus } from '@nestjs/cqrs';
+import {
+  USER_COMMANDS_HANDLERS,
+  USER_QUERIES_HANDLERS,
+  UserFacade,
+} from './application-services';
 import { userFacadeFactory } from './application-services/user-facade.factory';
 import { UserRepository } from './providers/user.repository';
 import { UserQueryRepository } from './providers/user.query.repository';
@@ -11,6 +13,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfig } from '../providers/mongo-db';
 import { UserAggregate, UserSchema } from './schema';
 import { EmailAdapters, EmailManager } from '../adapters/email.adapter';
+import { IsConfirmationCodeExistConstraint } from '../decorators/confirmation-code.decorator';
+import { IsLoginExistConstraint } from '../decorators/login.decorator';
 
 @Module({
   imports: [
@@ -35,6 +39,8 @@ import { EmailAdapters, EmailManager } from '../adapters/email.adapter';
     JwtService,
     EmailAdapters,
     EmailManager,
+    IsConfirmationCodeExistConstraint,
+    IsLoginExistConstraint,
   ],
   exports: [UserFacade],
 })

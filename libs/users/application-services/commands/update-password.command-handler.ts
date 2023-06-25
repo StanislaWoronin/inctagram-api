@@ -1,9 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserRepository } from '../../../providers/user.repository';
-import { UserQueryRepository } from '../../../providers/user.query.repository';
+import { UserRepository } from '../../providers/user.repository';
+import { UserQueryRepository } from '../../providers/user.query.repository';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import bcrypt from 'bcrypt';
-import { NewPasswordDto } from '../../../../../apps/auth/dto';
+import { NewPasswordDto } from '../../../../apps/auth/dto';
 
 export class UpdatePasswordCommand {
   constructor(public readonly dto: NewPasswordDto) {}
@@ -22,7 +22,7 @@ export class UpdatePasswordCommandHandler
     const { newPassword, passwordConfirmation, passwordRecoveryCode } = dto;
 
     const user =
-      await this.userQueryRepository.getUserByFiePasswordRecoveryCode(
+      await this.userQueryRepository.getUserByFieldPasswordRecoveryCode(
         passwordRecoveryCode,
       );
 

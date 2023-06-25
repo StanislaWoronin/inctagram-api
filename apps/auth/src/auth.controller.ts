@@ -32,41 +32,41 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: Commands.ConfirmationCodeResending })
-  async confirmationCodeResending(dto: EmailDto) {
-    return await this.userFacade.commands.confirmationCodeResending(dto.email);
+  async confirmationCodeResending(dto: EmailDto): Promise<boolean> {
+    return await this.userFacade.commands.confirmationCodeResending(dto);
   }
 
   @MessagePattern({ cmd: Commands.RegistrationConfirmation })
-  async registrationConfirmation(dto: RegistrationConfirmationDto) {
-    return await this.userFacade.commands.registrationConfirmation(
-      dto.confirmationCode,
-    );
+  async registrationConfirmation(
+    dto: RegistrationConfirmationDto,
+  ): Promise<boolean> {
+    return await this.userFacade.commands.registrationConfirmation(dto);
   }
 
   @MessagePattern({ cmd: Commands.PasswordRecovery })
-  async passwordRecovery(dto: EmailDto) {
-    return await this.userFacade.commands.passwordRecovery(dto.email);
+  async passwordRecovery(dto: EmailDto): Promise<boolean> {
+    return await this.userFacade.commands.passwordRecovery(dto);
   }
 
   @MessagePattern({ cmd: Commands.UpdatePassword })
-  async updatePassword(dto: NewPasswordDto) {
+  async updatePassword(dto: NewPasswordDto): Promise<boolean> {
     return await this.userFacade.commands.updatePassword(dto);
   }
 
   @MessagePattern({ cmd: Commands.UpdatePairToken })
   async updatePairToken(
-    data: WithClientMeta<SessionIdDto>,
+    dto: WithClientMeta<SessionIdDto>,
   ): Promise<PairTokenResponse> {
-    return await this.userFacade.commands.updatePairToken(data);
+    return await this.userFacade.commands.updatePairToken(dto);
   }
 
   @MessagePattern({ cmd: Commands.Logout })
-  async logout(dto: SessionIdDto) {
+  async logout(dto: SessionIdDto): Promise<boolean> {
     return this.userFacade.commands.logout(dto);
   }
 
   @MessagePattern({ cmd: Commands.DeleteAll })
-  async deleteAll({}) {
+  async deleteAll({}): Promise<boolean> {
     return this.testingRepository.deleteAll();
   }
 

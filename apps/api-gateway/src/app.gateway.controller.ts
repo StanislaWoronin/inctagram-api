@@ -25,7 +25,7 @@ import {
   ApiRegistration,
   ApiRegistrationConfirmation,
   ApiRegistrationEmailResending,
-} from '../../../libs/documentation/auth.documentation';
+} from '../../../libs/documentation/swagger/auth.documentation';
 import {
   TNewPassword,
   TRegistration,
@@ -40,7 +40,7 @@ import { CurrentDeviceId } from '../../../libs/decorators/device-id.decorator';
 import { CurrentUser } from '../../../libs/decorators/current-user.decorator';
 import { settings } from '../../../libs/shared/settings';
 import { lastValueFrom, map } from 'rxjs';
-import { LoginResponse, ViewUser } from '../../../libs/users/response';
+import { TokenResponse, ViewUser } from '../../../libs/users/response';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Controller()
@@ -72,7 +72,7 @@ export class AppGatewayController {
     @Ip() ipAddress: string,
     @Headers('user-agent') title: string,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<LoginResponse> {
+  ): Promise<TokenResponse> {
     const pattern = { cmd: Commands.Login };
     const tokens = await lastValueFrom(
       this.authProxyClient
@@ -91,7 +91,7 @@ export class AppGatewayController {
   @Post('auth/confirmation-email-resending')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistrationEmailResending()
-  async confirmationCodeResending(@Body() dto: EmailDto) {
+  async confirmationCodeResending(@Body() dto: EmailDto): Promise<boolean> {
     const pattern = { cmd: Commands.ConfirmationCodeResending };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
@@ -101,7 +101,9 @@ export class AppGatewayController {
   @Post('auth/registration-confirmation')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistrationConfirmation()
-  async registrationConfirmation(@Body() dto: TRegistrationConfirmation) {
+  async registrationConfirmation(
+    @Body() dto: TRegistrationConfirmation,
+  ): Promise<boolean> {
     const pattern = { cmd: Commands.RegistrationConfirmation };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
@@ -111,7 +113,7 @@ export class AppGatewayController {
   @Post('auth/password-recovery')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiPasswordRecovery()
-  async passwordRecovery(@Body() dto: TEmail) {
+  async passwordRecovery(@Body() dto: TEmail): Promise<boolean> {
     const pattern = { cmd: Commands.PasswordRecovery };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
@@ -121,10 +123,8 @@ export class AppGatewayController {
   @Post('auth/new-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNewPassword()
-  async updatePassword(@Body() dto: TNewPassword) {
+  async updatePassword(@Body() dto: TNewPassword): Promise<boolean> {
     const pattern = { cmd: Commands.UpdatePassword };
-    console.log('getaway', dto);
-    console.log(dto.passwordRecoveryCode);
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
     );
@@ -139,14 +139,20 @@ export class AppGatewayController {
     @CurrentDeviceId() deviceId: string,
     @Ip() ipAddress: string,
     @Headers('user-agent') title: string,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<TokenResponse> {
     const pattern = { cmd: Commands.UpdatePairToken };
-    return await lastValueFrom(
+    const tokens = await lastValueFrom(
       this.authProxyClient
         .send(pattern, { userId, deviceId, ipAddress, title })
         .pipe(map((result) => result)),
     );
+    response.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: settings.timeLife.TOKEN_TIME,
+    });
+    return { accessToken: tokens.accessToken };
   }
 
   @Post('auth/logout')
@@ -156,7 +162,7 @@ export class AppGatewayController {
   async logout(
     @CurrentUser() userId: string,
     @CurrentDeviceId() deviceId: string,
-  ) {
+  ): Promise<boolean> {
     const pattern = { cmd: Commands.Logout };
     return await lastValueFrom(
       this.authProxyClient

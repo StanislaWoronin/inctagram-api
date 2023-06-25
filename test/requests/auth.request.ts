@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { TestResponse } from '../types/test-response';
 import { LoginDto, RegistrationDto, TEmail } from '../../apps/auth/dto';
-import { LoginResponse, ViewUser } from '../../libs/users/response';
+import { TokenResponse, ViewUser } from '../../libs/users/response';
 import { faker } from '@faker-js/faker';
 import { TLoginResponse } from '../types/login.response';
 import { TErrorMessage } from '../types/error-message.type';

@@ -1,7 +1,7 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UserQueryRepository } from '../../../providers/user.query.repository';
-import { UserRepository } from '../../../providers/user.repository';
-import { EmailManager } from '../../../../adapters/email.adapter';
+import { UserQueryRepository } from '../../providers/user.query.repository';
+import { UserRepository } from '../../providers/user.repository';
+import { EmailManager } from '../../../adapters/email.adapter';
 import { randomUUID } from 'crypto';
 
 export class ConfirmationCodeResendingCommand {
@@ -19,9 +19,7 @@ export class ConfirmationCodeResendingCommandHandler
   ) {}
 
   async execute(command: ConfirmationCodeResendingCommand): Promise<boolean> {
-    console.log('handler');
     const user = await this.userQueryRepository.getUserByField(command.email);
-    console.log(user);
     const newEmailConfirmationCode = randomUUID();
     await this.userRepository.updateEmailConfirmationCode(
       user.id,

@@ -1,16 +1,15 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { LoginUserCommand } from './login-user.command';
-import { UserQueryRepository } from '../../../providers/user.query.repository';
+import { UserQueryRepository } from '../../providers/user.query.repository';
 import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcrypt';
-import { settings } from '../../../../shared/settings';
-import { PairTokenResponse } from '../../../response';
-import { UserRepository } from '../../../providers/user.repository';
-import { Device } from '../../../schema';
+import { settings } from '../../../shared/settings';
+import { PairTokenResponse } from '../../response';
+import { UserRepository } from '../../providers/user.repository';
+import { Device } from '../../schema';
 import { randomUUID } from 'crypto';
-import { LoginDto, WithClientMeta } from '../../../../../apps/auth/dto';
+import { LoginDto, WithClientMeta } from '../../../../apps/auth/dto';
 
 export class LoginUserCommand {
   constructor(public readonly dto: WithClientMeta<LoginDto>) {}
@@ -28,7 +27,6 @@ export class LoginUserCommandHandler
   ) {}
 
   async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
-    console.log('handler');
     const { loginOrEmail, password, ipAddress, title } = command.dto;
     const user = await this.userQueryRepository.getUserByField(loginOrEmail);
     if (!user) {

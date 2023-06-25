@@ -1,25 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
+  EmailDto,
   LoginDto,
   NewPasswordDto,
+  RegistrationConfirmationDto,
   SessionIdDto,
   TRegistration,
   WithClientMeta,
 } from '../../../apps/auth/dto';
-import {
-  CreateUserCommand,
-  LoginUserCommand,
-  LogoutCommand,
-  PasswordRecoveryCommand,
-  UpdatePasswordCommand,
-} from './command';
-import { UpdatePairTokenCommand } from './command/update-pair-token';
 import { PairTokenResponse, ViewUser } from '../response';
-import { ConfirmationCodeResendingCommand } from './command/email-confirmation-code-resending';
 import { GetUserByLoginOrEmailCommand } from './queries/get-user-by-login-or-email-query';
-import { RegistrationConfirmationCommand } from './command/registration-confirmation';
 import { GetUserByConfirmationCodeCommand } from './queries/get-user-by-confirmation-code-query';
+import { LoginUserCommand } from './commands/login-user.command-handler';
+import { ConfirmationCodeResendingCommand } from './commands/confirmation-code-resending-command.handler';
+import { RegistrationConfirmationCommand } from './commands/registration-confirmation.command-handler';
+import { PasswordRecoveryCommand } from './commands/password-recovery.command-handler';
+import { CreateUserCommand } from './commands/create-user.command-handler';
+import { UpdatePairTokenCommand } from './commands/update-pair-token.command-handler';
+import { UpdatePasswordCommand } from './commands/update-password.command-handler';
+import { LogoutCommand } from './commands/logout-command-handler';
 
 @Injectable()
 export class UserFacade {
@@ -31,15 +31,15 @@ export class UserFacade {
   commands = {
     loginUser: (dto: WithClientMeta<LoginDto>) => this.loginUser(dto),
     logout: (dto: SessionIdDto) => this.logout(dto),
-    passwordRecovery: (email: string) => this.passwordRecovery(email),
-    registrationUser: (data: TRegistration) => this.registrationUser(data),
+    passwordRecovery: (dto: EmailDto) => this.passwordRecovery(dto),
+    registrationUser: (dto: TRegistration) => this.registrationUser(dto),
     updatePairToken: (dto: WithClientMeta<SessionIdDto>) =>
       this.updatePairToken(dto),
     updatePassword: (data: NewPasswordDto) => this.updatePassword(data),
-    confirmationCodeResending: (email: string) =>
-      this.confirmationCodeResending(email),
-    registrationConfirmation: (code: string) =>
-      this.registrationConfirmation(code),
+    confirmationCodeResending: (dto: EmailDto) =>
+      this.confirmationCodeResending(dto),
+    registrationConfirmation: (dto: RegistrationConfirmationDto) =>
+      this.registrationConfirmation(dto),
   };
   queries = {
     getUserByIdOrLoginOrEmail: (loginOrEmail: string) =>
@@ -55,24 +55,24 @@ export class UserFacade {
     return await this.commandBus.execute(command);
   }
 
-  private logout(dto: SessionIdDto) {
+  private async logout(dto: SessionIdDto) {
     const command = new LogoutCommand(dto);
-    return this.commandBus.execute(command);
+    return await this.commandBus.execute(command);
   }
 
-  private confirmationCodeResending(email: string) {
-    const command = new ConfirmationCodeResendingCommand(email);
-    return this.commandBus.execute(command);
+  private async confirmationCodeResending(dto: EmailDto) {
+    const command = new ConfirmationCodeResendingCommand(dto.email);
+    return await this.commandBus.execute(command);
   }
 
-  private registrationConfirmation(code: string) {
-    const command = new RegistrationConfirmationCommand(code);
-    return this.commandBus.execute(command);
+  private async registrationConfirmation(dto: RegistrationConfirmationDto) {
+    const command = new RegistrationConfirmationCommand(dto.confirmationCode);
+    return await this.commandBus.execute(command);
   }
 
-  private passwordRecovery(email: string) {
-    const command = new PasswordRecoveryCommand(email);
-    return this.commandBus.execute(command);
+  private async passwordRecovery(dto: EmailDto) {
+    const command = new PasswordRecoveryCommand(dto.email);
+    return await this.commandBus.execute(command);
   }
 
   private async registrationUser(dto: TRegistration): Promise<ViewUser> {
@@ -80,14 +80,16 @@ export class UserFacade {
     return await this.commandBus.execute(command);
   }
 
-  private updatePairToken(dto: WithClientMeta<SessionIdDto>) {
+  private async updatePairToken(
+    dto: WithClientMeta<SessionIdDto>,
+  ): Promise<PairTokenResponse> {
     const command = new UpdatePairTokenCommand(dto);
-    return this.commandBus.execute(command);
+    return await this.commandBus.execute(command);
   }
 
-  private updatePassword(dto: NewPasswordDto) {
+  private async updatePassword(dto: NewPasswordDto) {
     const command = new UpdatePasswordCommand(dto);
-    return this.commandBus.execute(command);
+    return await this.commandBus.execute(command);
   }
 
   //Queries
