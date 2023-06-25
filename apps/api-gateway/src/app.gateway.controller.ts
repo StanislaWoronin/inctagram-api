@@ -182,6 +182,7 @@ export class AppGatewayController {
   }
 
   @Get('testing/users/:data')
+  @ApiDropDatabase()
   async getUser(@Param() data: string) {
     const pattern = { cmd: Commands.GetUser };
     return await lastValueFrom(

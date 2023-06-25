@@ -7,7 +7,9 @@ import {
   ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiProperty,
   ApiTags,
+  ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
@@ -17,7 +19,33 @@ import {
   RegistrationConfirmationDto,
   NewPasswordDto,
 } from '../../../apps/auth/dto';
-import { ViewUser } from '../../users/response';
+import { TokenResponse, ViewUser } from '../../users/response';
+
+export class FieldError {
+  @ApiProperty({
+    type: String,
+    description: 'Message with error explanation for certain field',
+    nullable: true,
+  })
+  message: string;
+
+  @ApiProperty({
+    type: String,
+    description: 'What field/property of input model has error',
+    nullable: true,
+  })
+  field: string;
+}
+
+export class APIErrorResult {
+  @ApiProperty({
+    type: [FieldError],
+    description:
+      'Array of error messages for specific fields/properties of input model',
+    nullable: true,
+  })
+  errors: FieldError[];
+}
 
 export function ApiRegistration() {
   return applyDecorators(
@@ -37,7 +65,7 @@ export function ApiRegistration() {
       description:
         'If the inputModel has incorrect values (in particular if the user with' +
         ' the given email or password already exists)',
-      //type: [BadRequestResponse],
+      type: APIErrorResult,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -54,12 +82,14 @@ export function ApiLogin() {
       description:
         'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +
         ' refreshToken in cookie (http-only, secure) (expired after 20 seconds)',
-      //type: AccessToken,
+      type: TokenResponse,
     }),
-    // ApiBadRequestResponse({
-    //     description: 'If the inputModel has incorrect values',
-    //     //type: [BadRequestResponse],
-    // }),
+    ApiBadRequestResponse({
+      description:
+        'If the inputModel has incorrect values (in particular if the user with' +
+        ' the given email or password already exists)',
+      type: APIErrorResult,
+    }),
     ApiUnauthorizedResponse({
       description: 'If the password or login is wrong',
     }),
@@ -84,8 +114,10 @@ export function ApiRegistrationEmailResending() {
         ' for example: https://some-front.com/confirm-registration?code=yourCodeHere',
     }),
     ApiBadRequestResponse({
-      description: 'If the inputModel has incorrect values',
-      //type: [BadRequestResponse],
+      description:
+        'If the inputModel has incorrect values (in particular if the user with' +
+        ' the given email or password already exists)',
+      type: APIErrorResult,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -108,8 +140,9 @@ export function ApiRegistrationConfirmation() {
     }),
     ApiBadRequestResponse({
       description:
-        'If the confirmation code is incorrect, expired or already been applied',
-      //type: [BadRequestResponse],
+        'If the inputModel has incorrect values (in particular if the user with' +
+        ' the given email or password already exists)',
+      type: APIErrorResult,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -131,8 +164,9 @@ export function ApiPasswordRecovery() {
     }),
     ApiBadRequestResponse({
       description:
-        'If the inputModel has invalid email (for example 222^gmail.com)',
-      //type: BadRequestResponse,
+        'If the inputModel has incorrect values (in particular if the user with' +
+        ' the given email or password already exists)',
+      type: APIErrorResult,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -153,9 +187,9 @@ export function ApiNewPassword() {
     }),
     ApiBadRequestResponse({
       description:
-        'If the inputModel has incorrect value (for incorrect password length) or' +
-        ' RecoveryCode is incorrect or expired or old password equal new password',
-      //type: BadRequestResponse,
+        'If the inputModel has incorrect values (in particular if the user with' +
+        ' the given email or password already exists)',
+      type: APIErrorResult,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -171,7 +205,7 @@ export function ApiRefreshToken() {
       description:
         'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +
         ' refreshToken in cookie (http-only, secure) (expired after 20 seconds).',
-      //type: AccessToken,
+      type: TokenResponse,
     }),
     ApiUnauthorizedResponse({
       description:

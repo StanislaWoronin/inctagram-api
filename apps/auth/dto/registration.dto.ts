@@ -49,6 +49,6 @@ export class RegistrationDto implements TRegistration {
   )
   password: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'qwerty123' })
   passwordConfirmation: string;
 }
