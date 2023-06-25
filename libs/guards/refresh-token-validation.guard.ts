@@ -18,28 +18,29 @@ export class RefreshTokenValidationGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
 
     if (!req.cookies.refreshToken) {
-      // console.log('Отсутствует токен в req.cookies.refreshToken')
+      console.log('Отсутствует токен в req.cookies.refreshToken');
       throw new UnauthorizedException();
     }
-
+    console.log(req.cookies.refreshToken);
     const tokenPayload: any = await this.jwtService.decode(
       req.cookies.refreshToken,
     );
-
+    console.log({ tokenPayload });
     if (!tokenPayload) {
-      // console.log('Токен не рассекретился')
+      console.log('Токен не рассекретился');
       throw new UnauthorizedException();
     }
 
     const user = await this.queryUsersRepository.getUserByField(
       tokenPayload.userId,
     );
+    console.log(user.devices);
     const device = user.devices.filter(
       (d) => d.deviceId === tokenPayload.deviceId,
     );
-
+    console.log(device);
     if (!device) {
-      // console.log('Пользовотель не нашелся')
+      console.log('Пользовотель не нашелся');
       throw new UnauthorizedException();
     }
 

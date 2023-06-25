@@ -145,6 +145,7 @@ export class AppGatewayController {
         .send(pattern, { userId, deviceId, ipAddress, title })
         .pipe(map((result) => result)),
     );
+
     response.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: true,

@@ -2,6 +2,10 @@ import { AuthRequest } from './auth.request';
 import { ViewUser } from '../../libs/users/response';
 import { TRegistration } from '../../apps/auth/dto';
 import { UserWithTokensType } from '../types/user-with-tokens.type';
+import {
+  preparedLoginData,
+  preparedRegistrationData,
+} from '../prepared-data/prepared-user.data';
 
 export class UserFactory {
   constructor(private readonly authRequest: AuthRequest) {}
@@ -34,7 +38,7 @@ export class UserFactory {
     for (let i = 0; i < userCount; i++) {
       const userLoginData = {
         loginOrEmail: `UserLogin${i + startWith}`,
-        password: 'qwerty123',
+        password: preparedRegistrationData.valid.password,
       };
 
       const response = await this.authRequest.loginUser(userLoginData);
