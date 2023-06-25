@@ -90,6 +90,7 @@ export class UserFacade {
     return this.commandBus.execute(command);
   }
 
+  //Queries
   private async getUserByIdOrLoginOrEmail(
     loginOrEmail: string,
   ): Promise<ViewUser> {

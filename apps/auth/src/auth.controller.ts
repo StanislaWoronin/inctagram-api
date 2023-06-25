@@ -3,9 +3,11 @@ import { MessagePattern } from '@nestjs/microservices';
 import { Commands } from '../../../libs/shared';
 import { UserFacade } from '../../../libs/users/application-services';
 import { PairTokenResponse, ViewUser } from '../../../libs/users/response';
-import { LoginDto } from '../dto/login.dto';
+import { LoginDto } from '../dto';
 import {
+  EmailDto,
   NewPasswordDto,
+  RegistrationConfirmationDto,
   RegistrationDto,
   SessionIdDto,
   WithClientMeta,
@@ -26,18 +28,20 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: Commands.ConfirmationCodeResending })
-  async confirmationCodeResending(email: string) {
-    return await this.userFacade.commands.confirmationCodeResending(email);
+  async confirmationCodeResending(dto: EmailDto) {
+    return await this.userFacade.commands.confirmationCodeResending(dto.email);
   }
 
   @MessagePattern({ cmd: Commands.RegistrationConfirmation })
-  async registrationConfirmation(email: string) {
-    return await this.userFacade.commands.registrationConfirmation(email);
+  async registrationConfirmation(dto: RegistrationConfirmationDto) {
+    return await this.userFacade.commands.registrationConfirmation(
+      dto.confirmationCode,
+    );
   }
 
   @MessagePattern({ cmd: Commands.PasswordRecovery })
-  async passwordRecovery(email: string) {
-    return await this.userFacade.commands.passwordRecovery(email);
+  async passwordRecovery(dto: EmailDto) {
+    return await this.userFacade.commands.passwordRecovery(dto.email);
   }
 
   @MessagePattern({ cmd: Commands.UpdatePassword })

@@ -9,6 +9,7 @@ import { settings } from '../../../../shared/settings';
 import { PairTokenResponse } from '../../../response';
 import { UserRepository } from '../../../providers/user.repository';
 import { Device } from '../../../schema';
+import { randomUUID } from 'crypto';
 
 @CommandHandler(LoginUserCommand)
 export class LoginUserCommandHandler
@@ -29,12 +30,16 @@ export class LoginUserCommandHandler
     if (!user) {
       throw new UnauthorizedException();
     }
+    if (!user.emailConfirmation.isConfirmed) {
+      throw new UnauthorizedException();
+    }
     const passwordEqual = await bcrypt.compare(password, user.passwordHash);
     if (!passwordEqual) {
       throw new UnauthorizedException();
     }
 
-    const device = Device.create({ ipAddress, title });
+    const deviceId = randomUUID();
+    const device = Device.create({ deviceId, ipAddress, title });
     await this.userRepository.createUserDevice(user.id, device);
 
     const [newAccessToken, newRefreshToken] = await Promise.all([

@@ -7,6 +7,7 @@ import { PairTokenResponse } from '../../../response';
 import { UserRepository } from '../../../providers/user.repository';
 import { UserQueryRepository } from '../../../providers/user.query.repository';
 import { Device } from '../../../schema';
+import { randomUUID } from 'crypto';
 
 @CommandHandler(UpdatePairTokenCommand)
 export class UpdatePairTokenCommandHandler
@@ -28,27 +29,30 @@ export class UpdatePairTokenCommandHandler
     const ipIsDifferent = device.ipAddress !== ipAddress;
     const titleIsDifferent = device.title !== title;
     if (ipIsDifferent && titleIsDifferent) {
+      const deviceId = randomUUID();
       const device = Device.create({ deviceId, ipAddress, title });
       await this.userRepository.createUserDevice(userId, device);
     }
     const [newAccessToken, newRefreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          id: userId,
-          deviceId,
+          id: user.id,
+          deviceId: device.deviceId,
+          lastActiveDate: new Date(),
         },
         {
-          secret: this.configService.get<string>('jwtAccessTokenSecret'),
+          secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
           expiresIn: settings.timeLife.ACCESS_TOKEN,
         },
       ),
       this.jwtService.signAsync(
         {
-          id: userId,
-          deviceId,
+          id: user.id,
+          deviceId: device.deviceId,
+          lastActiveDate: new Date(),
         },
         {
-          secret: this.configService.get<string>('jwtRefreshTokenSecret'),
+          secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
           expiresIn: settings.timeLife.REFRESH_TOKEN,
         },
       ),
