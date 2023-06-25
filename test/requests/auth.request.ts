@@ -77,4 +77,19 @@ export class AuthRequest {
 
     return { body: response.body, status: response.status };
   }
+
+  async updatePairTokens(refreshToken?: string): Promise<TLoginResponse> {
+    const response = await request(this.server)
+      .post('/auth/refresh-token')
+      .set('Cookie', `refreshToken=${refreshToken}`);
+    console.log(response.body);
+    console.log(response.headers);
+    return {
+      accessToken: response.body,
+      refreshToken: response.headers['set-cookie'][0]
+        .split(';')[0]
+        .split('=')[1],
+      status: response.status,
+    };
+  }
 }

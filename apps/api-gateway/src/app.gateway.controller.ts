@@ -35,7 +35,7 @@ import {
   EmailDto,
 } from '../../auth/dto';
 import { RefreshTokenValidationGuard } from '../../../libs/guards/refresh-token-validation.guard';
-import { Response } from 'express';
+import { response, Response } from 'express';
 import { CurrentDeviceId } from '../../../libs/decorators/device-id.decorator';
 import { CurrentUser } from '../../../libs/decorators/current-user.decorator';
 import { settings } from '../../../libs/shared/settings';
@@ -123,8 +123,6 @@ export class AppGatewayController {
   @ApiNewPassword()
   async updatePassword(@Body() dto: TNewPassword) {
     const pattern = { cmd: Commands.UpdatePassword };
-    console.log('getaway', dto);
-    console.log(dto.passwordRecoveryCode);
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
     );
@@ -139,14 +137,21 @@ export class AppGatewayController {
     @CurrentDeviceId() deviceId: string,
     @Ip() ipAddress: string,
     @Headers('user-agent') title: string,
-    @Res({ passthrough: true }) res: Response,
+    @Res({ passthrough: true }) response: Response,
   ) {
     const pattern = { cmd: Commands.UpdatePairToken };
-    return await lastValueFrom(
+    const tokens = await lastValueFrom(
       this.authProxyClient
         .send(pattern, { userId, deviceId, ipAddress, title })
         .pipe(map((result) => result)),
     );
+
+    response.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: settings.timeLife.TOKEN_TIME,
+    });
+    return { accessToken: tokens.accessToken };
   }
 
   @Post('auth/logout')

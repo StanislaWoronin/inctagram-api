@@ -57,6 +57,7 @@ export class AuthController {
   async updatePairToken(
     data: WithClientMeta<SessionIdDto>,
   ): Promise<PairTokenResponse> {
+    console.log(data);
     return await this.userFacade.commands.updatePairToken(data);
   }
 

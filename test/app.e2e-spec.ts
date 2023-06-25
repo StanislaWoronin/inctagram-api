@@ -178,4 +178,31 @@ describe('Test auth controller.', () => {
       expect(passwordHash).not.toBe(newPasswordHash);
     });
   });
+
+  describe(`Status ${HttpStatus.NO_CONTENT}. Update pair tokens.`, () => {
+    it('Create data.', async () => {
+      await requests.testing().deleteAll();
+      const [user] = await requests.userFactory().createAndLoginUsers(1);
+      const response = await requests.auth().loginUser({
+        loginOrEmail: user.user.login,
+        password: preparedLoginData.valid.password,
+      });
+
+      expect.setState({
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      });
+    });
+
+    it('Should update pair tokens.', async () => {
+      const { accessToken, refreshToken } = expect.getState();
+
+      const newTokens = await requests.auth().updatePairTokens(refreshToken);
+      expect(newTokens.status).toBe(HttpStatus.OK);
+      expect(newTokens.accessToken).toBeTruthy();
+      expect(newTokens.refreshToken).toBeTruthy();
+      expect(newTokens.accessToken).not.toBe(accessToken);
+      expect(newTokens.refreshToken).not.toBe(refreshToken);
+    });
+  });
 });
