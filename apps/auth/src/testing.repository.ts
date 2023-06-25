@@ -15,7 +15,7 @@ export class TestingRepository {
     return await this.connection.db.dropDatabase();
   }
 
-  async getUser(loginOrEmailOrId: string): Promise<UserAggregate> {
+  async getUser(loginOrEmailOrId: string): Promise<UserAggregate | null> {
     return this.userModel.findOne({
       $or: [
         { id: loginOrEmailOrId },

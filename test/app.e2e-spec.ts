@@ -38,11 +38,11 @@ describe('Test auth controller.', () => {
     requests = new Requests(server);
   });
 
-  afterAll(async () => {
-    await requests.testing().deleteAll();
-  });
-
   describe('Create new user', () => {
+    it('Clear data base.', async () => {
+      await requests.testing().deleteAll();
+    });
+
     it.skip(`Status ${HttpStatus.BAD_REQUEST}. Try registration with SHORT input data.`, async () => {
       const response = await requests
         .auth()
@@ -179,15 +179,15 @@ describe('Test auth controller.', () => {
     });
   });
 
-  describe(`Status ${HttpStatus.NO_CONTENT}. Update pair tokens.`, () => {
-    it('Create data.', async () => {
+  describe('Update pair tokens.', () => {
+    it(`Status ${HttpStatus.NO_CONTENT}. Create data.`, async () => {
       await requests.testing().deleteAll();
       const [user] = await requests.userFactory().createAndLoginUsers(1);
       const response = await requests.auth().loginUser({
         loginOrEmail: user.user.login,
         password: preparedLoginData.valid.password,
       });
-
+      console.log(user.user.id);
       expect.setState({
         accessToken: response.accessToken,
         refreshToken: response.refreshToken,

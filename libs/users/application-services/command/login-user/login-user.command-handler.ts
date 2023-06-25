@@ -26,12 +26,12 @@ export class LoginUserCommandHandler
   ) {}
 
   async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
-    console.log('handler');
     const { loginOrEmail, password, ipAddress, title } = command.dto;
     const user = await this.userQueryRepository.getUserByField(loginOrEmail);
     if (!user) {
       throw new UnauthorizedException();
     }
+
     const passwordEqual = await bcrypt.compare(password, user.passwordHash);
     if (!passwordEqual) {
       throw new UnauthorizedException();
@@ -45,7 +45,6 @@ export class LoginUserCommandHandler
         {
           id: user.id,
           deviceId: device.deviceId,
-          lastActiveDate: new Date(),
         },
         {
           secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
@@ -56,13 +55,12 @@ export class LoginUserCommandHandler
         {
           id: user.id,
           deviceId: device.deviceId,
-          lastActiveDate: new Date(),
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
           expiresIn: settings.timeLife.REFRESH_TOKEN,
         },
-      ),
+      ), // TODO вынести в приватную функцию
     ]);
     return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }
