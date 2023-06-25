@@ -3,6 +3,7 @@ import { userValidationConstant } from '../../../libs/users/user-validation.cons
 import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { IUser } from '../../../libs/users/schema';
+import { IsLoginExist } from '../../../libs/decorators/login.decorator';
 
 export type TRegistration = Pick<
   IUser,
@@ -30,6 +31,7 @@ export class RegistrationDto implements TRegistration {
     userValidationConstant.nameLength.min,
     userValidationConstant.nameLength.max,
   )
+  @IsLoginExist()
   login: string;
 
   @ApiProperty({

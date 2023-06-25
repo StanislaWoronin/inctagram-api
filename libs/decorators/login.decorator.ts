@@ -1,5 +1,6 @@
 import {
   registerDecorator,
+  ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -15,6 +16,9 @@ export class IsLoginExistConstraint implements ValidatorConstraintInterface {
   async validate(value: string) {
     const user = await this.userFacade.queries.getUserByIdOrLoginOrEmail(value);
     return !user;
+  }
+  defaultMessage(args: ValidationArguments) {
+    return `${args.property} already exists.`;
   }
 }
 

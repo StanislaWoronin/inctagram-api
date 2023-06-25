@@ -35,7 +35,11 @@ import { IsLoginExistConstraint } from '../../../libs/decorators/login.decorator
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [TestingRepository],
+  providers: [
+    TestingRepository,
+    IsConfirmationCodeExistConstraint,
+    IsLoginExistConstraint,
+  ],
   exports: [],
 })
 export class AuthModule {}

@@ -57,7 +57,7 @@ export class AppGatewayController {
 
   @Post('auth/registration')
   @ApiRegistration()
-  async registration(@Body() dto: TRegistration): Promise<ViewUser> {
+  async registration(@Body() dto: any): Promise<ViewUser> {
     const pattern = { cmd: Commands.Registration };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
@@ -68,7 +68,7 @@ export class AppGatewayController {
   @HttpCode(HttpStatus.OK)
   @ApiLogin()
   async login(
-    @Body() dto: TLogin,
+    @Body() dto: any,
     @Ip() ipAddress: string,
     @Headers('user-agent') title: string,
     @Res({ passthrough: true }) response: Response,
@@ -91,7 +91,7 @@ export class AppGatewayController {
   @Post('auth/confirmation-email-resending')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistrationEmailResending()
-  async confirmationCodeResending(@Body() dto: EmailDto): Promise<boolean> {
+  async confirmationCodeResending(@Body() dto: any): Promise<boolean> {
     const pattern = { cmd: Commands.ConfirmationCodeResending };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
@@ -101,9 +101,7 @@ export class AppGatewayController {
   @Post('auth/registration-confirmation')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistrationConfirmation()
-  async registrationConfirmation(
-    @Body() dto: TRegistrationConfirmation,
-  ): Promise<boolean> {
+  async registrationConfirmation(@Body() dto: any): Promise<boolean> {
     const pattern = { cmd: Commands.RegistrationConfirmation };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
@@ -113,7 +111,7 @@ export class AppGatewayController {
   @Post('auth/password-recovery')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiPasswordRecovery()
-  async passwordRecovery(@Body() dto: TEmail): Promise<boolean> {
+  async passwordRecovery(@Body() dto: any): Promise<boolean> {
     const pattern = { cmd: Commands.PasswordRecovery };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
@@ -123,7 +121,7 @@ export class AppGatewayController {
   @Post('auth/new-password')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNewPassword()
-  async updatePassword(@Body() dto: TNewPassword): Promise<boolean> {
+  async updatePassword(@Body() dto: any): Promise<boolean> {
     const pattern = { cmd: Commands.UpdatePassword };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),

@@ -8,6 +8,7 @@ import { BadRequestException } from '@nestjs/common';
 import { settings } from '../../shared/settings';
 import bcrypt from 'bcrypt';
 import { Device } from './device.schema';
+import { RpcException } from '@nestjs/microservices';
 
 @Schema()
 export class UserAggregate extends UserService implements IUser {

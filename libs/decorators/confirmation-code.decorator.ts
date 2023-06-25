@@ -1,5 +1,6 @@
 import {
   registerDecorator,
+  ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -17,6 +18,9 @@ export class IsConfirmationCodeExistConstraint
   async validate(value: string) {
     const user = await this.userFacade.queries.getUserByConfirmationCode(value);
     return !user;
+  }
+  defaultMessage(args: ValidationArguments) {
+    return `${args.property} is incorrect.`;
   }
 }
 
