@@ -9,6 +9,7 @@ async function bootstrap() {
   const rawApp = await NestFactory.create(AppGatewayModule);
   const app = createApp(rawApp);
   const configService = app.get(ConfigService);
+
   const port = configService.get<number>('API_GATEWAY');
   const serverUrl = `https://inctagram-api.fly.dev`;
   const userConfig = new DocumentBuilder()

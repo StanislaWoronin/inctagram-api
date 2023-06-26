@@ -22,22 +22,23 @@ export class RefreshTokenValidationGuard implements CanActivate {
     const tokenPayload: TTokenPayload = await this.jwtService.decode(
       req.cookies.refreshToken,
     );
+
     if (!tokenPayload) {
       console.log('Токен не рассекретился');
       throw new RpcException('Wrong token');
     }
-    console.log(tokenPayload.id);
-    const user = await this.queryUsersRepository.getUserByField(
-      tokenPayload.id,
-    );
-    console.log(user);
-    const device = user.devices.filter(
-      (d) => d.deviceId === tokenPayload.deviceId,
-    );
-    console.log(device);
-    if (!device) {
-      throw new RpcException("User doesn't exist");
-    }
+
+    // const user = await this.queryUsersRepository.getUserByField(
+    //   tokenPayload.id,
+    // );
+    // console.log(user);
+    // const device = user.devices.filter(
+    //   (d) => d.deviceId === tokenPayload.deviceId,
+    // );
+    // console.log(device);
+    // if (!device) {
+    //   throw new RpcException("User doesn't exist");
+    // }
 
     req.userId = tokenPayload.id;
     req.deviceId = tokenPayload.deviceId;

@@ -15,6 +15,7 @@ import { UserAggregate, UserSchema } from './schema';
 import { EmailAdapters, EmailManager } from '../adapters/email.adapter';
 import { IsConfirmationCodeExistConstraint } from '../decorators/confirmation-code.decorator';
 import { IsUserNameExistConstraint } from '../decorators/userName.decorator';
+import { Factory } from '../shared/tokens.factory';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { IsUserNameExistConstraint } from '../decorators/userName.decorator';
       inject: [CommandBus, QueryBus],
       useFactory: userFacadeFactory,
     },
+    Factory,
     UserRepository,
     UserQueryRepository,
     JwtService,

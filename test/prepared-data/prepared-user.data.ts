@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { userValidationConstant } from '../../libs/users/user-validation.constant';
 
 const validLogin = 'UserName';
+const validEmail = 'somemail@gmail.com';
 const validPassword = 'qwerty123';
 const minLoginLength = userValidationConstant.nameLength.min;
 const maxLoginLength = userValidationConstant.nameLength.max;
@@ -17,7 +18,7 @@ const longPassword = faker.string.alpha({
 export const preparedRegistrationData = {
   valid: {
     userName: validLogin,
-    email: 'somemail@gmail.com',
+    email: validEmail,
     password: validPassword,
     passwordConfirmation: validPassword,
   },
@@ -43,7 +44,7 @@ export const preparedRegistrationData = {
 
 export const preparedLoginData = {
   valid: {
-    email: validLogin,
+    email: validEmail,
     password: validPassword,
   },
 };
