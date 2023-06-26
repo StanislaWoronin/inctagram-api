@@ -27,15 +27,18 @@ export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, type: String })
   passwordHash: string;
 
-  @Prop({ type: Number })
-  passwordRecoveryCode: number = null;
-
   @Prop({
     required: true,
     type: String,
     timestamps: true,
   })
   createdAt: string = new Date().toISOString();
+
+  @Prop({ type: String })
+  passwordRecoveryCode: string = null;
+
+  @Prop({ required: false, type: Date, default: null })
+  expirationDateForRecoveryCode: Date;
 
   @Prop({
     required: true,

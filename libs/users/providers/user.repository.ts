@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Device, UserAggregate, UsersDocument } from '../schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { add } from 'date-fns';
+import { settings } from '../../shared/settings';
 
 @Injectable()
 export class UserRepository {
@@ -61,11 +63,19 @@ export class UserRepository {
 
   async updateEmailConfirmationCode(
     userId: string,
-    emailConfirmationCode: number,
+    emailConfirmationCode: string,
   ): Promise<boolean> {
+    const newDate = add(new Date(), {
+      hours: settings.timeLife.CONFIRMATION_CODE,
+    });
     const result = await this.userModel.updateOne(
       { id: userId },
-      { $set: { 'emailConfirmation.confirmationCode': emailConfirmationCode } },
+      {
+        $set: {
+          'emailConfirmation.confirmationCode': emailConfirmationCode,
+          'emailConfirmation.expirationDate': newDate,
+        },
+      },
     );
     return result.modifiedCount === 1;
   }

@@ -1,6 +1,5 @@
 import {
   registerDecorator,
-  ValidationArguments,
   ValidationOptions,
   ValidatorConstraint,
   ValidatorConstraintInterface,
@@ -15,13 +14,20 @@ export class IsConfirmationCodeExistConstraint
 {
   constructor(private readonly userFacade: UserFacade) {}
 
-  async validate(value: number) {
-    console.log({value})
+  async validate(value: string) {
     const user = await this.userFacade.queries.getUserByConfirmationCode(value);
-    return !user;
-  }
-  defaultMessage(args: ValidationArguments) {
-    return `${args.property} is incorrect.`;
+    if (!user) {
+      return null;
+    }
+    if (user.emailConfirmation.isConfirmed) {
+      return null;
+    }
+    if (user.emailConfirmation.confirmationCode !== value) {
+      return null;
+    }
+    if (user.emailConfirmation.expirationDate < new Date()) {
+      return null;
+    }
   }
 }
 

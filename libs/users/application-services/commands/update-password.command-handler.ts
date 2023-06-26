@@ -26,14 +26,6 @@ export class UpdatePasswordCommandHandler
         passwordRecoveryCode,
       );
 
-    const isDifferent = user.passwordRecoveryCode !== passwordRecoveryCode;
-    const isExpired = passwordRecoveryCode < Date.now();
-    if (isDifferent || isExpired)
-      throw new RpcException(
-        'The time to update the' +
-          ' password has expired. Request a new verification code.',
-      );
-
     const hash = await bcrypt.hash(newPassword, 10);
     if (user.passwordHash === hash)
       throw new RpcException('New password to equal old.');

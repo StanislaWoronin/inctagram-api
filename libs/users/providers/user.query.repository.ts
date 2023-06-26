@@ -17,13 +17,13 @@ export class UserQueryRepository {
       $or: [
         { id: loginOrEmailOrId },
         { email: loginOrEmailOrId },
-        { login: loginOrEmailOrId },
+        { userName: loginOrEmailOrId },
       ],
     });
   }
 
   async getUserByFieldPasswordRecoveryCode(
-    code: number,
+    code: string,
   ): Promise<UserAggregate | null> {
     return this.userModel.findOne({
       passwordRecoveryCode: code,
@@ -35,7 +35,7 @@ export class UserQueryRepository {
     return !!userExists;
   }
 
-  async getUserByConfirmationCode(code: number): Promise<UserAggregate | null> {
+  async getUserByConfirmationCode(code: string): Promise<UserAggregate | null> {
     return this.userModel.findOne({
       'emailConfirmation.confirmationCode': code,
     });

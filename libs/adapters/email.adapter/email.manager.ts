@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { EmailAdapters } from './email.adapter';
-import { randomUUID } from 'crypto';
-import { settings } from '../../shared/settings';
 
 @Injectable()
 export class EmailManager {
@@ -9,7 +7,7 @@ export class EmailManager {
 
   async sendConfirmationEmail(
     email: string,
-    confirmationCode: number,
+    confirmationCode: string,
   ): Promise<void> {
     const subject = 'Confirm your email';
     const message = `<h1>Thank for your registration</h1><p>To finish registration please follow the link below:

@@ -8,28 +8,30 @@ import {
 import { Injectable } from '@nestjs/common';
 import { UserFacade } from '../users/application-services';
 
-@ValidatorConstraint({ name: 'IsLoginExist', async: true })
+@ValidatorConstraint({ name: 'IsUserNameExist', async: true })
 @Injectable()
-export class IsLoginExistConstraint implements ValidatorConstraintInterface {
+export class IsUserNameExistConstraint implements ValidatorConstraintInterface {
   constructor(private readonly userFacade: UserFacade) {}
 
   async validate(value: string) {
-    const user = await this.userFacade.queries.getUserByIdOrLoginOrEmail(value);
-    return !user;
+    const user = await this.userFacade.queries.getUserByIdOrUserNameOrEmail(
+      value,
+    );
+    return !!user;
   }
   defaultMessage(args: ValidationArguments) {
     return `${args.property} already exists.`;
   }
 }
 
-export function IsLoginExist(validationOptions?: ValidationOptions) {
+export function IsUserNameExist(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       constraints: [],
-      validator: IsLoginExistConstraint,
+      validator: IsUserNameExistConstraint,
     });
   };
 }

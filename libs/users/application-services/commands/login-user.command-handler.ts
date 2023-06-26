@@ -29,6 +29,7 @@ export class LoginUserCommandHandler
   async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
     const { email, password, ipAddress, title } = command.dto;
     const user = await this.userQueryRepository.getUserByField(email);
+    console.log(user);
     if (!user) {
       throw new RpcException('Unauthorized');
     }

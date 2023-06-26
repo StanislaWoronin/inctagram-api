@@ -3,7 +3,7 @@ import { Transform } from 'class-transformer';
 import { IsString, Length } from 'class-validator';
 import { userValidationConstant } from '../../../libs/users/user-validation.constant';
 import { IUser } from '../../../libs/users/schema';
-import { IsLoginExist } from '../../../libs/decorators/login.decorator';
+import { IsEmailExist } from '../../../libs/decorators/email.decorator';
 
 export type TLogin = Pick<IUser, 'password'> & { email: string };
 
@@ -11,7 +11,7 @@ export class LoginDto implements TLogin {
   @ApiProperty()
   @IsString()
   @Transform(({ value }) => value?.trim())
-  @IsLoginExist()
+  @IsEmailExist()
   email: string;
 
   @ApiProperty({

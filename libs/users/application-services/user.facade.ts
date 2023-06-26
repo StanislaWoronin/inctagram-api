@@ -10,8 +10,6 @@ import {
   WithClientMeta,
 } from '../../../apps/auth/dto';
 import { PairTokenResponse, ViewUser } from '../response';
-import { GetUserByLoginOrEmailCommand } from './queries/get-user-by-login-or-email-query';
-import { GetUserByConfirmationCodeCommand } from './queries/get-user-by-confirmation-code-query';
 import { LoginUserCommand } from './commands/login-user.command-handler';
 import { ConfirmationCodeResendingCommand } from './commands/confirmation-code-resending-command.handler';
 import { RegistrationConfirmationCommand } from './commands/registration-confirmation.command-handler';
@@ -20,6 +18,9 @@ import { CreateUserCommand } from './commands/create-user.command-handler';
 import { UpdatePairTokenCommand } from './commands/update-pair-token.command-handler';
 import { UpdatePasswordCommand } from './commands/update-password.command-handler';
 import { LogoutCommand } from './commands/logout-command-handler';
+import { UserAggregate } from '../schema';
+import { GetUserByIdOrUserNameOrEmailCommand } from './queries/get-user-by-id-userName-or-email-query';
+import { GetUserByConfirmationCodeCommand } from './queries/get-user-by-confirmation-code-query';
 
 @Injectable()
 export class UserFacade {
@@ -42,15 +43,16 @@ export class UserFacade {
       this.registrationConfirmation(dto),
   };
   queries = {
-    getUserByIdOrLoginOrEmail: (loginOrEmail: string) =>
-      this.getUserByIdOrLoginOrEmail(loginOrEmail),
-    getUserByConfirmationCode: (code: number) =>
+    getUserByIdOrUserNameOrEmail: (loginOrEmail: string) =>
+      this.getUserByIdOrUserNameOrEmail(loginOrEmail),
+    getUserByConfirmationCode: (code: string) =>
       this.getUserByConfirmationCode(code),
   };
 
   private async loginUser(
     dto: WithClientMeta<LoginDto>,
   ): Promise<PairTokenResponse> {
+    console.log(dto);
     const command = new LoginUserCommand(dto);
     return await this.commandBus.execute(command);
   }
@@ -93,14 +95,16 @@ export class UserFacade {
   }
 
   //Queries
-  private async getUserByIdOrLoginOrEmail(
+  private async getUserByIdOrUserNameOrEmail(
     loginOrEmail: string,
-  ): Promise<ViewUser> {
-    const command = new GetUserByLoginOrEmailCommand(loginOrEmail);
+  ): Promise<UserAggregate | null> {
+    const command = new GetUserByIdOrUserNameOrEmailCommand(loginOrEmail);
     return await this.queryBus.execute(command);
   }
 
-  private async getUserByConfirmationCode(code: number): Promise<ViewUser> {
+  private async getUserByConfirmationCode(
+    code: string,
+  ): Promise<UserAggregate | null> {
     const command = new GetUserByConfirmationCodeCommand(code);
     return await this.queryBus.execute(command);
   }

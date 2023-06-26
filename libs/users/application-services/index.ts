@@ -8,8 +8,8 @@ import { LogoutCommandHandler } from './commands/logout-command-handler';
 import { ConfirmationCodeResendingCommandHandler } from './commands/confirmation-code-resending-command.handler';
 import { UpdatePairTokenCommandHandler } from './commands/update-pair-token.command-handler';
 import { UpdatePasswordCommandHandler } from './commands/update-password.command-handler';
-import { GetUserByLoginOrEmailQuery } from './queries/get-user-by-login-or-email-query';
 import { GetUserByConfirmationCodeQuery } from './queries/get-user-by-confirmation-code-query';
+import { GetUserByIdUserNameOrEmailQuery } from './queries/get-user-by-id-userName-or-email-query';
 
 export * from './user.facade';
 
@@ -25,6 +25,6 @@ export const USER_COMMANDS_HANDLERS: Type<ICommandHandler>[] = [
 ];
 
 export const USER_QUERIES_HANDLERS: Type<IQueryHandler>[] = [
-  GetUserByLoginOrEmailQuery,
+  GetUserByIdUserNameOrEmailQuery,
   GetUserByConfirmationCodeQuery,
 ];

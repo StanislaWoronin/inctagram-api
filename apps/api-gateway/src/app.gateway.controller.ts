@@ -40,7 +40,7 @@ import { CurrentDeviceId } from '../../../libs/decorators/device-id.decorator';
 import { CurrentUser } from '../../../libs/decorators/current-user.decorator';
 import { settings } from '../../../libs/shared/settings';
 import { lastValueFrom, map } from 'rxjs';
-import {TokenResponse, ViewUser} from '../../../libs/users/response';
+import { TokenResponse, ViewUser } from '../../../libs/users/response';
 import { ClientProxy } from '@nestjs/microservices';
 
 @Controller()
@@ -67,10 +67,12 @@ export class AppGatewayController {
   @Post('auth/registration-confirmation')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiRegistrationConfirmation()
-  async registrationConfirmation(@Body() dto: TRegistrationConfirmation): Promise<boolean> {
+  async registrationConfirmation(
+    @Body() dto: TRegistrationConfirmation,
+  ): Promise<boolean> {
     const pattern = { cmd: Commands.RegistrationConfirmation };
     return await lastValueFrom(
-        this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
+      this.authProxyClient.send(pattern, dto).pipe(map((result) => result)),
     );
   }
 

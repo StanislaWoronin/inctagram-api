@@ -7,18 +7,16 @@ import { Microservices } from '../../../libs/shared';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../../../libs/users/user.module';
-import {
-  EmailAdapters,
-  EmailManager,
-} from '../../../libs/adapters/email.adapter';
-import { UserRepository } from '../../../libs/users/providers/user.repository';
-import { UserQueryRepository } from '../../../libs/users/providers/user.query.repository';
 import { TestingRepository } from './testing.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfig } from '../../../libs/providers/mongo-db';
 import { UserAggregate, UserSchema } from '../../../libs/users/schema';
 import { IsConfirmationCodeExistConstraint } from '../../../libs/decorators/confirmation-code.decorator';
-import { IsLoginExistConstraint } from '../../../libs/decorators/login.decorator';
+import { IsUserNameExistConstraint } from '../../../libs/decorators/userName.decorator';
+import {
+  IsEmailExistConstraint,
+  IsEmailExistForLoginConstraint,
+} from '../../../libs/decorators/email.decorator';
 
 @Module({
   imports: [
@@ -36,9 +34,11 @@ import { IsLoginExistConstraint } from '../../../libs/decorators/login.decorator
   ],
   controllers: [AuthController],
   providers: [
-    TestingRepository,
+    // TestingRepository,
     IsConfirmationCodeExistConstraint,
-    IsLoginExistConstraint,
+    IsUserNameExistConstraint,
+    IsEmailExistConstraint,
+    IsEmailExistForLoginConstraint,
   ],
   exports: [],
 })

@@ -1,4 +1,4 @@
-import {IUser, UserAggregate} from '../schema';
+import { IUser, UserAggregate } from '../schema';
 import { ApiProperty } from '@nestjs/swagger';
 
 type TViewUser = Pick<IUser, 'id' | 'userName' | 'email' | 'createdAt'>;

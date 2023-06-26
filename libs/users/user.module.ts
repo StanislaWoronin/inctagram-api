@@ -14,7 +14,7 @@ import { MongooseConfig } from '../providers/mongo-db';
 import { UserAggregate, UserSchema } from './schema';
 import { EmailAdapters, EmailManager } from '../adapters/email.adapter';
 import { IsConfirmationCodeExistConstraint } from '../decorators/confirmation-code.decorator';
-import { IsLoginExistConstraint } from '../decorators/login.decorator';
+import { IsUserNameExistConstraint } from '../decorators/userName.decorator';
 
 @Module({
   imports: [
@@ -40,7 +40,7 @@ import { IsLoginExistConstraint } from '../decorators/login.decorator';
     EmailAdapters,
     EmailManager,
     IsConfirmationCodeExistConstraint,
-    IsLoginExistConstraint,
+    IsUserNameExistConstraint,
   ],
   exports: [UserFacade],
 })

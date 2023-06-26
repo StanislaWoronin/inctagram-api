@@ -19,7 +19,7 @@ import {
   NewPasswordDto,
 } from '../../../apps/auth/dto';
 import { TokenResponse, ViewUser } from '../../users/response';
-import {ErrorResponse} from "../../shared/errors.response";
+import { ErrorResponse } from '../../shared/errors.response';
 
 export function ApiRegistration() {
   return applyDecorators(
@@ -31,10 +31,10 @@ export function ApiRegistration() {
     }),
     ApiCreatedResponse({
       description:
-          'Input data is accepted. Email with confirmation code will be send to' +
-          ' passed email address. If the user was registered earlier, but did' +
-          ' not confirm his email, you need to delete his old data and allow' +
-          ' him to register again.',
+        'Input data is accepted. Email with confirmation code will be send to' +
+        ' passed email address. If the user was registered earlier, but did' +
+        ' not confirm his email, you need to delete his old data and allow' +
+        ' him to register again.',
       type: ViewUser,
     }),
     ApiBadRequestResponse({
@@ -60,15 +60,10 @@ export function ApiLogin() {
         ' refreshToken in cookie (http-only, secure) (expired after 20 seconds)',
       type: TokenResponse,
     }),
-    // ApiBadRequestResponse({
-    //   description:
-    //     'If the inputModel has incorrect values (in particular if the user with' +
-    //     ' the given email or password already exists)',
-    //   type: ErrorResponse,
-    // }), TODO 400 не нужна
     ApiUnauthorizedResponse({
-      description: 'if a user with such an email does not exist or the password' +
-          ' is not suitable for the profile registered with this email',
+      description:
+        'if a user with such an email does not exist or the password' +
+        ' is not suitable for the profile registered with this email',
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -116,8 +111,7 @@ export function ApiRegistrationConfirmation() {
       description: 'Email was verified. Account was activated',
     }),
     ApiBadRequestResponse({
-      description:
-        'If confirmation code incorrect or expired.',
+      description: 'If confirmation code incorrect or expired.',
       type: ErrorResponse,
     }),
     // ApiTooManyRequestsResponse({
