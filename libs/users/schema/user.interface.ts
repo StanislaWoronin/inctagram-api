@@ -4,7 +4,7 @@ import { Device } from './device.schema';
 export interface IUser {
   id: string;
   devices: Device[];
-  login: string;
+  userName: string;
   email: string;
   passwordHash: string;
   passwordRecoveryCode: number | null;

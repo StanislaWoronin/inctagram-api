@@ -2,9 +2,10 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UserQueryRepository } from '../../providers/user.query.repository';
 import { UserAggregate } from '../../schema';
 import { RpcException } from '@nestjs/microservices';
+import {preparedLoginData} from "../../../../test/prepared-data/prepared-user.data";
 
 export class GetUserByConfirmationCodeCommand {
-  constructor(public readonly code: string) {}
+  constructor(public readonly code: number) {}
 }
 
 @QueryHandler(GetUserByConfirmationCodeCommand)
@@ -17,6 +18,7 @@ export class GetUserByConfirmationCodeQuery
   async execute(
     query: GetUserByConfirmationCodeCommand,
   ): Promise<UserAggregate | null> {
+    console.log({query})
     const user = await this.userQueryRepository.getUserByConfirmationCode(
       query.code,
     );
@@ -29,8 +31,8 @@ export class GetUserByConfirmationCodeQuery
     if (user.emailConfirmation.confirmationCode !== query.code) {
       throw new RpcException('Wrong code');
     }
-    const currentTime = new Date().toISOString();
-    if (user.emailConfirmation.expirationDate < currentTime) {
+    const currentTime = Date.now();
+    if (user.emailConfirmation.confirmationCode < currentTime) {
       throw new RpcException('Code expired');
     }
     return user;

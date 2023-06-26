@@ -27,8 +27,8 @@ export class LoginUserCommandHandler
   ) {}
 
   async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
-    const { loginOrEmail, password, ipAddress, title } = command.dto;
-    const user = await this.userQueryRepository.getUserByField(loginOrEmail);
+    const { email, password, ipAddress, title } = command.dto;
+    const user = await this.userQueryRepository.getUserByField(email);
     if (!user) {
       throw new RpcException("User doesn't exist");
     }

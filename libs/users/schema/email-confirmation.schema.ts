@@ -5,20 +5,14 @@ import { add } from 'date-fns';
 import { settings } from '../../shared/settings';
 
 export interface IEmailConfirmation {
-  confirmationCode: string;
-  expirationDate: string;
+  confirmationCode: number;
   isConfirmed: boolean;
 }
 
 @Schema({ _id: false, versionKey: false })
 export class EmailConfirmation {
   @Prop({ required: false, type: String, default: null })
-  confirmationCode: string = randomUUID();
-
-  @Prop({ required: false, type: String, default: null })
-  expirationDate: string = add(new Date(), {
-    hours: Number(settings.timeLife.CONFIRMATION_CODE),
-  }).toISOString();
+  confirmationCode: number = Date.now() + settings.timeLife.CONFIRMATION_CODE;
 
   @Prop({ required: false, type: Boolean, default: false })
   isConfirmed = false;

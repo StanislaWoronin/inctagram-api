@@ -7,7 +7,7 @@ import { IsLoginExist } from '../../../libs/decorators/login.decorator';
 
 export type TRegistration = Pick<
   IUser,
-  'login' | 'email' | 'password' | 'passwordConfirmation'
+  'userName' | 'email' | 'password' | 'passwordConfirmation'
 >;
 
 export class RegistrationDto implements TRegistration {
@@ -32,7 +32,7 @@ export class RegistrationDto implements TRegistration {
     userValidationConstant.nameLength.max,
   )
   @IsLoginExist()
-  login: string;
+  userName: string;
 
   @ApiProperty({
     example: 'qwerty123',

@@ -3,7 +3,6 @@ import { UserRepository } from '../../providers/user.repository';
 import { UserAggregate } from '../../schema';
 import { ViewUser } from '../../response';
 import { EmailManager } from '../../../adapters/email.adapter';
-import { randomUUID } from 'crypto';
 import { TRegistration } from '../../../../apps/auth/dto';
 import { RpcException } from '@nestjs/microservices';
 
@@ -23,12 +22,10 @@ export class CreateUserCommandHandler
   async execute(command: CreateUserCommand): Promise<ViewUser> {
     try {
       const newUser = await UserAggregate.create(command.dto);
-      const confirmationCode = randomUUID();
-      newUser.emailConfirmation.confirmationCode = confirmationCode;
       const createdUser = await this.userRepository.createUser(newUser);
       await this.emailManager.sendConfirmationEmail(
         createdUser.email,
-        confirmationCode,
+        createdUser.emailConfirmation.confirmationCode,
       );
 
       return ViewUser.create(createdUser);

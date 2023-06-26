@@ -5,14 +5,14 @@ import { userValidationConstant } from '../../../libs/users/user-validation.cons
 import { IUser } from '../../../libs/users/schema';
 import { IsLoginExist } from '../../../libs/decorators/login.decorator';
 
-export type TLogin = Pick<IUser, 'password'> & { loginOrEmail: string };
+export type TLogin = Pick<IUser, 'password'> & { email: string };
 
 export class LoginDto implements TLogin {
   @ApiProperty()
   @IsString()
   @Transform(({ value }) => value?.trim())
   @IsLoginExist()
-  loginOrEmail: string;
+  email: string;
 
   @ApiProperty({
     minLength: userValidationConstant.passwordLength.min,

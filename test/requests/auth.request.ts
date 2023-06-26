@@ -44,7 +44,7 @@ export class AuthRequest {
   }
 
   async confirmRegistration(
-    code: string,
+    code: number,
   ): Promise<TestResponse<TErrorMessage>> {
     const response = await request(this.server)
       .post('/auth/registration-confirmation')
