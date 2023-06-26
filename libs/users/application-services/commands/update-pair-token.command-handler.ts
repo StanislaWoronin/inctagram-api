@@ -33,7 +33,6 @@ export class UpdatePairTokenCommandHandler
     const [device] = user.devices.filter((d) => d.deviceId === deviceId);
     if (!device) throw new RpcException('Wrong token'); // Protection against intruders
 
-    let _deviceId = device.deviceId;
     const ipIsDifferent = device.ipAddress !== ipAddress;
     const titleIsDifferent = device.title !== title;
     if (ipIsDifferent && titleIsDifferent) {
@@ -41,6 +40,6 @@ export class UpdatePairTokenCommandHandler
       await this.userRepository.createUserDevice(userId, device);
     }
 
-    return await this.factory.getPairTokens(user.id, _deviceId);
+    return await this.factory.getPairTokens(user.id, device.deviceId);
   }
 }

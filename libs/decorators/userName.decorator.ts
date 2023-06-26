@@ -17,6 +17,11 @@ export class IsUserNameExistConstraint implements ValidatorConstraintInterface {
     const user = await this.userFacade.queries.getUserByIdOrUserNameOrEmail(
       value,
     );
+    if (user) {
+      if (!user.emailConfirmation.isConfirmed) {
+        return true;
+      }
+    }
     return !user;
   }
   defaultMessage(args: ValidationArguments) {

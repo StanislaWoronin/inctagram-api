@@ -17,7 +17,7 @@ export class EmailManager {
     return await this.emailAdapters.sendEmail(email, subject, message);
   }
 
-  async sendPasswordRecoveryEmail(email: string, recoveryCode: number) {
+  async sendPasswordRecoveryEmail(email: string, recoveryCode: string) {
     const subject = 'Password recovery';
     const message = `<h1>Password recovery</h1>
                          <p>To finish password recovery please follow the link below:

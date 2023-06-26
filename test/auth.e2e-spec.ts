@@ -15,12 +15,12 @@ import {
   NewPasswordDto,
   RegistrationConfirmationDto,
   RegistrationDto,
-  TRegistrationConfirmation,
 } from '../apps/auth/dto';
 import { errorsMessage } from './response/error.response';
 import { settings } from '../libs/shared/settings';
 import { EmailManager } from '../libs/adapters/email.adapter';
 import { EmailManagerMock } from './mock/email-adapter.mock';
+import { add } from 'date-fns';
 
 describe('Test auth controller.', () => {
   const second = 1000;
@@ -117,6 +117,7 @@ describe('Test auth controller.', () => {
       expect.setState({
         userId: user.body.id,
         code: createdUser.emailConfirmation.confirmationCode,
+        expirationDate: createdUser.emailConfirmation.expirationDate,
       });
     });
 
@@ -125,12 +126,14 @@ describe('Test auth controller.', () => {
     ]);
     it(`Status ${HttpStatus.BAD_REQUEST}. Try confirm email with expired code.`, async () => {
       const { code } = expect.getState();
-
-      const response = await requests
-        .auth()
-        .confirmRegistration(code - settings.timeLife.CONFIRMATION_CODE);
+      // const { userId } = expect.getState();
+      // await testingRepository.updateExpirationDate(userId, incorrectNewDate);
+      await new Promise((res) => setTimeout(res, 2000));
+      const response = await requests.auth().confirmRegistration(code);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.body).toStrictEqual(error);
+      // const correctNewDate = add(new Date(), { hours: 24 });
+      // await testingRepository.updateExpirationDate(userId, correctNewDate);
     });
 
     it(`Status ${HttpStatus.NO_CONTENT}. Registration confirm.`, async () => {
@@ -246,9 +249,10 @@ describe('Test auth controller.', () => {
     it.skip(`Status ${HttpStatus.BAD_REQUEST}. Should save new password.`, async () => {
       const { passwordRecoveryCode } = expect.getState();
 
-      const code = passwordRecoveryCode - settings.timeLife.CONFIRMATION_CODE;
       const newPassword = preparedRegistrationData.valid.password;
-      const response = await requests.auth().newPassword(newPassword, code);
+      const response = await requests
+        .auth()
+        .newPassword(newPassword, passwordRecoveryCode);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.body).toStrictEqual(error);
     });

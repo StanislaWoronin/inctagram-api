@@ -27,7 +27,7 @@ export class UserRepository {
 
   async setPasswordRecovery(
     userId: string,
-    passwordRecoveryCode: number,
+    passwordRecoveryCode: string,
   ): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },
@@ -92,5 +92,10 @@ export class UserRepository {
       },
     );
     return result.modifiedCount === 1;
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    const result = await this.userModel.deleteOne({ id });
+    return result.deletedCount === 1;
   }
 }

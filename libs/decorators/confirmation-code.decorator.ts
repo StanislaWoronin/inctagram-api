@@ -26,7 +26,9 @@ export class IsConfirmationCodeExistConstraint
     if (user.emailConfirmation.confirmationCode !== value) {
       return null;
     }
-    if (user.emailConfirmation.expirationDate < new Date()) {
+    if (
+      user.emailConfirmation.expirationDate.getTime() < new Date().getTime()
+    ) {
       return null;
     }
     return true;

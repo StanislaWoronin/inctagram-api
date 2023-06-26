@@ -22,6 +22,7 @@ import { UserAggregate } from '../schema';
 import { GetUserByIdOrUserNameOrEmailCommand } from './queries/get-user-by-id-userName-or-email-query';
 import { GetUserByConfirmationCodeCommand } from './queries/get-user-by-confirmation-code-query';
 import { GetUserByRecoveryCodeCommand } from './queries/get-user-by-recovery-code-query';
+import { DeleteUserByIdCommand } from './commands/delete-user-by-id.command-handler';
 
 @Injectable()
 export class UserFacade {
@@ -42,6 +43,7 @@ export class UserFacade {
       this.confirmationCodeResending(dto),
     registrationConfirmation: (dto: RegistrationConfirmationDto) =>
       this.registrationConfirmation(dto),
+    deleteUserById: (id: string) => this.deleteUserById(id),
   };
   queries = {
     getUserByIdOrUserNameOrEmail: (loginOrEmail: string) =>
@@ -92,6 +94,11 @@ export class UserFacade {
 
   private async updatePassword(dto: NewPasswordDto) {
     const command = new UpdatePasswordCommand(dto);
+    return await this.commandBus.execute(command);
+  }
+
+  private async deleteUserById(id: string) {
+    const command = new DeleteUserByIdCommand(id);
     return await this.commandBus.execute(command);
   }
 
