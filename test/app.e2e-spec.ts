@@ -10,6 +10,17 @@ import {
   preparedRegistrationData,
 } from './prepared-data/prepared-user.data';
 import { TestingRepository } from '../apps/auth/src/testing.repository';
+import {
+  EmailDto,
+  NewPasswordDto,
+  RegistrationConfirmationDto,
+  RegistrationDto,
+  TRegistrationConfirmation
+} from "../apps/auth/dto";
+import {errorsMessage} from "./response/error.response";
+import {settings} from "../libs/shared/settings";
+import {EmailManager} from "../libs/adapters/email.adapter";
+import {EmailManagerMock} from "./mock/email-adapter.mock";
 
 describe('Test auth controller.', () => {
   const second = 1000;
@@ -28,7 +39,10 @@ describe('Test auth controller.', () => {
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppGatewayModule],
-    }).compile();
+    })
+        .overrideProvider(EmailManager)
+        .useValue(new EmailManagerMock())
+        .compile();
 
     const rawApp = await moduleFixture.createNestApplication();
     app = createApp(rawApp);
@@ -43,31 +57,90 @@ describe('Test auth controller.', () => {
       await requests.testing().deleteAll();
     });
 
-    it.skip(`Status ${HttpStatus.BAD_REQUEST}. Try registration with SHORT input data.`, async () => {
+    const errors = errorsMessage<RegistrationDto>(['email', 'userName', 'password'])
+    it(`Status ${HttpStatus.BAD_REQUEST}. Try registration with SHORT input data.`, async () => {
       const response = await requests
         .auth()
         .registrationUser(preparedRegistrationData.incorrect.short);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.body).toEqual(errors);
+    });
+
+    it(`Status ${HttpStatus.BAD_REQUEST}. Try registration with LONG input data.`, async () => {
+      const response = await requests
+          .auth()
+          .registrationUser(preparedRegistrationData.incorrect.long);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.body).toStrictEqual(errors);
     });
 
     it(`Status ${HttpStatus.CREATED}. Should create new user.`, async () => {
       const response = await requests
-        .auth()
-        .registrationUser(preparedRegistrationData.valid);
+          .auth()
+          .registrationUser(preparedRegistrationData.valid);
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toStrictEqual(
-        createUserResponse(
-          preparedRegistrationData.valid.login,
-          preparedRegistrationData.valid.email,
-        ),
+          createUserResponse(
+              preparedRegistrationData.valid.userName,
+              preparedRegistrationData.valid.email,
+          ),
       );
+    });
+
+    it(`Status ${HttpStatus.CREATED}. A registered user with an unconfirmed
+     email address is trying to re-register.`, async () => {
+      const response = await requests
+          .auth()
+          .registrationUser(preparedRegistrationData.valid);
+      expect(response.status).toBe(HttpStatus.CREATED);
+      expect(response.body).toStrictEqual(
+          createUserResponse(
+              preparedRegistrationData.valid.userName,
+              preparedRegistrationData.valid.email,
+          ),
+      );
+    });
+  });
+
+  describe('Registration confirmation.', () => {
+    it('Create data.', async () => {
+      await requests.testing().deleteAll();
+      const user = await requests.auth().registrationUser(preparedRegistrationData.valid);
+      const createdUser = await requests.testing().getUser(user.body.id);
+
+      expect.setState({
+        userId: user.body.id,
+        code: createdUser.emailConfirmation.confirmationCode,
+      });
+    });
+
+    const error = errorsMessage<RegistrationConfirmationDto>(['confirmationCode']);
+    it(`Status ${HttpStatus.BAD_REQUEST}. Try confirm email with expired code.`, async () => {
+      const { code } = expect.getState();
+
+      const response = await requests.auth().confirmRegistration(code - settings.timeLife.CONFIRMATION_CODE);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.body).toStrictEqual(error)
+    });
+
+    it(`Status ${HttpStatus.NO_CONTENT}. Registration confirm.`, async () => {
+      const { userId, code } = expect.getState();
+
+      const response = await requests.auth().confirmRegistration(code);
+      expect(response.status).toBe(HttpStatus.NO_CONTENT);
+
+      const user = await requests.testing().getUser(userId);
+      const isConfirmed = user.emailConfirmation.isConfirmed;
+      expect(isConfirmed).toBe(true);
     });
   });
 
   describe('Log user', () => {
     it('Create data.', async () => {
       await requests.testing().deleteAll();
-      await requests.auth().registrationUser(preparedRegistrationData.valid);
+      const user = await requests.auth().registrationUser(preparedRegistrationData.valid);
+      const createdUser = await requests.testing().getUser(user.body.id);
+      await requests.auth().confirmRegistration(createdUser.confirmationCode.code);
     });
 
     it(`Status ${HttpStatus.OK}. Should return access and refresh JWT tokens. `, async () => {
@@ -89,7 +162,7 @@ describe('Test auth controller.', () => {
         userEmail: user.user.email,
         confirmationCode: createdUser.emailConfirmation.confirmationCode,
       });
-    });
+    }, 10000);
 
     it(`Status ${HttpStatus.NO_CONTENT}. Should send email confirmation.`, async () => {
       const { userId, userEmail, confirmationCode } = expect.getState();
@@ -105,30 +178,6 @@ describe('Test auth controller.', () => {
     });
   });
 
-  describe('Registration confirmation.', () => {
-    it('Create data.', async () => {
-      await requests.testing().deleteAll();
-      const [user] = await requests.userFactory().createAndLoginUsers(1);
-      const createdUser = await requests.testing().getUser(user.user.id);
-
-      expect.setState({
-        userId: user.user.id,
-        code: createdUser.emailConfirmation.confirmationCode,
-      });
-    });
-
-    it(`Status ${HttpStatus.NO_CONTENT}. Registration confirm.`, async () => {
-      const { userId, code } = expect.getState();
-
-      const response = await requests.auth().confirmRegistration(code);
-      expect(response.status).toBe(HttpStatus.NO_CONTENT);
-
-      const user = await requests.testing().getUser(userId);
-      const isConfirmed = user.emailConfirmation.isConfirmed;
-      expect(isConfirmed).toBe(true);
-    });
-  });
-
   describe('Password recovery.', () => {
     it('Create data.', async () => {
       await requests.testing().deleteAll();
@@ -138,6 +187,14 @@ describe('Test auth controller.', () => {
         userId: user.user.id,
         userEmail: user.user.email,
       });
+    });
+
+    const error = errorsMessage<EmailDto>(['email'])
+    it(`Status ${HttpStatus.BAD_REQUEST}. User is trying to recover the
+     password with incorrect input data .`, async () => {
+      const response = await requests.auth().sendPasswordRecovery(preparedRegistrationData.incorrect.long.email);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.body).toStrictEqual(error)
     });
 
     it(`Status ${HttpStatus.NO_CONTENT}. Should send password recovery code.`, async () => {
@@ -150,7 +207,7 @@ describe('Test auth controller.', () => {
       expect(passwordRecoveryCode).toBeDefined();
     });
   });
-
+  // TODO continue here
   describe('New password.', () => {
     it('Create data.', async () => {
       await requests.testing().deleteAll();
@@ -163,7 +220,20 @@ describe('Test auth controller.', () => {
         passwordRecoveryCode: _user.passwordRecoveryCode,
         passwordHash: _user.passwordHash,
       });
-    });
+    }, 10000);
+
+    const error = errorsMessage<NewPasswordDto>(['newPassword', 'passwordConfirmation'])
+    it.skip(`Status ${HttpStatus.BAD_REQUEST}. Should save new password.`, async () => {
+      const { passwordRecoveryCode } = expect.getState();
+
+      const code = passwordRecoveryCode - settings.timeLife.CONFIRMATION_CODE;
+      const newPassword = preparedRegistrationData.valid.password;
+      const response = await requests
+          .auth()
+          .newPassword(newPassword, code);
+      expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+      expect(response.body).toStrictEqual(error);
+    }) // TODO нужно обработать ошибки
 
     it(`Status ${HttpStatus.NO_CONTENT}. Should save new password.`, async () => {
       const { userId, passwordRecoveryCode, passwordHash } = expect.getState();
@@ -184,7 +254,7 @@ describe('Test auth controller.', () => {
       await requests.testing().deleteAll();
       const [user] = await requests.userFactory().createAndLoginUsers(1);
       const response = await requests.auth().loginUser({
-        loginOrEmail: user.user.login,
+        email: user.user.userName,
         password: preparedLoginData.valid.password,
       });
       console.log(user.user.id);

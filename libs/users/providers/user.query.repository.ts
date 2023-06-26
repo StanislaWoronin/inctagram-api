@@ -35,9 +35,9 @@ export class UserQueryRepository {
     return !!userExists;
   }
 
-  async getUserByConfirmationCode(code: string): Promise<UserAggregate | null> {
+  async getUserByConfirmationCode(code: number): Promise<UserAggregate | null> {
     return this.userModel.findOne({
-      'emailConfirmationCode.confirmationCode': code,
+      'emailConfirmation.confirmationCode': code,
     });
   }
 }

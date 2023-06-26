@@ -19,7 +19,7 @@ export class UserAggregate extends UserService implements IUser {
   devices: Device[];
 
   @Prop({ required: true, type: String })
-  login: string;
+  userName: string;
 
   @Prop({ required: true, unique: true, type: String })
   email: string;

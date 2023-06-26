@@ -19,32 +19,7 @@ import {
   NewPasswordDto,
 } from '../../../apps/auth/dto';
 import { TokenResponse, ViewUser } from '../../users/response';
-
-export class FieldError {
-  @ApiProperty({
-    type: String,
-    description: 'Message with error explanation for certain field',
-    nullable: true,
-  })
-  message: string;
-
-  @ApiProperty({
-    type: String,
-    description: 'What field/property of input model has error',
-    nullable: true,
-  })
-  field: string;
-}
-
-export class APIErrorResult {
-  @ApiProperty({
-    type: [FieldError],
-    description:
-      'Array of error messages for specific fields/properties of input model',
-    nullable: true,
-  })
-  errors: FieldError[];
-}
+import {ErrorResponse} from "../../shared/errors.response";
 
 export function ApiRegistration() {
   return applyDecorators(
@@ -56,15 +31,17 @@ export function ApiRegistration() {
     }),
     ApiCreatedResponse({
       description:
-        'Input data is accepted. Email with confirmation code will be send to' +
-        ' passed email address',
+          'Input data is accepted. Email with confirmation code will be send to' +
+          ' passed email address. If the user was registered earlier, but did' +
+          ' not confirm his email, you need to delete his old data and allow' +
+          ' him to register again.',
       type: ViewUser,
     }),
     ApiBadRequestResponse({
       description:
         'If the inputModel has incorrect values (in particular if the user with' +
         ' the given email or password already exists)',
-      type: APIErrorResult,
+      type: ErrorResponse,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -83,14 +60,15 @@ export function ApiLogin() {
         ' refreshToken in cookie (http-only, secure) (expired after 20 seconds)',
       type: TokenResponse,
     }),
-    ApiBadRequestResponse({
-      description:
-        'If the inputModel has incorrect values (in particular if the user with' +
-        ' the given email or password already exists)',
-      type: APIErrorResult,
-    }),
+    // ApiBadRequestResponse({
+    //   description:
+    //     'If the inputModel has incorrect values (in particular if the user with' +
+    //     ' the given email or password already exists)',
+    //   type: ErrorResponse,
+    // }), TODO 400 не нужна
     ApiUnauthorizedResponse({
-      description: 'If the password or login is wrong',
+      description: 'if a user with such an email does not exist or the password' +
+          ' is not suitable for the profile registered with this email',
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -116,7 +94,7 @@ export function ApiRegistrationEmailResending() {
       description:
         'If the inputModel has incorrect values (in particular if the user with' +
         ' the given email or password already exists)',
-      type: APIErrorResult,
+      type: ErrorResponse,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -139,9 +117,8 @@ export function ApiRegistrationConfirmation() {
     }),
     ApiBadRequestResponse({
       description:
-        'If the inputModel has incorrect values (in particular if the user with' +
-        ' the given email or password already exists)',
-      type: APIErrorResult,
+        'If confirmation code incorrect or expired.',
+      type: ErrorResponse,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -165,7 +142,7 @@ export function ApiPasswordRecovery() {
       description:
         'If the inputModel has incorrect values (in particular if the user with' +
         ' the given email or password already exists)',
-      type: APIErrorResult,
+      type: ErrorResponse,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',
@@ -188,7 +165,7 @@ export function ApiNewPassword() {
       description:
         'If the inputModel has incorrect values (in particular if the user with' +
         ' the given email or password already exists)',
-      type: APIErrorResult,
+      type: ErrorResponse,
     }),
     // ApiTooManyRequestsResponse({
     //   description: 'More than 5 attempts from one IP-address during 10 seconds',

@@ -22,25 +22,25 @@ export class AuthController {
   ) {}
 
   @MessagePattern({ cmd: Commands.Registration })
-  async registration(data: RegistrationDto): Promise<ViewUser> {
-    return await this.userFacade.commands.registrationUser(data);
+  async registration(dto: RegistrationDto): Promise<ViewUser> {
+    return await this.userFacade.commands.registrationUser(dto);
+  }
+
+  @MessagePattern({ cmd: Commands.RegistrationConfirmation })
+  async registrationConfirmation(
+      dto: RegistrationConfirmationDto,
+  ): Promise<boolean> {
+    return await this.userFacade.commands.registrationConfirmation(dto);
   }
 
   @MessagePattern({ cmd: Commands.Login })
-  async login(data: WithClientMeta<LoginDto>): Promise<PairTokenResponse> {
-    return await this.userFacade.commands.loginUser(data);
+  async login(dto: WithClientMeta<LoginDto>): Promise<PairTokenResponse> {
+    return await this.userFacade.commands.loginUser(dto);
   }
 
   @MessagePattern({ cmd: Commands.ConfirmationCodeResending })
   async confirmationCodeResending(dto: EmailDto): Promise<boolean> {
     return await this.userFacade.commands.confirmationCodeResending(dto);
-  }
-
-  @MessagePattern({ cmd: Commands.RegistrationConfirmation })
-  async registrationConfirmation(
-    dto: RegistrationConfirmationDto,
-  ): Promise<boolean> {
-    return await this.userFacade.commands.registrationConfirmation(dto);
   }
 
   @MessagePattern({ cmd: Commands.PasswordRecovery })
@@ -50,6 +50,7 @@ export class AuthController {
 
   @MessagePattern({ cmd: Commands.UpdatePassword })
   async updatePassword(dto: NewPasswordDto): Promise<boolean> {
+    console.log(dto, 'here')
     return await this.userFacade.commands.updatePassword(dto);
   }
 

@@ -61,7 +61,7 @@ export class UserRepository {
 
   async updateEmailConfirmationCode(
     userId: string,
-    emailConfirmationCode: string,
+    emailConfirmationCode: number,
   ): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },

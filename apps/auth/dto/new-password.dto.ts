@@ -22,13 +22,12 @@ export class NewPasswordDto implements TNewPassword {
   )
   newPassword: string;
 
-  @ApiProperty()
+  @ApiProperty({description: 'User\'s new password confirmation field.'})
   @IsString()
-  @IsConfirmationCodeExist()
   passwordConfirmation: string;
 
   @ApiProperty({ description: 'Password recovery code' })
   @IsString()
-  //@Validate(PasswordRecoveryValidator)
+  // @IsConfirmationCodeExist()
   passwordRecoveryCode: number;
 }

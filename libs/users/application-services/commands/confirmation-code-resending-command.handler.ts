@@ -3,6 +3,7 @@ import { UserQueryRepository } from '../../providers/user.query.repository';
 import { UserRepository } from '../../providers/user.repository';
 import { EmailManager } from '../../../adapters/email.adapter';
 import { randomUUID } from 'crypto';
+import {settings} from "../../../shared/settings";
 
 export class ConfirmationCodeResendingCommand {
   constructor(public readonly email: string) {}
@@ -20,12 +21,12 @@ export class ConfirmationCodeResendingCommandHandler
 
   async execute(command: ConfirmationCodeResendingCommand): Promise<boolean> {
     const user = await this.userQueryRepository.getUserByField(command.email);
-    const newEmailConfirmationCode = randomUUID();
+    const newEmailConfirmationCode = Date.now() + settings.timeLife.CONFIRMATION_CODE;
     await this.userRepository.updateEmailConfirmationCode(
       user.id,
       newEmailConfirmationCode,
     );
-    console.log('after update');
+
     await this.emailManger.sendConfirmationEmail(
       command.email,
       newEmailConfirmationCode,

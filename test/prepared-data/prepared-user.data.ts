@@ -16,14 +16,14 @@ const longPassword = faker.string.alpha({
 
 export const preparedRegistrationData = {
   valid: {
-    login: validLogin,
+    userName: validLogin,
     email: 'somemail@gmail.com',
     password: validPassword,
     passwordConfirmation: validPassword,
   },
   incorrect: {
     short: {
-      login: faker.string.alpha({
+      userName: faker.string.alpha({
         length: { min: maxLoginLength + 1, max: maxLoginLength + 1 },
       }),
       email: 'somemailgmail.com',
@@ -31,7 +31,7 @@ export const preparedRegistrationData = {
       passwordConfirmation: shortPassword,
     },
     long: {
-      login: faker.string.alpha({
+      userName: faker.string.alpha({
         length: { min: minLoginLength - 1, max: minLoginLength - 1 },
       }),
       email: 'somemailgmail.com',
@@ -43,8 +43,7 @@ export const preparedRegistrationData = {
 
 export const preparedLoginData = {
   valid: {
-    loginOrEmail: validLogin,
+    email: validLogin,
     password: validPassword,
-    passwordConfirmation: validPassword,
   },
 };
