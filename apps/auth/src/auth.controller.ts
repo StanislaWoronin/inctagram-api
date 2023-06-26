@@ -28,7 +28,7 @@ export class AuthController {
 
   @MessagePattern({ cmd: Commands.RegistrationConfirmation })
   async registrationConfirmation(
-      dto: RegistrationConfirmationDto,
+    dto: RegistrationConfirmationDto,
   ): Promise<boolean> {
     return await this.userFacade.commands.registrationConfirmation(dto);
   }
@@ -50,7 +50,7 @@ export class AuthController {
 
   @MessagePattern({ cmd: Commands.UpdatePassword })
   async updatePassword(dto: NewPasswordDto): Promise<boolean> {
-    console.log(dto, 'here')
+    console.log(dto, 'here');
     return await this.userFacade.commands.updatePassword(dto);
   }
 

@@ -2,7 +2,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { UserQueryRepository } from '../../providers/user.query.repository';
 import { UserAggregate } from '../../schema';
 import { RpcException } from '@nestjs/microservices';
-import {preparedLoginData} from "../../../../test/prepared-data/prepared-user.data";
+import { preparedLoginData } from '../../../../test/prepared-data/prepared-user.data';
 
 export class GetUserByConfirmationCodeCommand {
   constructor(public readonly code: number) {}
@@ -18,7 +18,7 @@ export class GetUserByConfirmationCodeQuery
   async execute(
     query: GetUserByConfirmationCodeCommand,
   ): Promise<UserAggregate | null> {
-    console.log({query})
+    console.log({ query });
     const user = await this.userQueryRepository.getUserByConfirmationCode(
       query.code,
     );

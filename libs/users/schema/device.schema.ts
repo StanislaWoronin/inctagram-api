@@ -1,4 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
+import { randomUUID } from 'crypto';
 
 interface IDevice {
   deviceId;
@@ -12,7 +13,7 @@ export class Device implements IDevice {
     required: true,
     type: String,
   })
-  deviceId: string;
+  deviceId: string = randomUUID();
 
   @Prop({ required: true, type: String })
   ipAddress: string;

@@ -21,7 +21,8 @@ export class PasswordRecoveryCommandHandler
   async execute({ email }: PasswordRecoveryCommand) {
     const user = await this.userQueryRepository.getUserByField(email);
     if (user) {
-      const passwordRecovery = Date.now() + settings.timeLife.ONE_DAY;
+      const passwordRecovery =
+        Date.now() + settings.timeLife.PASSWORD_RECOVERY_CODE;
       const isSuccess = await this.userRepository.setPasswordRecovery(
         user.id,
         passwordRecovery,

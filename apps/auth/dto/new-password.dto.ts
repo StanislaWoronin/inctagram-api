@@ -1,4 +1,4 @@
-import { IsString, Length, Validate } from 'class-validator';
+import { IsNumber, IsString, Length, Validate } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { userValidationConstant } from '../../../libs/users/user-validation.constant';
 import { IUser } from '../../../libs/users/schema';
@@ -22,12 +22,12 @@ export class NewPasswordDto implements TNewPassword {
   )
   newPassword: string;
 
-  @ApiProperty({description: 'User\'s new password confirmation field.'})
+  @ApiProperty({ description: "User's new password confirmation field." })
   @IsString()
   passwordConfirmation: string;
 
   @ApiProperty({ description: 'Password recovery code' })
-  @IsString()
+  @IsNumber()
   // @IsConfirmationCodeExist()
   passwordRecoveryCode: number;
 }

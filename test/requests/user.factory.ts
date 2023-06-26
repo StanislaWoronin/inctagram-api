@@ -1,17 +1,18 @@
 import { AuthRequest } from './auth.request';
 import { ViewUser } from '../../libs/users/response';
-import {TLogin, TRegistration} from '../../apps/auth/dto';
+import { TLogin, TRegistration } from '../../apps/auth/dto';
 import { UserWithTokensType } from '../types/user-with-tokens.type';
 import {
   preparedLoginData,
   preparedRegistrationData,
 } from '../prepared-data/prepared-user.data';
-import {Testing} from "./testing.request";
+import { Testing } from './testing.request';
 
 export class UserFactory {
   constructor(
-      private readonly authRequest: AuthRequest,
-      private readonly testingRequest: Testing) {}
+    private readonly authRequest: AuthRequest,
+    private readonly testingRequest: Testing,
+  ) {}
 
   async createUsers(usersCount: number, startWith = 0): Promise<ViewUser[]> {
     const result = [];
@@ -39,8 +40,10 @@ export class UserFactory {
 
     const result = [];
     for (let i = 0; i < userCount; i++) {
-      const createdUser = await this.testingRequest.getUser(users[i].id)
-      await this.authRequest.confirmRegistration(createdUser.emailConfirmation.confirmationCode);
+      const createdUser = await this.testingRequest.getUser(users[i].id);
+      await this.authRequest.confirmRegistration(
+        createdUser.emailConfirmation.confirmationCode,
+      );
 
       const userLoginData: TLogin = {
         email: createdUser.email,

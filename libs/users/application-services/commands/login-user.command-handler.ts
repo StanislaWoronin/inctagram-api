@@ -7,9 +7,9 @@ import { settings } from '../../../shared/settings';
 import { PairTokenResponse } from '../../response';
 import { UserRepository } from '../../providers/user.repository';
 import { Device } from '../../schema';
-import { randomUUID } from 'crypto';
 import { LoginDto, WithClientMeta } from '../../../../apps/auth/dto';
 import { RpcException } from '@nestjs/microservices';
+import { Factory } from '../../../shared/tokens.factory';
 
 export class LoginUserCommand {
   constructor(public readonly dto: WithClientMeta<LoginDto>) {}
@@ -24,10 +24,12 @@ export class LoginUserCommandHandler
     private userRepository: UserRepository,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private factory: Factory,
   ) {}
 
-  async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
-    const { email, password, ipAddress, title } = command.dto;
+  async execute({ dto }: LoginUserCommand): Promise<PairTokenResponse> {
+    const { email, password, ipAddress, title } = dto;
+
     const user = await this.userQueryRepository.getUserByField(email);
     if (!user) {
       throw new RpcException('Unauthorized');
@@ -40,34 +42,9 @@ export class LoginUserCommandHandler
       throw new RpcException('Unauthorized');
     }
 
-    const deviceId = randomUUID();
-    const device = Device.create({ deviceId, ipAddress, title });
+    const device = Device.create({ ipAddress, title });
     await this.userRepository.createUserDevice(user.id, device);
 
-    const [newAccessToken, newRefreshToken] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          id: user.id,
-          deviceId: device.deviceId,
-          lastActiveDate: new Date(),
-        },
-        {
-          secret: this.configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
-          expiresIn: settings.timeLife.ACCESS_TOKEN,
-        },
-      ),
-      this.jwtService.signAsync(
-        {
-          id: user.id,
-          deviceId: device.deviceId,
-          lastActiveDate: new Date(),
-        },
-        {
-          secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
-          expiresIn: settings.timeLife.REFRESH_TOKEN,
-        },
-      ),
-    ]);
-    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    return await this.factory.getPairTokens(user.id, device.deviceId);
   }
 }

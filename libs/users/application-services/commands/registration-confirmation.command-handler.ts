@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserQueryRepository } from '../../providers/user.query.repository';
 import { UserRepository } from '../../providers/user.repository';
 import { randomUUID } from 'crypto';
-import {settings} from "../../../shared/settings";
+import { settings } from '../../../shared/settings';
 
 export class RegistrationConfirmationCommand {
   constructor(public readonly confirmationCode: number) {}
@@ -18,12 +18,13 @@ export class RegistrationConfirmationCommandHandler
   ) {}
 
   async execute(command: RegistrationConfirmationCommand): Promise<boolean> {
-    console.log(command)
+    console.log(command);
     const user = await this.userQueryRepository.getUserByConfirmationCode(
       command.confirmationCode,
     );
-    console.log(user)
-    const newEmailConfirmationCode = Date.now() + settings.timeLife.CONFIRMATION_CODE;
+    console.log(user);
+    const newEmailConfirmationCode =
+      Date.now() + settings.timeLife.CONFIRMATION_CODE;
     await this.userRepository.updateEmailConfirmationCode(
       user.id,
       newEmailConfirmationCode,

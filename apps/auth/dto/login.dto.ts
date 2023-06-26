@@ -11,7 +11,7 @@ export class LoginDto implements TLogin {
   @ApiProperty()
   @IsString()
   @Transform(({ value }) => value?.trim())
-  @IsLoginExist()
+  // @IsLoginExist()
   email: string;
 
   @ApiProperty({

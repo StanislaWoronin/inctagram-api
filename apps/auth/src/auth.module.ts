@@ -7,12 +7,6 @@ import { Microservices } from '../../../libs/shared';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../../../libs/users/user.module';
-import {
-  EmailAdapters,
-  EmailManager,
-} from '../../../libs/adapters/email.adapter';
-import { UserRepository } from '../../../libs/users/providers/user.repository';
-import { UserQueryRepository } from '../../../libs/users/providers/user.query.repository';
 import { TestingRepository } from './testing.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongooseConfig } from '../../../libs/providers/mongo-db';

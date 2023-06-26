@@ -1,6 +1,9 @@
-import {ViewUser} from "../../../libs/users/response";
+import { ViewUser } from '../../../libs/users/response';
 
-export const createUserResponse = (userName: string, email: string): ViewUser => {
+export const createUserResponse = (
+  userName: string,
+  email: string,
+): ViewUser => {
   return {
     id: expect.any(String),
     userName,
