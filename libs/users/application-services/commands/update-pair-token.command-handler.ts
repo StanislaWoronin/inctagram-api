@@ -6,7 +6,6 @@ import { PairTokenResponse } from '../../response';
 import { UserRepository } from '../../providers/user.repository';
 import { UserQueryRepository } from '../../providers/user.query.repository';
 import { Device } from '../../schema';
-import { randomUUID } from 'crypto';
 import { SessionIdDto, WithClientMeta } from '../../../../apps/auth/dto';
 
 export class UpdatePairTokenCommand {
@@ -31,8 +30,7 @@ export class UpdatePairTokenCommandHandler
     const ipIsDifferent = device.ipAddress !== ipAddress;
     const titleIsDifferent = device.title !== title;
     if (ipIsDifferent && titleIsDifferent) {
-      const deviceId = randomUUID();
-      const device = Device.create({ deviceId, ipAddress, title });
+      const device = Device.create({ ipAddress, title });
       await this.userRepository.createUserDevice(userId, device);
     }
     const [newAccessToken, newRefreshToken] = await Promise.all([

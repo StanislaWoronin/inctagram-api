@@ -4,7 +4,7 @@ dotenv.config();
 
 export const settings = {
   environment: process.env.NODE_ENV,
-  transportName: Transport.RMQ,
+  transportName: Transport.TCP,
   rmqUrl: process.env.RMQ_URL,
   host: {
     localHost: '0.0.0.0',

@@ -4,10 +4,7 @@ import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { IUser } from '../../../libs/users/schema';
 import { IsUserNameExist } from '../../../libs/decorators/userName.decorator';
-import {
-  IsEmailExist,
-  IsEmailExistForLogin,
-} from '../../../libs/decorators/email.decorator';
+import { IsEmailExistForRegistration } from '../../../libs/decorators/email.decorator';
 
 export type TRegistration = Pick<
   IUser,
@@ -20,7 +17,7 @@ export class RegistrationDto implements TRegistration {
   @IsString()
   @IsEmail()
   @Transform(({ value }) => value?.trim())
-  @IsEmailExistForLogin()
+  @IsEmailExistForRegistration()
   email: string;
 
   @ApiProperty({

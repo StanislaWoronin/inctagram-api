@@ -35,7 +35,6 @@ export class AuthController {
 
   @MessagePattern({ cmd: Commands.Login })
   async login(dto: WithClientMeta<LoginDto>): Promise<PairTokenResponse> {
-    console.log(dto, 'here');
     return await this.userFacade.commands.loginUser(dto);
   }
 
@@ -51,7 +50,6 @@ export class AuthController {
 
   @MessagePattern({ cmd: Commands.UpdatePassword })
   async updatePassword(dto: NewPasswordDto): Promise<boolean> {
-    console.log(dto, 'here');
     return await this.userFacade.commands.updatePassword(dto);
   }
 

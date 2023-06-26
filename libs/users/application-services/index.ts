@@ -10,6 +10,7 @@ import { UpdatePairTokenCommandHandler } from './commands/update-pair-token.comm
 import { UpdatePasswordCommandHandler } from './commands/update-password.command-handler';
 import { GetUserByConfirmationCodeQuery } from './queries/get-user-by-confirmation-code-query';
 import { GetUserByIdUserNameOrEmailQuery } from './queries/get-user-by-id-userName-or-email-query';
+import { GetUserByRecoveryCodeQuery } from './queries/get-user-by-recovery-code-query';
 
 export * from './user.facade';
 
@@ -27,4 +28,5 @@ export const USER_COMMANDS_HANDLERS: Type<ICommandHandler>[] = [
 export const USER_QUERIES_HANDLERS: Type<IQueryHandler>[] = [
   GetUserByIdUserNameOrEmailQuery,
   GetUserByConfirmationCodeQuery,
+  GetUserByRecoveryCodeQuery,
 ];

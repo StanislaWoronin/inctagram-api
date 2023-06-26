@@ -2,6 +2,7 @@ import { IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { userValidationConstant } from '../../../libs/users/user-validation.constant';
 import { IUser } from '../../../libs/users/schema';
+import { IsRecoveryCodeExist } from '../../../libs/decorators/recovery-code.decorator';
 
 export type TNewPassword = Pick<IUser, 'passwordRecoveryCode'> & {
   newPassword: string;
@@ -27,6 +28,6 @@ export class NewPasswordDto implements TNewPassword {
 
   @ApiProperty({ description: 'Password recovery code' })
   @IsString()
-  // @IsConfirmationCodeExist()
+  @IsRecoveryCodeExist()
   passwordRecoveryCode: string;
 }

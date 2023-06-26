@@ -15,8 +15,9 @@ import { IsConfirmationCodeExistConstraint } from '../../../libs/decorators/conf
 import { IsUserNameExistConstraint } from '../../../libs/decorators/userName.decorator';
 import {
   IsEmailExistConstraint,
-  IsEmailExistForLoginConstraint,
+  IsEmailExistForRegistrationConstraint,
 } from '../../../libs/decorators/email.decorator';
+import { IsRecoveryCodeExistConstraint } from '../../../libs/decorators/recovery-code.decorator';
 
 @Module({
   imports: [
@@ -34,11 +35,12 @@ import {
   ],
   controllers: [AuthController],
   providers: [
-    // TestingRepository,
+    TestingRepository,
     IsConfirmationCodeExistConstraint,
     IsUserNameExistConstraint,
     IsEmailExistConstraint,
-    IsEmailExistForLoginConstraint,
+    IsEmailExistForRegistrationConstraint,
+    IsRecoveryCodeExistConstraint,
   ],
   exports: [],
 })

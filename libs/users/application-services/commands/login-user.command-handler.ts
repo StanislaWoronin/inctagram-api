@@ -29,7 +29,6 @@ export class LoginUserCommandHandler
   async execute(command: LoginUserCommand): Promise<PairTokenResponse> {
     const { email, password, ipAddress, title } = command.dto;
     const user = await this.userQueryRepository.getUserByField(email);
-    console.log(user);
     if (!user) {
       throw new RpcException('Unauthorized');
     }
@@ -41,8 +40,7 @@ export class LoginUserCommandHandler
       throw new RpcException('Unauthorized');
     }
 
-    const deviceId = randomUUID();
-    const device = Device.create({ deviceId, ipAddress, title });
+    const device = Device.create({ ipAddress, title });
     await this.userRepository.createUserDevice(user.id, device);
 
     const [newAccessToken, newRefreshToken] = await Promise.all([

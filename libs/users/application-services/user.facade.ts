@@ -21,6 +21,7 @@ import { LogoutCommand } from './commands/logout-command-handler';
 import { UserAggregate } from '../schema';
 import { GetUserByIdOrUserNameOrEmailCommand } from './queries/get-user-by-id-userName-or-email-query';
 import { GetUserByConfirmationCodeCommand } from './queries/get-user-by-confirmation-code-query';
+import { GetUserByRecoveryCodeCommand } from './queries/get-user-by-recovery-code-query';
 
 @Injectable()
 export class UserFacade {
@@ -47,12 +48,12 @@ export class UserFacade {
       this.getUserByIdOrUserNameOrEmail(loginOrEmail),
     getUserByConfirmationCode: (code: string) =>
       this.getUserByConfirmationCode(code),
+    getUserByRecoveryCode: (code: string) => this.getUserByRecoveryCode(code),
   };
 
   private async loginUser(
     dto: WithClientMeta<LoginDto>,
   ): Promise<PairTokenResponse> {
-    console.log(dto);
     const command = new LoginUserCommand(dto);
     return await this.commandBus.execute(command);
   }
@@ -106,6 +107,12 @@ export class UserFacade {
     code: string,
   ): Promise<UserAggregate | null> {
     const command = new GetUserByConfirmationCodeCommand(code);
+    return await this.queryBus.execute(command);
+  }
+  private async getUserByRecoveryCode(
+    code: string,
+  ): Promise<UserAggregate | null> {
+    const command = new GetUserByRecoveryCodeCommand(code);
     return await this.queryBus.execute(command);
   }
 }

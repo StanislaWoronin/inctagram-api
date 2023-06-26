@@ -10,23 +10,23 @@ import { UserFacade } from '../users/application-services';
 
 @ValidatorConstraint({ name: 'IsConfirmationCodeExist', async: true })
 @Injectable()
-export class IsConfirmationCodeExistConstraint
+export class IsRecoveryCodeExistConstraint
   implements ValidatorConstraintInterface
 {
   constructor(private readonly userFacade: UserFacade) {}
 
   async validate(value: string) {
-    const user = await this.userFacade.queries.getUserByConfirmationCode(value);
+    const user = await this.userFacade.queries.getUserByRecoveryCode(value);
     if (!user) {
       return null;
     }
-    if (user.emailConfirmation.isConfirmed) {
+    if (!user.emailConfirmation.isConfirmed) {
       return null;
     }
-    if (user.emailConfirmation.confirmationCode !== value) {
+    if (user.passwordRecoveryCode !== value) {
       return null;
     }
-    if (user.emailConfirmation.expirationDate < new Date()) {
+    if (user.expirationDateForRecoveryCode < new Date()) {
       return null;
     }
     return true;
@@ -36,14 +36,14 @@ export class IsConfirmationCodeExistConstraint
   }
 }
 
-export function IsConfirmationCodeExist(validationOptions?: ValidationOptions) {
+export function IsRecoveryCodeExist(validationOptions?: ValidationOptions) {
   return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       constraints: [],
-      validator: IsConfirmationCodeExistConstraint,
+      validator: IsRecoveryCodeExistConstraint,
     });
   };
 }

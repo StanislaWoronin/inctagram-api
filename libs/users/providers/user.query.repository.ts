@@ -40,4 +40,10 @@ export class UserQueryRepository {
       'emailConfirmation.confirmationCode': code,
     });
   }
+
+  async getUserByRecoveryCode(code: string): Promise<UserAggregate | null> {
+    return this.userModel.findOne({
+      passwordRecoveryCode: code,
+    });
+  }
 }

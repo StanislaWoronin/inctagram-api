@@ -36,9 +36,9 @@ export function IsEmailExist(validationOptions?: ValidationOptions) {
   };
 }
 
-@ValidatorConstraint({ name: 'IsEmailExistForLogin', async: true })
+@ValidatorConstraint({ name: 'IsEmailExistForRegistration', async: true })
 @Injectable()
-export class IsEmailExistForLoginConstraint
+export class IsEmailExistForRegistrationConstraint
   implements ValidatorConstraintInterface
 {
   constructor(private readonly userFacade: UserFacade) {}
@@ -47,21 +47,23 @@ export class IsEmailExistForLoginConstraint
     const user = await this.userFacade.queries.getUserByIdOrUserNameOrEmail(
       value,
     );
-    return !!user;
+    return !user;
   }
   defaultMessage(args: ValidationArguments) {
     return `${args.property} already exists.`;
   }
 }
 
-export function IsEmailExistForLogin(validationOptions?: ValidationOptions) {
+export function IsEmailExistForRegistration(
+  validationOptions?: ValidationOptions,
+) {
   return function (object: any, propertyName: string) {
     registerDecorator({
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
       constraints: [],
-      validator: IsEmailExistForLoginConstraint,
+      validator: IsEmailExistForRegistrationConstraint,
     });
   };
 }
