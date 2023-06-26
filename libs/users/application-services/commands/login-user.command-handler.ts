@@ -30,14 +30,14 @@ export class LoginUserCommandHandler
     const { loginOrEmail, password, ipAddress, title } = command.dto;
     const user = await this.userQueryRepository.getUserByField(loginOrEmail);
     if (!user) {
-      throw new RpcException("User doesn't exist");
+      throw new RpcException('Unauthorized');
     }
     if (!user.emailConfirmation.isConfirmed) {
-      throw new RpcException('Email is not confirmed');
+      throw new RpcException('Unauthorized');
     }
     const passwordEqual = await bcrypt.compare(password, user.passwordHash);
     if (!passwordEqual) {
-      throw new RpcException('Password is incorrect');
+      throw new RpcException('Unauthorized');
     }
 
     const deviceId = randomUUID();

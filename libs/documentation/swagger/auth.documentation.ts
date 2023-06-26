@@ -9,7 +9,6 @@ import {
   ApiOperation,
   ApiProperty,
   ApiTags,
-  ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import {
@@ -201,6 +200,7 @@ export function ApiRefreshToken() {
   return applyDecorators(
     ApiTags('Auth'),
     ApiOperation({ summary: 'Update authorization tokens' }),
+    ApiBearerAuth(),
     ApiOkResponse({
       description:
         'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +

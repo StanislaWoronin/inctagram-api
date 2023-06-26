@@ -26,7 +26,6 @@ export class UpdatePairTokenCommandHandler
 
   async execute({ dto }: UpdatePairTokenCommand): Promise<PairTokenResponse> {
     const { userId, deviceId, ipAddress, title } = dto;
-    console.log(dto);
     const user = await this.userQueryRepository.getUserByField(userId);
     const [device] = user.devices.filter((d) => d.deviceId === deviceId);
     const ipIsDifferent = device.ipAddress !== ipAddress;

@@ -15,7 +15,7 @@ export class RefreshTokenValidationGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
 
     if (!req.cookies.refreshToken) {
-      throw new RpcException("No token provided in 'Authorization' header");
+      throw new RpcException('Unauthorized');
     }
 
     // @ts-ignore

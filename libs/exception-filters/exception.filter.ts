@@ -14,6 +14,10 @@ export class ExceptionFilter implements RpcExceptionFilter<RpcException> {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const errorResponse = { errors: exception };
+    if (exception.getError() == 'Unauthorized') {
+      response.sendStatus(HttpStatus.UNAUTHORIZED);
+      return;
+    }
     response.status(HttpStatus.BAD_REQUEST).json(errorResponse);
     return;
   }
