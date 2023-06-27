@@ -60,22 +60,24 @@ export class UserFacade {
     return await this.commandBus.execute(command);
   }
 
-  private async logout(dto: SessionIdDto) {
+  private async logout(dto: SessionIdDto): Promise<boolean> {
     const command = new LogoutCommand(dto);
     return await this.commandBus.execute(command);
   }
 
-  private async confirmationCodeResending(dto: EmailDto) {
+  private async confirmationCodeResending(dto: EmailDto): Promise<boolean> {
     const command = new ConfirmationCodeResendingCommand(dto.email);
     return await this.commandBus.execute(command);
   }
 
-  private async registrationConfirmation(dto: RegistrationConfirmationDto) {
+  private async registrationConfirmation(
+    dto: RegistrationConfirmationDto,
+  ): Promise<boolean> {
     const command = new RegistrationConfirmationCommand(dto.confirmationCode);
     return await this.commandBus.execute(command);
   }
 
-  private async passwordRecovery(dto: EmailDto) {
+  private async passwordRecovery(dto: EmailDto): Promise<boolean> {
     const command = new PasswordRecoveryCommand(dto.email);
     return await this.commandBus.execute(command);
   }
@@ -92,12 +94,12 @@ export class UserFacade {
     return await this.commandBus.execute(command);
   }
 
-  private async updatePassword(dto: NewPasswordDto) {
+  private async updatePassword(dto: NewPasswordDto): Promise<boolean> {
     const command = new UpdatePasswordCommand(dto);
     return await this.commandBus.execute(command);
   }
 
-  private async deleteUserById(id: string) {
+  private async deleteUserById(id: string): Promise<boolean> {
     const command = new DeleteUserByIdCommand(id);
     return await this.commandBus.execute(command);
   }

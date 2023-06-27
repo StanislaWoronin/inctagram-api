@@ -13,6 +13,7 @@ import {
 } from '../dto';
 import { TestingRepository } from './testing.repository';
 import { MessagePattern } from '@nestjs/microservices';
+import { UserAggregate } from '../../../libs/users/schema';
 
 @Controller()
 export class AuthController {
@@ -71,7 +72,7 @@ export class AuthController {
   }
 
   @MessagePattern({ cmd: Commands.GetUser })
-  async getUser({ data }) {
+  async getUser({ data }): Promise<UserAggregate | null> {
     return this.testingRepository.getUser(data);
   }
 }

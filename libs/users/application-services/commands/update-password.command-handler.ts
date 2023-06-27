@@ -19,7 +19,7 @@ export class UpdatePasswordCommandHandler
     private userQueryRepository: UserQueryRepository,
   ) {}
 
-  async execute({ dto }: UpdatePasswordCommand) {
+  async execute({ dto }: UpdatePasswordCommand): Promise<boolean> {
     const { newPassword, passwordRecoveryCode } = dto;
 
     const user =

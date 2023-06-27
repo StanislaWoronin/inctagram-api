@@ -42,6 +42,7 @@ import { settings } from '../../../libs/shared/settings';
 import { lastValueFrom, map } from 'rxjs';
 import { TokenResponse, ViewUser } from '../../../libs/users/response';
 import { ClientProxy } from '@nestjs/microservices';
+import { UserAggregate } from '../../../libs/users/schema';
 
 @Controller()
 export class AppGatewayController {
@@ -175,7 +176,7 @@ export class AppGatewayController {
   @Delete('testing/delete-all')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiDropDatabase()
-  async deleteDataInDb() {
+  async deleteDataInDb(): Promise<boolean> {
     const pattern = { cmd: Commands.DeleteAll };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, {}).pipe(map((result) => result)),
@@ -184,7 +185,7 @@ export class AppGatewayController {
 
   @Get('testing/users/:data')
   @ApiDropDatabase()
-  async getUser(@Param() data: string) {
+  async getUser(@Param() data: string): Promise<UserAggregate | null> {
     const pattern = { cmd: Commands.GetUser };
     return await lastValueFrom(
       this.authProxyClient.send(pattern, data).pipe(map((result) => result)),
