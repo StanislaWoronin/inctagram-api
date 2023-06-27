@@ -22,23 +22,19 @@ export class CreateUserCommandHandler
   ) {}
 
   async execute(command: CreateUserCommand): Promise<ViewUser> {
-    try {
-      const user = await this.userQueryRepository.getUserByField(
-        command.dto.email,
-      );
-      if (user) {
-        await this.userRepository.deleteUser(user.id);
-      }
-      const newUser = await UserAggregate.create(command.dto);
-      const createdUser = await this.userRepository.createUser(newUser);
-      await this.emailManager.sendConfirmationEmail(
-        createdUser.email,
-        createdUser.emailConfirmation.confirmationCode,
-      );
-
-      return ViewUser.create(createdUser);
-    } catch (e) {
-      throw new RpcException(e);
+    const user = await this.userQueryRepository.getUserByField(
+      command.dto.email,
+    );
+    if (user) {
+      await this.userRepository.deleteUser(user.id);
     }
+    const newUser = await UserAggregate.create(command.dto);
+    const createdUser = await this.userRepository.createUser(newUser);
+    await this.emailManager.sendConfirmationEmail(
+      createdUser.email,
+      createdUser.emailConfirmation.confirmationCode,
+    );
+
+    return ViewUser.create(createdUser);
   }
 }
