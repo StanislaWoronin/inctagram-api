@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {IsNumber} from 'class-validator';
+import { IsNumber } from 'class-validator';
 import { IEmailConfirmation } from '../../../libs/users/schema';
 import { IsConfirmationCodeExist } from '../../../libs/decorators/confirmation-code.decorator';
 

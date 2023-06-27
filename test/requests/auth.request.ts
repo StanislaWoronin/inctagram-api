@@ -5,7 +5,7 @@ import { TokenResponse, ViewUser } from '../../libs/users/response';
 import { faker } from '@faker-js/faker';
 import { TLoginResponse } from '../types/login.response';
 import { TErrorMessage } from '../types/error-message.type';
-import {HttpStatus} from "@nestjs/common";
+import { HttpStatus } from '@nestjs/common';
 
 export class AuthRequest {
   constructor(private readonly server: any) {}
@@ -29,13 +29,14 @@ export class AuthRequest {
     if (response.status !== HttpStatus.OK) {
       return {
         status: response.status,
-      }
+      };
     }
 
     return {
       accessToken: response.body.accessToken,
-      refreshToken:
-        response.headers['set-cookie'][0].split(';')[0].split('=')[1],
+      refreshToken: response.headers['set-cookie'][0]
+        .split(';')[0]
+        .split('=')[1],
       status: response.status,
     };
   }
@@ -85,7 +86,9 @@ export class AuthRequest {
     return { body: response.body, status: response.status };
   }
 
-  async updatePairTokens(refreshToken?: string): Promise<Partial<TLoginResponse>> {
+  async updatePairTokens(
+    refreshToken?: string,
+  ): Promise<Partial<TLoginResponse>> {
     const response = await request(this.server)
       .post('/auth/refresh-token')
       .set('Cookie', `refreshToken=${refreshToken}`)
@@ -94,7 +97,7 @@ export class AuthRequest {
     if (response.status !== HttpStatus.OK) {
       return {
         status: response.status,
-      }
+      };
     }
 
     return {
@@ -108,8 +111,8 @@ export class AuthRequest {
 
   async logout(refreshToken?: string): Promise<number> {
     const response = await request(this.server)
-        .post('/auth/logout')
-        .set('Cookie', `refreshToken=${refreshToken}`);
+      .post('/auth/logout')
+      .set('Cookie', `refreshToken=${refreshToken}`);
 
     return response.status;
   }

@@ -20,7 +20,7 @@ import { errorsMessage } from './response/error.response';
 import { settings } from '../libs/shared/settings';
 import { EmailManager } from '../libs/adapters/email.adapter';
 import { EmailManagerMock } from './mock/email-adapter.mock';
-import {sleep} from "./helpers";
+import { sleep } from './helpers';
 
 describe('Test auth controller.', () => {
   const second = 1000;
@@ -158,39 +158,37 @@ describe('Test auth controller.', () => {
       const createdUser = await requests.testing().getUser(user.body.id);
 
       expect.setState({
-        code: createdUser.emailConfirmation.confirmationCode
-      })
+        code: createdUser.emailConfirmation.confirmationCode,
+      });
     }, 10000);
 
     it(`Status ${HttpStatus.UNAUTHORIZED}. User tries to log in without confirming the email.`, async () => {
       const response = await requests.auth().loginUser({
         email: preparedLoginData.valid.email,
-        password: preparedLoginData.valid.password
+        password: preparedLoginData.valid.password,
       });
 
-      expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
-    })
+      expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
+    });
 
     it(`Status ${HttpStatus.UNAUTHORIZED}. User try login with incorrect email.`, async () => {
-      const { code } = expect.getState()
+      const { code } = expect.getState();
 
-      await requests
-          .auth()
-          .confirmRegistration(code);
+      await requests.auth().confirmRegistration(code);
       const response = await requests.auth().loginUser({
         email: preparedLoginData.incorrect.email,
-        password: preparedLoginData.valid.password
+        password: preparedLoginData.valid.password,
       });
-      expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
-    })
+      expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
+    });
 
     it(`Status ${HttpStatus.UNAUTHORIZED}. User try login with incorrect password.`, async () => {
       const response = await requests.auth().loginUser({
         email: preparedLoginData.valid.email,
-        password: preparedLoginData.incorrect.password
+        password: preparedLoginData.incorrect.password,
       });
-      expect(response.status).toBe(HttpStatus.UNAUTHORIZED)
-    })
+      expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
+    });
 
     it(`Status ${HttpStatus.OK}. Should return access and refresh JWT tokens. `, async () => {
       const response = await requests.auth().loginUser(preparedLoginData.valid);
@@ -275,9 +273,7 @@ describe('Test auth controller.', () => {
 
     it(`Status ${HttpStatus.BAD_REQUEST}. Try get new password with expired code.`, async () => {
       const { passwordRecoveryCode } = expect.getState();
-      const error = errorsMessage<NewPasswordDto>([
-        'passwordRecoveryCode',
-      ]);
+      const error = errorsMessage<NewPasswordDto>(['passwordRecoveryCode']);
 
       const code = passwordRecoveryCode - settings.timeLife.CONFIRMATION_CODE;
       const newPassword = 'NewPassword';
@@ -288,13 +284,13 @@ describe('Test auth controller.', () => {
 
     it(`Status ${HttpStatus.BAD_REQUEST}. Try get new password but new password equal old.`, async () => {
       const { passwordRecoveryCode } = expect.getState();
-      const error = errorsMessage<NewPasswordDto>([
-        'newPassword',
-      ]);
+      const error = errorsMessage<NewPasswordDto>(['newPassword']);
 
       const newPassword = preparedLoginData.valid.password;
-      const response = await requests.auth().newPassword(newPassword, passwordRecoveryCode);
-      console.log(response.body)
+      const response = await requests
+        .auth()
+        .newPassword(newPassword, passwordRecoveryCode);
+      console.log(response.body);
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.body).toStrictEqual(error);
     });
@@ -326,7 +322,7 @@ describe('Test auth controller.', () => {
 
     it(`Status ${HttpStatus.UNAUTHORIZED}. Shouldn't update pair if refresh token is incorrect`, async () => {
       const { refreshToken } = expect.getState();
-      const token = refreshToken.replace('.')
+      const token = refreshToken.replace('.');
 
       const response = await requests.auth().updatePairTokens(token);
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
@@ -335,7 +331,7 @@ describe('Test auth controller.', () => {
     it.skip(`Status ${HttpStatus.UNAUTHORIZED}. Shouldn't update pair if refresh expired.`, async () => {
       const { refreshToken } = expect.getState();
 
-      await sleep(3) // update setting
+      await sleep(3); // update setting
       const response = await requests.auth().updatePairTokens(refreshToken);
       expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
     }, 5000);
@@ -362,7 +358,7 @@ describe('Test auth controller.', () => {
         accessToken: user.accessToken,
         refreshToken: user.refreshToken,
       });
-    })
+    });
 
     it(`Status ${HttpStatus.UNAUTHORIZED}. Shouldn't logout if refresh token is incorrect`, async () => {
       const { refreshToken } = expect.getState();
@@ -375,7 +371,7 @@ describe('Test auth controller.', () => {
     it.skip(`Status ${HttpStatus.UNAUTHORIZED}. Shouldn't logout if refresh expired.`, async () => {
       const { refreshToken } = expect.getState();
 
-      await sleep(3) // update setting
+      await sleep(3); // update setting
       const response = await requests.auth().logout(refreshToken);
       expect(response).toBe(HttpStatus.UNAUTHORIZED);
     }, 5000);
@@ -385,10 +381,10 @@ describe('Test auth controller.', () => {
       const response = await requests.auth().logout(refreshToken);
       expect(response).toBe(HttpStatus.NO_CONTENT);
 
-      const user = await requests.testing().getUser(userId)
-      console.log(user)
-      expect(user.devices.length).toBe(0)
-      expect(1).toBe(2)
-    })
-  })
+      const user = await requests.testing().getUser(userId);
+      console.log(user);
+      expect(user.devices.length).toBe(0);
+      expect(1).toBe(2);
+    });
+  });
 });

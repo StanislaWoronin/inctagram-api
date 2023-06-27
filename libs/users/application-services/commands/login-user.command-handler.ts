@@ -10,7 +10,7 @@ import { Device } from '../../schema';
 import { LoginDto, WithClientMeta } from '../../../../apps/auth/dto';
 import { RpcException } from '@nestjs/microservices';
 import { Factory } from '../../../shared/tokens.factory';
-import {UnauthorizedException} from "@nestjs/common";
+import { UnauthorizedException } from '@nestjs/common';
 
 export class LoginUserCommand {
   constructor(public readonly dto: WithClientMeta<LoginDto>) {}
@@ -33,14 +33,14 @@ export class LoginUserCommandHandler
 
     const user = await this.userQueryRepository.getUserByField(email);
     if (!user) {
-      throw new RpcException(new UnauthorizedException())
+      throw new RpcException(new UnauthorizedException());
     }
     if (!user.emailConfirmation.isConfirmed) {
-      throw new RpcException(new UnauthorizedException())
+      throw new RpcException(new UnauthorizedException());
     }
     const passwordEqual = await bcrypt.compare(password, user.passwordHash);
     if (!passwordEqual) {
-      throw new RpcException(new UnauthorizedException())
+      throw new RpcException(new UnauthorizedException());
     }
 
     const device = Device.create({ ipAddress, title });

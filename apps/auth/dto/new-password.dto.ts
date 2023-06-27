@@ -1,4 +1,4 @@
-import {IsNumber, IsString, Length} from 'class-validator';
+import { IsNumber, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { userValidationConstant } from '../../../libs/users/user-validation.constant';
 import { IUser } from '../../../libs/users/schema';

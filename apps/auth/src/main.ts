@@ -22,7 +22,7 @@ export const validationPipeSettings = {
       errorsForResponse.push({
         message: e.constraints[constraintsKeys[0]],
         field: e.property,
-      })
+      });
     });
     throw new RpcException(errorsForResponse);
   },

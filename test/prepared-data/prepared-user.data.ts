@@ -50,5 +50,5 @@ export const preparedLoginData = {
   incorrect: {
     email: validEmail + 1,
     password: validPassword + 1,
-  }
+  },
 };
