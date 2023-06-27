@@ -8,6 +8,7 @@ import { BadRequestException } from '@nestjs/common';
 import { settings } from '../../shared/settings';
 import bcrypt from 'bcrypt';
 import { Device } from './device.schema';
+import { RpcException } from '@nestjs/microservices';
 
 @Schema()
 export class UserAggregate extends UserService implements IUser {
@@ -18,7 +19,7 @@ export class UserAggregate extends UserService implements IUser {
   devices: Device[];
 
   @Prop({ required: true, type: String })
-  login: string;
+  userName: string;
 
   @Prop({ required: true, unique: true, type: String })
   email: string;
@@ -26,15 +27,15 @@ export class UserAggregate extends UserService implements IUser {
   @Prop({ required: true, type: String })
   passwordHash: string;
 
-  @Prop({ type: Number })
-  passwordRecovery: number = null;
-
   @Prop({
     required: true,
     type: String,
     timestamps: true,
   })
   createdAt: string = new Date().toISOString();
+
+  @Prop({ type: Number })
+  passwordRecoveryCode: number = null;
 
   @Prop({
     required: true,
@@ -47,7 +48,7 @@ export class UserAggregate extends UserService implements IUser {
 
   static async create(user: Partial<IUser>) {
     if (user.password !== user.passwordConfirmation)
-      throw new BadRequestException('Incorrect password confirmation');
+      throw new RpcException('Incorrect password confirmation');
     const _user = new UserAggregate();
     Object.assign(_user, user);
     const hash = await bcrypt.hash(user.password, 10);

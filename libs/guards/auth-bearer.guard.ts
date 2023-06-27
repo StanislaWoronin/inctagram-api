@@ -1,12 +1,7 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  UnauthorizedException,
-  Inject,
-} from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserQueryRepository } from '../users/providers/user.query.repository';
+import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
 export class AuthBearerGuard implements CanActivate {
@@ -19,13 +14,13 @@ export class AuthBearerGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
 
     if (!req.headers.authorization) {
-      throw new UnauthorizedException();
+      throw new RpcException("No token provided in 'Authorization' header");
     }
 
     const accessToken = req.headers.authorization.split(' ')[1];
     const tokenPayload = await this.jwtService.verify(accessToken);
     if (!tokenPayload) {
-      throw new UnauthorizedException();
+      throw new RpcException('Wrong token');
     }
 
     const userExist = await this.queryUsersRepository.userExists(
@@ -33,7 +28,7 @@ export class AuthBearerGuard implements CanActivate {
     );
 
     if (!userExist) {
-      throw new UnauthorizedException();
+      throw new RpcException("User doesn't exist");
     }
 
     req.userId = tokenPayload.userId;

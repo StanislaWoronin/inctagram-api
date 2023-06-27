@@ -2,12 +2,17 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsString, Length } from 'class-validator';
 import { userValidationConstant } from '../../../libs/users/user-validation.constant';
+import { IUser } from '../../../libs/users/schema';
+import { IsEmailExist } from '../../../libs/decorators/email.decorator';
 
-export class LoginDto {
+export type TLogin = Pick<IUser, 'password'> & { email: string };
+
+export class LoginDto implements TLogin {
   @ApiProperty()
   @IsString()
   @Transform(({ value }) => value?.trim())
-  loginOrEmail: string;
+  @IsEmailExist()
+  email: string;
 
   @ApiProperty({
     minLength: userValidationConstant.passwordLength.min,

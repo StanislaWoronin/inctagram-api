@@ -18,7 +18,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config apps/api-gateway/test/jest-e2e.json"
+    "test:e2e": "jest --config test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -38,6 +38,7 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "date-fns": "^2.30.0",
+    "imap": "^0.8.19",
     "mongoose": "^7.3.0",
     "nodemailer": "^6.9.3",
     "reflect-metadata": "^0.1.13",
@@ -46,6 +47,7 @@
     "webpack": "^5.88.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@flydotio/dockerfile": "^0.2.16",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",

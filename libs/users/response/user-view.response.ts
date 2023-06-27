@@ -1,14 +1,14 @@
-import { IUser } from '../schema';
+import { IUser, UserAggregate } from '../schema';
 import { ApiProperty } from '@nestjs/swagger';
 
-type TViewUser = Pick<IUser, 'id' | 'login' | 'email' | 'createdAt'>;
+type TViewUser = Pick<IUser, 'id' | 'userName' | 'email' | 'createdAt'>;
 
 export class ViewUser implements TViewUser {
   @ApiProperty({ description: 'UUID' })
   id: string;
 
   @ApiProperty({ example: 'UserLogin' })
-  login: string;
+  userName: string;
 
   @ApiProperty({ example: 'somemail@mail.com' })
   email: string;
@@ -16,10 +16,10 @@ export class ViewUser implements TViewUser {
   @ApiProperty({ example: new Date().toISOString() })
   createdAt: string;
 
-  static create(user) {
+  static create(user): ViewUser {
     return {
       id: user.id,
-      login: user.login,
+      userName: user.userName,
       email: user.email,
       createdAt: user.createdAt,
     };

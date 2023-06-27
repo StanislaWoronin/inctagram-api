@@ -1,22 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import {
-  RegistrationDto,
+  EmailDto,
+  LoginDto,
+  NewPasswordDto,
+  RegistrationConfirmationDto,
   SessionIdDto,
-  UpdatePasswordDto,
+  TRegistration,
   WithClientMeta,
-} from '../dto';
-import { LoginDto } from '../../../apps/auth/dto/login.dto';
-import {
-  CreateUserCommand,
-  LoginUserCommand,
-  LogoutCommand,
-  PasswordRecoveryCommand,
-  UpdatePasswordCommand,
-} from './command';
-import { UpdatePairTokenCommand } from './command/update-pair-token';
+} from '../../../apps/auth/dto';
 import { PairTokenResponse, ViewUser } from '../response';
-import { EmailConfirmationCodeResendingCommand } from './command/email-confirmation-code-resending';
+import { LoginUserCommand } from './commands/login-user.command-handler';
+import { ConfirmationCodeResendingCommand } from './commands/confirmation-code-resending-command.handler';
+import { RegistrationConfirmationCommand } from './commands/registration-confirmation.command-handler';
+import { PasswordRecoveryCommand } from './commands/password-recovery.command-handler';
+import { CreateUserCommand } from './commands/create-user.command-handler';
+import { UpdatePairTokenCommand } from './commands/update-pair-token.command-handler';
+import { UpdatePasswordCommand } from './commands/update-password.command-handler';
+import { LogoutCommand } from './commands/logout-command-handler';
+import { UserAggregate } from '../schema';
+import { GetUserByIdOrUserNameOrEmailCommand } from './queries/get-user-by-id-userName-or-email-query';
+import { GetUserByConfirmationCodeCommand } from './queries/get-user-by-confirmation-code-query';
+import { GetUserByRecoveryCodeCommand } from './queries/get-user-by-recovery-code-query';
+import { DeleteUserByIdCommand } from './commands/delete-user-by-id.command-handler';
 
 @Injectable()
 export class UserFacade {
@@ -28,15 +34,24 @@ export class UserFacade {
   commands = {
     loginUser: (dto: WithClientMeta<LoginDto>) => this.loginUser(dto),
     logout: (dto: SessionIdDto) => this.logout(dto),
-    passwordRecovery: (email: string) => this.passwordRecovery(email),
-    registrationUser: (data: RegistrationDto) => this.registrationUser(data),
+    passwordRecovery: (dto: EmailDto) => this.passwordRecovery(dto),
+    registrationUser: (dto: TRegistration) => this.registrationUser(dto),
     updatePairToken: (dto: WithClientMeta<SessionIdDto>) =>
       this.updatePairToken(dto),
-    updatePassword: (data: UpdatePasswordDto) => this.updatePassword(data),
-    emailConfirmationCodeResending: (email: string) =>
-      this.emailConfirmationCodeResending(email),
+    updatePassword: (data: NewPasswordDto) => this.updatePassword(data),
+    confirmationCodeResending: (dto: EmailDto) =>
+      this.confirmationCodeResending(dto),
+    registrationConfirmation: (dto: RegistrationConfirmationDto) =>
+      this.registrationConfirmation(dto),
+    deleteUserById: (id: string) => this.deleteUserById(id),
   };
-  queries = {};
+  queries = {
+    getUserByIdOrUserNameOrEmail: (loginOrEmail: string) =>
+      this.getUserByIdOrUserNameOrEmail(loginOrEmail),
+    getUserByConfirmationCode: (code: number) =>
+      this.getUserByConfirmationCode(code),
+    getUserByRecoveryCode: (code: number) => this.getUserByRecoveryCode(code),
+  };
 
   private async loginUser(
     dto: WithClientMeta<LoginDto>,
@@ -45,33 +60,68 @@ export class UserFacade {
     return await this.commandBus.execute(command);
   }
 
-  private logout(dto: SessionIdDto) {
+  private async logout(dto: SessionIdDto): Promise<boolean> {
     const command = new LogoutCommand(dto);
-    return this.commandBus.execute(command);
+    return await this.commandBus.execute(command);
   }
 
-  private emailConfirmationCodeResending(email: string) {
-    const command = new EmailConfirmationCodeResendingCommand(email);
-    return this.commandBus.execute(command);
+  private async confirmationCodeResending(dto: EmailDto): Promise<boolean> {
+    const command = new ConfirmationCodeResendingCommand(dto.email);
+    return await this.commandBus.execute(command);
   }
 
-  private passwordRecovery(email: string) {
-    const command = new PasswordRecoveryCommand(email);
-    return this.commandBus.execute(command);
+  private async registrationConfirmation(
+    dto: RegistrationConfirmationDto,
+  ): Promise<boolean> {
+    const command = new RegistrationConfirmationCommand(dto.confirmationCode);
+    return await this.commandBus.execute(command);
   }
 
-  private async registrationUser(dto: RegistrationDto): Promise<ViewUser> {
+  private async passwordRecovery(dto: EmailDto): Promise<boolean> {
+    const command = new PasswordRecoveryCommand(dto.email);
+    return await this.commandBus.execute(command);
+  }
+
+  private async registrationUser(dto: TRegistration): Promise<ViewUser> {
     const command = new CreateUserCommand(dto);
     return await this.commandBus.execute(command);
   }
 
-  private updatePairToken(dto: WithClientMeta<SessionIdDto>) {
+  private async updatePairToken(
+    dto: WithClientMeta<SessionIdDto>,
+  ): Promise<PairTokenResponse> {
     const command = new UpdatePairTokenCommand(dto);
-    return this.commandBus.execute(command);
+    return await this.commandBus.execute(command);
   }
 
-  private updatePassword(dto: UpdatePasswordDto) {
+  private async updatePassword(dto: NewPasswordDto): Promise<boolean> {
     const command = new UpdatePasswordCommand(dto);
-    return this.commandBus.execute(command);
+    return await this.commandBus.execute(command);
+  }
+
+  private async deleteUserById(id: string): Promise<boolean> {
+    const command = new DeleteUserByIdCommand(id);
+    return await this.commandBus.execute(command);
+  }
+
+  //Queries
+  private async getUserByIdOrUserNameOrEmail(
+    loginOrEmail: string,
+  ): Promise<UserAggregate | null> {
+    const command = new GetUserByIdOrUserNameOrEmailCommand(loginOrEmail);
+    return await this.queryBus.execute(command);
+  }
+
+  private async getUserByConfirmationCode(
+    code: number,
+  ): Promise<UserAggregate | null> {
+    const command = new GetUserByConfirmationCodeCommand(code);
+    return await this.queryBus.execute(command);
+  }
+  private async getUserByRecoveryCode(
+    code: number,
+  ): Promise<UserAggregate | null> {
+    const command = new GetUserByRecoveryCodeCommand(code);
+    return await this.queryBus.execute(command);
   }
 }
