@@ -7,15 +7,26 @@ import { Microservices } from '../../../libs/shared';
 import { CqrsModule } from '@nestjs/cqrs';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '../../../libs/users/user.module';
+import { TestingRepository } from './testing.repository';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MongooseConfig } from '../../../libs/providers/mongo-db';
+import { UserAggregate, UserSchema } from '../../../libs/users/schema';
+import { IsConfirmationCodeExistConstraint } from '../../../libs/decorators/confirmation-code.decorator';
+import { IsUserNameExistConstraint } from '../../../libs/decorators/userName.decorator';
 import {
-  EmailAdapters,
-  EmailManager,
-} from '../../../libs/adapters/email.adapter';
-import { UserRepository } from '../../../libs/users/providers/user.repository';
-import { UserQueryRepository } from '../../../libs/users/providers/user.query.repository';
+  IsEmailExistConstraint,
+  IsEmailExistForRegistrationConstraint,
+} from '../../../libs/decorators/email.decorator';
+import { IsRecoveryCodeExistConstraint } from '../../../libs/decorators/recovery-code.decorator';
 
 @Module({
   imports: [
+    MongooseModule.forRootAsync({
+      useClass: MongooseConfig,
+    }),
+    MongooseModule.forFeature([
+      { name: UserAggregate.name, schema: UserSchema },
+    ]),
     UserModule,
     CqrsModule,
     SharedModule,
@@ -23,7 +34,14 @@ import { UserQueryRepository } from '../../../libs/users/providers/user.query.re
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [],
+  providers: [
+    TestingRepository,
+    IsConfirmationCodeExistConstraint,
+    IsUserNameExistConstraint,
+    IsEmailExistConstraint,
+    IsEmailExistForRegistrationConstraint,
+    IsRecoveryCodeExistConstraint,
+  ],
   exports: [],
 })
 export class AuthModule {}

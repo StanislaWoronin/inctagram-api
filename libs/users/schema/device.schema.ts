@@ -12,9 +12,8 @@ export class Device implements IDevice {
   @Prop({
     required: true,
     type: String,
-    default: randomUUID(),
   })
-  deviceId: string;
+  deviceId: string = randomUUID();
 
   @Prop({ required: true, type: String })
   ipAddress: string;

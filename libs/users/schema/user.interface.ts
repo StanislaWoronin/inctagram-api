@@ -4,11 +4,11 @@ import { Device } from './device.schema';
 export interface IUser {
   id: string;
   devices: Device[];
-  login: string;
+  userName: string;
   email: string;
   passwordHash: string;
-  passwordRecovery: number | null;
   createdAt: string;
+  passwordRecoveryCode: number | null;
   emailConfirmation: EmailConfirmation;
   readonly password: string;
   readonly passwordConfirmation: string;

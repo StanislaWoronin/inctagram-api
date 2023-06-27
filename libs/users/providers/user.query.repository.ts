@@ -10,20 +10,40 @@ export class UserQueryRepository {
     private userModel: Model<UsersDocument>,
   ) {}
 
-  async getUserByIdOrLoginOrEmail(
+  async getUserByField(
     loginOrEmailOrId: string,
   ): Promise<UserAggregate | null> {
     return this.userModel.findOne({
       $or: [
         { id: loginOrEmailOrId },
         { email: loginOrEmailOrId },
-        { login: loginOrEmailOrId },
+        { userName: loginOrEmailOrId },
       ],
+    });
+  }
+
+  async getUserByFieldPasswordRecoveryCode(
+    code: number,
+  ): Promise<UserAggregate | null> {
+    return this.userModel.findOne({
+      passwordRecoveryCode: code,
     });
   }
 
   async userExists(userId: string): Promise<boolean> {
     const userExists = await this.userModel.exists({ id: userId });
     return !!userExists;
+  }
+
+  async getUserByConfirmationCode(code: number): Promise<UserAggregate | null> {
+    return this.userModel.findOne({
+      'emailConfirmation.confirmationCode': code,
+    });
+  }
+
+  async getUserByRecoveryCode(code: number): Promise<UserAggregate | null> {
+    return this.userModel.findOne({
+      passwordRecoveryCode: code,
+    });
   }
 }

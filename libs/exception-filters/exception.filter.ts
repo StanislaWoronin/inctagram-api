@@ -1,48 +1,36 @@
 import {
-  ExceptionFilter,
   Catch,
+  RpcExceptionFilter,
   ArgumentsHost,
-  HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { RpcException } from '@nestjs/microservices';
 import { Response } from 'express';
 
-@Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+@Catch()
+export class ExceptionFilter implements RpcExceptionFilter<RpcException> {
+  catch(exception: RpcException, host: ArgumentsHost): Observable<any> {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
-    const status = exception.getStatus();
-    const responseBody: any = exception.getResponse();
-
-    if (
-      status === HttpStatus.BAD_REQUEST &&
-      Array.isArray(responseBody.message)
-    ) {
-      const errorResponse = {
-        errorsMessages: [],
-      };
-      const responseBody: any = exception.getResponse();
-
-      if (Array.isArray(responseBody.message)) {
-        responseBody.message.forEach((m) =>
-          errorResponse.errorsMessages.push({
-            message: m.message,
-            field: m.field,
-          }),
-        );
-        response.status(status).json(errorResponse);
-        return;
-      }
-    } else {
-      console.log({ responseBody });
-      response.status(status).json({
-        statusCode: status,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-      });
+    const errorResponse = { errors: exception };
+    console.log(exception);
+    if (exception.message == 'Unauthorized') {
+      response.sendStatus(HttpStatus.UNAUTHORIZED);
+      return;
     }
+
+    if (exception.name === 'BadRequestException') {
+      const [field, message] = exception.message.split(':');
+      // @ts-ignore
+      errorResponse.errors = [
+        {
+          message,
+          field,
+        },
+      ];
+    }
+    response.status(HttpStatus.BAD_REQUEST).json(errorResponse);
     return;
   }
 }

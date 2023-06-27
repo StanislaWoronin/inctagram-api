@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Device, UserAggregate, UsersDocument } from '../schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { add } from 'date-fns';
+import { settings } from '../../shared/settings';
 
 @Injectable()
 export class UserRepository {
@@ -25,11 +27,11 @@ export class UserRepository {
 
   async setPasswordRecovery(
     userId: string,
-    passwordRecovery: number,
+    passwordRecoveryCode: number,
   ): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },
-      { $set: { passwordRecovery } },
+      { $set: { passwordRecoveryCode } },
     );
     return result.modifiedCount === 1;
   }
@@ -50,10 +52,21 @@ export class UserRepository {
     return result.modifiedCount === 1;
   }
 
-  async removeDeviceId(userId: string, deviceId: string): Promise<boolean> {
+  // async removeDeviceId(userId: string, deviceId: string): Promise<boolean> {
+  //   console.log(userId);
+  //   console.log(deviceId);
+  //   const result = await this.userModel.updateOne(
+  //     { id: `'${userId}'` },
+  //     { $pull: { devises: { deviceId: { $eq: `'${deviceId}'` } } } },
+  //   );
+  //   console.log(result);
+  //   return result.modifiedCount === 1;
+  // }
+
+  async removeDeviceId(user: UserAggregate): Promise<boolean> {
     const result = await this.userModel.updateOne(
-      { id: userId },
-      { $pull: { userDevicesData: { deviceId: deviceId } } },
+      { id: user.id },
+      { $set: user },
     );
 
     return result.modifiedCount === 1;
@@ -61,12 +74,39 @@ export class UserRepository {
 
   async updateEmailConfirmationCode(
     userId: string,
-    emailConfirmationCode: string,
+    emailConfirmationCode: number,
   ): Promise<boolean> {
+    const newDate = add(new Date(), {
+      hours: settings.timeLife.CONFIRMATION_CODE,
+    });
     const result = await this.userModel.updateOne(
       { id: userId },
-      { $set: { 'emailConfirmation.confirmationCode': emailConfirmationCode } },
+      {
+        $set: {
+          'emailConfirmation.confirmationCode': emailConfirmationCode,
+          'emailConfirmation.expirationDate': newDate,
+        },
+      },
     );
     return result.modifiedCount === 1;
+  }
+
+  async updateUserConfirmationStatus(userId: string): Promise<boolean> {
+    const result = await this.userModel.updateOne(
+      { id: userId },
+      {
+        $set: {
+          'emailConfirmation.confirmationCode': null,
+          'emailConfirmation.expirationDate': null,
+          'emailConfirmation.isConfirmed': true,
+        },
+      },
+    );
+    return result.modifiedCount === 1;
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    const result = await this.userModel.deleteOne({ id });
+    return result.deletedCount === 1;
   }
 }
