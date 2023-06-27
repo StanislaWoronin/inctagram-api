@@ -24,8 +24,4 @@ export class TestingRepository {
       ],
     });
   }
-
-  async updateExpirationDate(id: string, date: Date) {
-    return this.userModel.updateOne({ id }, { $set: { expirationDate: date } });
-  }
 }

@@ -29,5 +29,5 @@ export class NewPasswordDto implements TNewPassword {
   @ApiProperty({ description: 'Password recovery code' })
   @IsString()
   @IsRecoveryCodeExist()
-  passwordRecoveryCode: string;
+  passwordRecoveryCode: number;
 }

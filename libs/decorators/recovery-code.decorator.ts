@@ -26,7 +26,7 @@ export class IsRecoveryCodeExistConstraint
     if (user.passwordRecoveryCode !== value) {
       return null;
     }
-    if (user.expirationDateForRecoveryCode.getTime() < new Date().getTime()) {
+    if (user.passwordRecoveryCode < Date.now()) {
       return null;
     }
     return true;

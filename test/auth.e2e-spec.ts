@@ -20,6 +20,7 @@ import { errorsMessage } from './response/error.response';
 import { settings } from '../libs/shared/settings';
 import { EmailManager } from '../libs/adapters/email.adapter';
 import { EmailManagerMock } from './mock/email-adapter.mock';
+import mongoose from 'mongoose';
 
 describe('Test auth controller.', () => {
   const second = 1000;
@@ -49,6 +50,10 @@ describe('Test auth controller.', () => {
     testingRepository = app.get(TestingRepository);
     server = await app.getHttpServer();
     requests = new Requests(server);
+  });
+  afterAll(async () => {
+    await mms.stop();
+    await app.close();
   });
 
   describe('Create new user', () => {

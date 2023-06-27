@@ -23,7 +23,7 @@ export class UserQueryRepository {
   }
 
   async getUserByFieldPasswordRecoveryCode(
-    code: string,
+    code: number,
   ): Promise<UserAggregate | null> {
     return this.userModel.findOne({
       passwordRecoveryCode: code,
