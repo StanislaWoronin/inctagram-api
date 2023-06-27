@@ -48,9 +48,9 @@ export class UserFacade {
   queries = {
     getUserByIdOrUserNameOrEmail: (loginOrEmail: string) =>
       this.getUserByIdOrUserNameOrEmail(loginOrEmail),
-    getUserByConfirmationCode: (code: string) =>
+    getUserByConfirmationCode: (code: number) =>
       this.getUserByConfirmationCode(code),
-    getUserByRecoveryCode: (code: string) => this.getUserByRecoveryCode(code),
+    getUserByRecoveryCode: (code: number) => this.getUserByRecoveryCode(code),
   };
 
   private async loginUser(
@@ -111,13 +111,13 @@ export class UserFacade {
   }
 
   private async getUserByConfirmationCode(
-    code: string,
+    code: number,
   ): Promise<UserAggregate | null> {
     const command = new GetUserByConfirmationCodeCommand(code);
     return await this.queryBus.execute(command);
   }
   private async getUserByRecoveryCode(
-    code: string,
+    code: number,
   ): Promise<UserAggregate | null> {
     const command = new GetUserByRecoveryCodeCommand(code);
     return await this.queryBus.execute(command);

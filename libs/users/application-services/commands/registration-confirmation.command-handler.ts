@@ -3,7 +3,7 @@ import { UserQueryRepository } from '../../providers/user.query.repository';
 import { UserRepository } from '../../providers/user.repository';
 
 export class RegistrationConfirmationCommand {
-  constructor(public readonly confirmationCode: string) {}
+  constructor(public readonly confirmationCode: number) {}
 }
 
 @CommandHandler(RegistrationConfirmationCommand)

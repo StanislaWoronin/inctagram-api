@@ -8,8 +8,7 @@ export interface IUser {
   email: string;
   passwordHash: string;
   createdAt: string;
-  passwordRecoveryCode: string | null;
-  expirationDateForRecoveryCode: Date | null;
+  passwordRecoveryCode: number | null;
   emailConfirmation: EmailConfirmation;
   readonly password: string;
   readonly passwordConfirmation: string;

@@ -12,5 +12,5 @@ export class RegistrationConfirmationDto implements TRegistrationConfirmation {
   @ApiProperty({ description: 'Registration confirmation code' })
   @IsString()
   @IsConfirmationCodeExist()
-  confirmationCode: string;
+  confirmationCode: number;
 }

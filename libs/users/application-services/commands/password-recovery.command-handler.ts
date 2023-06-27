@@ -2,7 +2,7 @@ import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UserQueryRepository } from '../../providers/user.query.repository';
 import { UserRepository } from '../../providers/user.repository';
 import { EmailManager } from '../../../adapters/email.adapter';
-import { randomUUID } from 'crypto';
+import { settings } from '../../../shared/settings';
 
 export class PasswordRecoveryCommand {
   constructor(public readonly email: string) {}
@@ -21,7 +21,7 @@ export class PasswordRecoveryCommandHandler
   async execute({ email }: PasswordRecoveryCommand) {
     const user = await this.userQueryRepository.getUserByField(email);
     if (user) {
-      const passwordRecovery = randomUUID();
+      const passwordRecovery = Date.now() + settings.timeLife.CONFIRMATION_CODE;
       const isSuccess = await this.userRepository.setPasswordRecovery(
         user.id,
         passwordRecovery,

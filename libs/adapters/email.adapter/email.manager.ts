@@ -7,7 +7,7 @@ export class EmailManager {
 
   async sendConfirmationEmail(
     email: string,
-    confirmationCode: string,
+    confirmationCode: number,
   ): Promise<void> {
     const subject = 'Confirm your email';
     const message = `<h1>Thank for your registration</h1><p>To finish registration please follow the link below:
@@ -17,7 +17,7 @@ export class EmailManager {
     return await this.emailAdapters.sendEmail(email, subject, message);
   }
 
-  async sendPasswordRecoveryEmail(email: string, recoveryCode: string) {
+  async sendPasswordRecoveryEmail(email: string, recoveryCode: number) {
     const subject = 'Password recovery';
     const message = `<h1>Password recovery</h1>
                          <p>To finish password recovery please follow the link below:

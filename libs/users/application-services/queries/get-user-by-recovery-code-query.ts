@@ -3,7 +3,7 @@ import { UserQueryRepository } from '../../providers/user.query.repository';
 import { UserAggregate } from '../../schema';
 
 export class GetUserByRecoveryCodeCommand {
-  constructor(public readonly code: string) {}
+  constructor(public readonly code: number) {}
 }
 
 @QueryHandler(GetUserByRecoveryCodeCommand)

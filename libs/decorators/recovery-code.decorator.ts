@@ -15,7 +15,7 @@ export class IsRecoveryCodeExistConstraint
 {
   constructor(private readonly userFacade: UserFacade) {}
 
-  async validate(value: string) {
+  async validate(value: number) {
     const user = await this.userFacade.queries.getUserByRecoveryCode(value);
     if (!user) {
       return null;

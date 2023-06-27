@@ -27,7 +27,7 @@ export class UserRepository {
 
   async setPasswordRecovery(
     userId: string,
-    passwordRecoveryCode: string,
+    passwordRecoveryCode: number,
   ): Promise<boolean> {
     const result = await this.userModel.updateOne(
       { id: userId },
@@ -63,7 +63,7 @@ export class UserRepository {
 
   async updateEmailConfirmationCode(
     userId: string,
-    emailConfirmationCode: string,
+    emailConfirmationCode: number,
   ): Promise<boolean> {
     const newDate = add(new Date(), {
       hours: settings.timeLife.CONFIRMATION_CODE,

@@ -35,13 +35,13 @@ export class UserQueryRepository {
     return !!userExists;
   }
 
-  async getUserByConfirmationCode(code: string): Promise<UserAggregate | null> {
+  async getUserByConfirmationCode(code: number): Promise<UserAggregate | null> {
     return this.userModel.findOne({
       'emailConfirmation.confirmationCode': code,
     });
   }
 
-  async getUserByRecoveryCode(code: string): Promise<UserAggregate | null> {
+  async getUserByRecoveryCode(code: number): Promise<UserAggregate | null> {
     return this.userModel.findOne({
       passwordRecoveryCode: code,
     });

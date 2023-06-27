@@ -15,7 +15,7 @@ export class IsConfirmationCodeExistConstraint
 {
   constructor(private readonly userFacade: UserFacade) {}
 
-  async validate(value: string) {
+  async validate(value: number) {
     const user = await this.userFacade.queries.getUserByConfirmationCode(value);
     if (!user) {
       return null;
