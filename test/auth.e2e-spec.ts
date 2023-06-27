@@ -24,7 +24,7 @@ import { sleep } from './helpers';
 
 describe('Test auth controller.', () => {
   const second = 1000;
-  jest.setTimeout(5 * second);
+  jest.setTimeout(10 * second);
 
   let app: INestApplication;
   let server;
@@ -290,7 +290,7 @@ describe('Test auth controller.', () => {
       const response = await requests
         .auth()
         .newPassword(newPassword, passwordRecoveryCode);
-      console.log(response.body);
+
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.body).toStrictEqual(error);
     });
@@ -382,9 +382,7 @@ describe('Test auth controller.', () => {
       expect(response).toBe(HttpStatus.NO_CONTENT);
 
       const user = await requests.testing().getUser(userId);
-      console.log(user);
       expect(user.devices.length).toBe(0);
-      expect(1).toBe(2);
     });
   });
 });

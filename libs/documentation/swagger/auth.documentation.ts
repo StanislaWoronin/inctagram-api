@@ -3,6 +3,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiCookieAuth,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
@@ -170,8 +171,8 @@ export function ApiNewPassword() {
 export function ApiRefreshToken() {
   return applyDecorators(
     ApiTags('Auth'),
+    ApiCookieAuth(),
     ApiOperation({ summary: 'Update authorization tokens' }),
-    // ApiBearerAuth(), // TODO bearer это же для access token-a?
     ApiOkResponse({
       description:
         'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +
@@ -189,7 +190,7 @@ export function ApiLogout() {
   return applyDecorators(
     ApiTags('Auth'),
     ApiOperation({ summary: 'User logout' }),
-    // ApiBearerAuth(), // TODO bearer это же для access token-a?
+    ApiCookieAuth(),
     ApiNoContentResponse({
       description: 'No Content',
     }),

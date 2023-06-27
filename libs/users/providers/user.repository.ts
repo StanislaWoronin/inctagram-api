@@ -52,10 +52,21 @@ export class UserRepository {
     return result.modifiedCount === 1;
   }
 
-  async removeDeviceId(userId: string, deviceId: string): Promise<boolean> {
+  // async removeDeviceId(userId: string, deviceId: string): Promise<boolean> {
+  //   console.log(userId);
+  //   console.log(deviceId);
+  //   const result = await this.userModel.updateOne(
+  //     { id: `'${userId}'` },
+  //     { $pull: { devises: { deviceId: { $eq: `'${deviceId}'` } } } },
+  //   );
+  //   console.log(result);
+  //   return result.modifiedCount === 1;
+  // }
+
+  async removeDeviceId(user: UserAggregate): Promise<boolean> {
     const result = await this.userModel.updateOne(
-      { id: userId },
-      { $pull: { devises: { deviceId: deviceId } } },
+      { id: user.id },
+      { $set: user },
     );
 
     return result.modifiedCount === 1;
