@@ -5,6 +5,7 @@ import { TokenResponse, ViewUser } from '../../libs/users/response';
 import { faker } from '@faker-js/faker';
 import { TLoginResponse } from '../types/login.response';
 import { TErrorMessage } from '../types/error-message.type';
+import {HttpStatus} from "@nestjs/common";
 
 export class AuthRequest {
   constructor(private readonly server: any) {}
@@ -19,16 +20,22 @@ export class AuthRequest {
     return { body: response.body, status: response.status };
   }
 
-  async loginUser(loginUserDto: LoginDto): Promise<TLoginResponse> {
+  async loginUser(loginUserDto: LoginDto): Promise<Partial<TLoginResponse>> {
     const response = await request(this.server)
       .post('/auth/login')
       .set('User-Agent', faker.internet.userAgent())
       .send(loginUserDto);
 
+    if (response.status !== HttpStatus.OK) {
+      return {
+        status: response.status,
+      }
+    }
+
     return {
-      accessToken: response.body.accessToken ?? null,
+      accessToken: response.body.accessToken,
       refreshToken:
-        response.headers['set-cookie'][0].split(';')[0].split('=')[1] ?? null,
+        response.headers['set-cookie'][0].split(';')[0].split('=')[1],
       status: response.status,
     };
   }
@@ -78,11 +85,17 @@ export class AuthRequest {
     return { body: response.body, status: response.status };
   }
 
-  async updatePairTokens(refreshToken?: string): Promise<TLoginResponse> {
+  async updatePairTokens(refreshToken?: string): Promise<Partial<TLoginResponse>> {
     const response = await request(this.server)
       .post('/auth/refresh-token')
       .set('Cookie', `refreshToken=${refreshToken}`)
       .set('User-Agent', faker.internet.userAgent());
+
+    if (response.status !== HttpStatus.OK) {
+      return {
+        status: response.status,
+      }
+    }
 
     return {
       accessToken: response.body,
@@ -91,5 +104,13 @@ export class AuthRequest {
         .split('=')[1],
       status: response.status,
     };
+  }
+
+  async logout(refreshToken?: string): Promise<number> {
+    const response = await request(this.server)
+        .post('/auth/logout')
+        .set('Cookie', `refreshToken=${refreshToken}`);
+
+    return response.status;
   }
 }

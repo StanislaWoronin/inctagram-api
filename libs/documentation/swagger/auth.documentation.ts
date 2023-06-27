@@ -171,7 +171,7 @@ export function ApiRefreshToken() {
   return applyDecorators(
     ApiTags('Auth'),
     ApiOperation({ summary: 'Update authorization tokens' }),
-    ApiBearerAuth(),
+    // ApiBearerAuth(), // TODO bearer это же для access token-a?
     ApiOkResponse({
       description:
         'Returns JWT accessToken (expired after 10 seconds) in body and JWT' +
@@ -189,7 +189,7 @@ export function ApiLogout() {
   return applyDecorators(
     ApiTags('Auth'),
     ApiOperation({ summary: 'User logout' }),
-    ApiBearerAuth(),
+    // ApiBearerAuth(), // TODO bearer это же для access token-a?
     ApiNoContentResponse({
       description: 'No Content',
     }),

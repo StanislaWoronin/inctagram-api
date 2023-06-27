@@ -14,9 +14,11 @@ export class LogoutCommandHandler implements ICommandHandler<LogoutCommand> {
     private userQueryRepository: UserQueryRepository,
   ) {}
 
-  async execute(command: LogoutCommand) {
-    const { userId, deviceId } = command.dto;
-    const user = await this.userQueryRepository.getUserByField(userId);
+  async execute({ dto }: LogoutCommand) {
+    const { userId, deviceId } = dto;
+    // const user = await this.userQueryRepository.getUserByField(userId);
+    // const newDevices = user.devices.filter(d => d.deviceId !== deviceId)
+
     return await this.userRepository.removeDeviceId(userId, deviceId);
   }
 }

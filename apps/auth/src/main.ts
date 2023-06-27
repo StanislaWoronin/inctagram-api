@@ -13,12 +13,16 @@ export const validationPipeSettings = {
     const errorsForResponse = [];
     errors.forEach((e) => {
       const constraintsKeys = Object.keys(e.constraints);
-      constraintsKeys.forEach((key) => {
-        errorsForResponse.push({
-          message: e.constraints[key],
-          field: e.property,
-        });
-      });
+      // constraintsKeys.forEach((key) => {
+      //   errorsForResponse.push({
+      //     message: e.constraints[key],
+      //     field: e.property,
+      //   });
+      // });
+      errorsForResponse.push({
+        message: e.constraints[constraintsKeys[0]],
+        field: e.property,
+      })
     });
     throw new RpcException(errorsForResponse);
   },

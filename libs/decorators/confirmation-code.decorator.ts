@@ -32,7 +32,7 @@ export class IsConfirmationCodeExistConstraint
     return true;
   }
   defaultMessage(args: ValidationArguments) {
-    return `Incorrect ${args.property} .`;
+    return `Incorrect ${args.property}.`;
   }
 }
 

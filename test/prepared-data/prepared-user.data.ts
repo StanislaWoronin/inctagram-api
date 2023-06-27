@@ -47,4 +47,8 @@ export const preparedLoginData = {
     email: validEmail,
     password: validPassword,
   },
+  incorrect: {
+    email: validEmail + 1,
+    password: validPassword + 1,
+  }
 };
