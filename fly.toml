@@ -27,7 +27,7 @@ primary_region = "waw"
     port = 80
 
   [[services.ports]]
-    handlers = ["tls", "http"]
+    handlers = ["tcp", "http"]
     port = 5001
 
   [[services.tcp_checks]]
