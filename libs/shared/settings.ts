@@ -7,7 +7,7 @@ export const settings = {
   transportName: Transport.TCP,
   rmqUrl: process.env.RMQ_URL,
   host: {
-    localHost: '0.0.0.0',
+    localHost: '149.248.193.195',
   },
   port: {
     API_GATEWAY: Number(process.env.API_GATEWAY),
