@@ -28,7 +28,7 @@ primary_region = "waw"
 
   [[services.ports]]
     handlers = ["tls", "http"]
-    port = 5001
+    port = 443
 
   [[services.tcp_checks]]
     grace_period = "1s"
