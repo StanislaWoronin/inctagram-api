@@ -11,6 +11,7 @@ primary_region = "waw"
   auth-microservice = "node dist/apps/auth/src/main"
 
 [http_service]
+  processes = ["api-gateway"]
   internal_port = 5000
   force_https = true
   auto_stop_machines = true
