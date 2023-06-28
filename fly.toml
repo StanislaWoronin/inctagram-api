@@ -7,8 +7,7 @@ app = "inctagram-api"
 primary_region = "waw"
 
 [processes]
-  api-gateway = "node dist/apps/api-gateway/src/main"
-  auth-microservice = "node dist/apps/auth/src/main"
+  api-gateway = "concurrently \"node dist/apps/api-gateway/src/main\" \"node dist/apps/auth/src/main\""
 
 [[services]]
   protocol = "tcp"
@@ -34,25 +33,4 @@ primary_region = "waw"
     grace_period = "1s"
     restart_limit = 0
 
-[[services]]
-  protocol = "tcp"
-  internal_port = 5001
-  processes = ["auth-microservice"]
 
-  [[services.ports]]
-    port = 80
-    handlers = ["http"]
-
-  [[services.ports]]
-    port = 443
-    handlers = ["tls", "http"]
-  [services.concurrency]
-    type = "connections"
-    hard_limit = 50
-    soft_limit = 25
-
-  [[services.tcp_checks]]
-    interval = "15s"
-    timeout = "2s"
-    grace_period = "1s"
-    restart_limit = 0
