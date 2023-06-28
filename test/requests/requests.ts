@@ -17,6 +17,6 @@ export class Requests {
   }
 
   userFactory() {
-    return new UserFactory(this.auth(), this.testing());
+    return new UserFactory(this.server, this.auth(), this.testing());
   }
 }
