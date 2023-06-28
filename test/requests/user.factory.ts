@@ -1,15 +1,15 @@
-import { AuthRequest } from './auth.request';
-import { ViewUser } from '../../libs/users/response';
-import { TLogin, TRegistration } from '../../apps/auth/dto';
-import { UserWithTokensType } from '../types/user-with-tokens.type';
-import {
-  preparedLoginData,
-  preparedRegistrationData,
-} from '../prepared-data/prepared-user.data';
-import { Testing } from './testing.request';
+import {AuthRequest} from './auth.request';
+import {ViewUser} from '../../libs/users/response';
+import {TLogin, TRegistration} from '../../apps/auth/dto';
+import {UserWithTokensType} from '../types/user-with-tokens.type';
+import {preparedLoginData, preparedRegistrationData,} from '../prepared-data/prepared-user.data';
+import {Testing} from './testing.request';
+import {faker} from "@faker-js/faker";
+import request from 'supertest';
 
 export class UserFactory {
   constructor(
+    private readonly server: any,
     private readonly authRequest: AuthRequest,
     private readonly testingRequest: Testing,
   ) {}
@@ -41,6 +41,7 @@ export class UserFactory {
     const result = [];
     for (let i = 0; i < userCount; i++) {
       const createdUser = await this.testingRequest.getUser(users[i].id);
+
       await this.authRequest.confirmRegistration(
         createdUser.emailConfirmation.confirmationCode,
       );
@@ -60,5 +61,29 @@ export class UserFactory {
     }
 
     return result;
+  }
+
+  async createAndLoginOneUserManyTimes(loginCount: number): Promise<UserWithTokensType> {
+    const [user] = await this.createAndLoginUsers(1);
+    const userWithTokens = { user: user.user, accessToken: null, refreshToken: null };
+
+    const userLoginData = {
+      email: user.user.email,
+      password: preparedLoginData.valid.password,
+    };
+
+    for (let i = 0; i < loginCount - 1; i++) {
+      const response = await request(this.server)
+          .post('/auth/login')
+          .set('User-Agent', faker.internet.userAgent())
+          .send(userLoginData);
+
+      userWithTokens.accessToken = response.body.accessToken;
+      userWithTokens.refreshToken = response.headers['set-cookie'][0]
+          .split(';')[0]
+          .split('=')[1];
+    }
+
+    return userWithTokens;
   }
 }

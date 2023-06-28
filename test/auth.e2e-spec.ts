@@ -384,5 +384,28 @@ describe('Test auth controller.', () => {
       const user = await requests.testing().getUser(userId);
       expect(user.devices.length).toBe(0);
     });
+
+    describe('Create many device and delete last.', () => {
+      const loginCount = 5
+      it('Create data', async () => {
+        await requests.testing().deleteAll();
+        const lastSession = await requests.userFactory().createAndLoginOneUserManyTimes(loginCount)
+
+        expect.setState({
+          lastSession: lastSession,
+          userId: lastSession.user.id,
+          accessToken: lastSession.accessToken,
+          refreshToken: lastSession.refreshToken
+        })
+      })
+
+      it(`Status ${HttpStatus.NO_CONTENT}. Logout from last session.`, async () => {
+        const { userId, refreshToken } = expect.getState()
+
+        await requests.auth().logout(refreshToken)
+        const user = await requests.testing().getUser(userId);
+        expect(user.devices.length).toBe(loginCount - 1);
+      })
+    })
   });
 });
