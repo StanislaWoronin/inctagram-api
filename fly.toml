@@ -12,7 +12,7 @@ primary_region = "waw"
 
 [[services]]
   http_checks = []
-  internal_port = 7878
+  internal_port = 5000
   processes = ["api-gateway"]
   protocol = "tcp"
   script_checks = []
