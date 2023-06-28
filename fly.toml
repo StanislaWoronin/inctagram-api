@@ -24,10 +24,10 @@ primary_region = "waw"
   [[services.ports]]
     force_https = true
     handlers = ["http"]
-    port = 80
+    port = 5001
 
   [[services.ports]]
-    handlers = ["tcp", "http"]
+    handlers = ["tls", "http"]
     port = 5001
 
   [[services.tcp_checks]]
