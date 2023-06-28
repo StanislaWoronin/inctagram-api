@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for inctagram-api on 2023-06-22T15:29:12+02:00
+# fly.toml app configuration file generated for inctagram-api on 2023-06-28T13:12:36+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,19 +7,13 @@ app = "inctagram-api"
 primary_region = "waw"
 
 [processes]
-api-gateway = "node dist/apps/api-gateway/src/main"
-auth-microservice= "node dist/apps/auth/src/main"
+  api-gateway = "node dist/apps/api-gateway/src/main"
+  auth-microservice = "node dist/apps/auth/src/main"
 
 [http_service]
-  processes = ["api-gateway"]
   internal_port = 5000
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
   min_machines_running = 0
-
-
-
-
-
-
+  processes = ["api-gateway"]
