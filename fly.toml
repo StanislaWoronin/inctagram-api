@@ -36,7 +36,7 @@ primary_region = "waw"
     restart_limit = 0
     timeout = "2s"
 
-// settings for every microservice
+
 [[services]]
   http_checks = []
   internal_port = 5001
